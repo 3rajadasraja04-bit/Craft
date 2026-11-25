@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#05070d">
-<title>ZHD // NEXUS COMMAND DECK</title>
+<title>ZHD // NEXUS COMMAND DECK v4.0</title>
 <style>
 :root{
  --bg:#05070d;--bg2:#08111b;--surface:#0b1722;--surface2:#0e202d;--surface3:#132b38;
@@ -47,9 +47,6 @@ main{grid-column:2;min-width:0;padding:0 25px 38px}
 .topbar{height:66px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;background:rgba(5,7,13,.85);backdrop-filter:blur(18px);z-index:20;margin:0 -25px;padding:0 25px}
 .crumb{font-size:9px;letter-spacing:.17em;color:var(--muted);text-transform:uppercase}.crumb b{color:var(--cyan)}
 .topright{display:flex;align-items:center;gap:8px}
-.searchbox{width:min(230px,25vw);position:relative}
-.searchbox input{width:100%;padding:9px 12px 9px 30px;border:1px solid var(--line);border-radius:8px;background:#091521;color:var(--text);font-size:10px;outline:none}
-.searchbox:before{content:"⌕";position:absolute;left:11px;top:5px;color:var(--cyan);font-size:17px}
 .topchip{padding:7px 9px;border:1px solid var(--line);border-radius:7px;color:var(--cyan);font-size:8px;letter-spacing:.1em;background:#0a1822;text-transform:uppercase;font-weight:700}
 .topchip.good{color:var(--green);border-color:#39ff9140}
 .topchip.bad{color:var(--red);border-color:#ff526840}
@@ -71,7 +68,6 @@ h1{font-size:clamp(22px,2.8vw,31px);line-height:1.1;margin:6px 0 5px;letter-spac
 .btn.green{color:var(--green);border-color:#39ff9150}
 .btn.green:hover:not(:disabled){background:#39ff9112;border-color:var(--green)}
 .btn.pink{color:var(--pink);border-color:#ff2f9250}
-.btn.pink:hover:not(:disabled){background:#ff2f9212;border-color:var(--pink)}
 .btn.red{color:var(--red);border-color:#ff526850}
 .btn.red:hover:not(:disabled){background:#ff526812;border-color:var(--red)}
 .btn.ghost{background:transparent;color:var(--muted)}
@@ -108,17 +104,17 @@ tr:hover td{background:rgba(0,240,255,.03)}
 .badge.idle{color:var(--muted);border-color:#7895a455;background:#7895a40b}
 .note{padding:10px 15px;border-top:1px solid #00f0ff12;color:var(--muted);font-size:8px}
 .mapgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:13px}
-.mapcell{border:1px solid #00f0ff28;background:#0a1a26;border-radius:6px;text-align:center;padding:9px 3px;color:#85a8b7;font:8px ui-monospace,monospace;cursor:pointer;transition:.2s;position:relative}
-.mapcell:hover{border-color:#00f0ff50;background:#0a1a26}
+.mapcell{border:1px solid #00f0ff28;background:#0a1a26;border-radius:8px;text-align:center;padding:10px 8px;color:#85a8b7;font:9px ui-monospace,monospace;transition:.2s;position:relative;text-align:left}
+.mapcell:hover{border-color:#00f0ff50}
 .mapcell.done{color:var(--green);border-color:#39ff9155;background:#39ff910b}
-.mapcell.current{color:var(--cyan);border-color:var(--cyan);box-shadow:0 0 14px #00f0ff25;background:#00f0ff0b}
-.mapcell.playing{color:var(--cyan);border-color:var(--cyan);box-shadow:0 0 18px #00f0ff55;animation:mapPulse 1.6s infinite}
+.mapcell.playing{color:var(--cyan);border-color:var(--cyan);box-shadow:0 0 14px #00f0ff25;animation:mapPulse 1.6s infinite}
 @keyframes mapPulse{0%,100%{box-shadow:0 0 14px #00f0ff25}50%{box-shadow:0 0 22px #00f0ff55}}
-.mapcell small{display:block;font-size:7px;color:var(--muted);margin-top:2px}
-.mapactions{display:flex;gap:4px;margin-top:8px;opacity:0.3;transition:.2s}
-.mapcell:hover .mapactions{opacity:1}
-.mapactions button{flex:1;padding:4px;background:#0f202d;border:1px solid var(--line);border-radius:4px;font-size:8px;color:#fff; cursor:pointer}
-.mapactions button:hover{background:var(--cyan);color:#000}
+.mapcell small{display:block;font-size:7px;color:var(--muted);margin-top:4px}
+.mapactions{display:flex;gap:4px;margin-top:8px}
+.mapactions button{flex:1;padding:5px 4px;background:#0f202d;border:1px solid var(--line);border-radius:4px;font-size:9px;color:#fff;cursor:pointer;transition:.15s;font-weight:600}
+.mapactions button:hover{background:var(--cyan);color:#000;border-color:var(--cyan)}
+.mapactions button.del:hover{background:var(--red);border-color:var(--red)}
+.mapactions button.edit:hover{background:var(--amber);border-color:var(--amber);color:#000}
 .eventlist{padding:4px 15px 10px}
 .event{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #ffffff0b;font-size:9px}
 .event:last-child{border:0}
@@ -217,13 +213,14 @@ tr:hover td{background:rgba(0,240,255,.03)}
 .socstate.lock{color:var(--amber);border-color:#ffd75e50;background:#ffd75e10}
 .ringstat{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-top:6px}
 .ringstat b{color:var(--cyan);font-family:ui-monospace,monospace}
-.modal{display:none;position:fixed;z-index:100;inset:0;background:#0009;backdrop-filter:blur(5px);place-items:center}
+.modal{display:none;position:fixed;z-index:100;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);place-items:center;padding:16px}
 .modal.show{display:grid}
-.modal-content{background:linear-gradient(145deg,#0f1e2b,#070f18);padding:20px;border-radius:12px;border:1px solid var(--cyan);width:min(400px,90%);box-shadow:0 0 30px #00f0ff20}
+.modal-content{background:linear-gradient(145deg,#0f1e2b,#070f18);padding:20px;border-radius:12px;border:1px solid var(--cyan);width:min(440px,100%);box-shadow:0 0 30px #00f0ff20}
+.modal-content h2{margin:0 0 15px;font-size:15px;color:var(--cyan)}
+.version-badge{display:inline-block;padding:3px 8px;border:1px solid var(--cyan);border-radius:20px;font-size:8px;color:var(--cyan);font-weight:700;letter-spacing:.1em;margin-left:8px}
 @media(max-width:1100px){:root{--side:220px}main{padding:0 18px 30px}.topbar{margin:0 -18px;padding:0 18px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:780px){.shell{display:block}.sidebar{width:265px;transform:translateX(-105%);box-shadow:20px 0 45px #000b}.sidebar.open{transform:none}main{padding:0 12px 88px}.topbar{margin:0 -12px;padding:0 12px;height:59px}.menuBtn{display:block}.crumb{display:none}.searchbox{width:34vw}.topright{gap:5px}.topchip{font-size:7px;padding:6px}.avatar{display:none}.pagehead{align-items:flex-start;flex-direction:column;margin:19px 0 14px}.actions{width:100%}.contentgrid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.mobilebar{display:flex;position:fixed;z-index:25;bottom:0;left:0;right:0;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));background:#06111df2;border-top:1px solid var(--line);backdrop-filter:blur(18px)}.mobilebar button{border:0;background:none;color:var(--muted);font-size:7px;display:grid;gap:3px;justify-items:center;padding:4px 8px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}.mobilebar button span{font-size:16px}.mobilebar button.active{color:var(--cyan)}.mapgrid{grid-template-columns:repeat(4,1fr)}.logstream{max-height:50vh}}
-@media(max-width:410px){.stats{gap:8px}.stat{padding:11px}.statvalue{font-size:22px}.mapgrid{grid-template-columns:repeat(3,1fr)}.event{grid-template-columns:49px minmax(0,1fr) auto;gap:5px}.searchbox{width:31vw}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+@media(max-width:780px){.shell{display:block}.sidebar{width:265px;transform:translateX(-105%);box-shadow:20px 0 45px #000b}.sidebar.open{transform:none}main{padding:0 12px 88px}.topbar{margin:0 -12px;padding:0 12px;height:59px}.menuBtn{display:block}.crumb{display:none}.topright{gap:5px}.topchip{font-size:7px;padding:6px}.avatar{display:none}.pagehead{align-items:flex-start;flex-direction:column;margin:19px 0 14px}.actions{width:100%}.contentgrid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.mobilebar{display:flex;position:fixed;z-index:25;bottom:0;left:0;right:0;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));background:#06111df2;border-top:1px solid var(--line);backdrop-filter:blur(18px)}.mobilebar button{border:0;background:none;color:var(--muted);font-size:7px;display:grid;gap:3px;justify-items:center;padding:4px 8px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}.mobilebar button span{font-size:16px}.mobilebar button.active{color:var(--cyan)}.mapgrid{grid-template-columns:repeat(2,1fr)}.logstream{max-height:50vh}}
+@media(max-width:410px){.stats{gap:8px}.stat{padding:11px}.statvalue{font-size:22px}.mapgrid{grid-template-columns:1fr}.event{grid-template-columns:49px minmax(0,1fr) auto;gap:5px}}
 </style>
 </head>
 <body>
@@ -235,11 +232,11 @@ tr:hover td{background:rgba(0,240,255,.03)}
     <div class="brandmark"><span>Z</span></div>
     <div class="brandname">ZHD ENGINE<small>COMMAND DECK</small></div>
   </div>
-  <div class="navlabel">Navigation</div>
+  <div class="navlabel">Navigation <span class="version-badge">v4.0</span></div>
   <nav class="nav" id="nav">
     <button data-page="console" class="active"><span class="navicon">◉</span> Console <span class="navcount" id="navBotCount">0</span></button>
     <button data-page="fleet"><span class="navicon">▣</span> Fleet <span class="navcount" id="navFleetCount">0</span></button>
-    <button data-page="maps"><span class="navicon">◈</span> Maps <span class="navcount">24</span></button>
+    <button data-page="maps"><span class="navicon">◈</span> Maps <span class="navcount" id="navMapCount">0</span></button>
     <button data-page="social"><span class="navicon">◎</span> Social <span class="navcount" id="navSocCount">0</span></button>
     <button data-page="logs"><span class="navicon">▤</span> Logs <span class="navcount" id="navLogCount">0</span></button>
     <button data-page="config"><span class="navicon">⚙</span> Config</button>
@@ -260,7 +257,6 @@ tr:hover td{background:rgba(0,240,255,.03)}
     <button class="menuBtn" onclick="toggleSidebar()">☰</button>
     <div class="crumb">ZHD <b>/</b> <span id="crumbName">Console</span></div>
     <div class="topright">
-      <div class="searchbox"><input id="globalSearch" placeholder="Search bots / maps..." oninput="handleSearch(this.value)"></div>
       <div class="topchip" id="wsChip">WS · offline</div>
       <div class="topchip" id="engineChip">IDLE</div>
       <div class="clock" id="clock">--:--:--</div>
@@ -273,7 +269,7 @@ tr:hover td{background:rgba(0,240,255,.03)}
       <div>
         <div class="kicker">// SYSTEM OVERVIEW</div>
         <h1>Nexus Console</h1>
-        <div class="subtitle">Live telemetry from the ZHD bot fleet across all maps and socials</div>
+        <div class="subtitle">Live telemetry from the ZHD bot fleet</div>
       </div>
       <div class="actions">
         <button class="btn primary" id="startBtn" onclick="startEngine()">▶ Start Engine</button>
@@ -283,94 +279,44 @@ tr:hover td{background:rgba(0,240,255,.03)}
     </div>
 
     <div class="grid stats">
-      <div class="panel stat">
-        <div class="statlabel"><span>Total Matches</span><span class="staticon">◉</span></div>
-        <div class="statvalue" id="metricMatches">0</div>
-        <div class="statfoot">Across all bots</div>
-      </div>
-      <div class="panel stat">
-        <div class="statlabel"><span>Follows</span><span class="staticon">◈</span></div>
-        <div class="statvalue" id="metricFollows">0</div>
-        <div class="statfoot">Locked complete</div>
-      </div>
-      <div class="panel stat">
-        <div class="statlabel"><span>Subscribes</span><span class="staticon">★</span></div>
-        <div class="statvalue" id="metricSubs">0</div>
-        <div class="statfoot">Workshop maps</div>
-      </div>
-      <div class="panel stat">
-        <div class="statlabel"><span>Errors</span><span class="staticon">⚠</span></div>
-        <div class="statvalue" id="metricErrors">0</div>
-        <div class="statfoot">Total incidents</div>
-      </div>
+      <div class="panel stat"><div class="statlabel"><span>Total Matches</span><span class="staticon">◉</span></div><div class="statvalue" id="metricMatches">0</div><div class="statfoot">Across all bots</div></div>
+      <div class="panel stat"><div class="statlabel"><span>Follows</span><span class="staticon">◈</span></div><div class="statvalue" id="metricFollows">0</div><div class="statfoot">Locked complete</div></div>
+      <div class="panel stat"><div class="statlabel"><span>Subscribes</span><span class="staticon">★</span></div><div class="statvalue" id="metricSubs">0</div><div class="statfoot">Workshop maps</div></div>
+      <div class="panel stat"><div class="statlabel"><span>Errors</span><span class="staticon">⚠</span></div><div class="statvalue" id="metricErrors">0</div><div class="statfoot">Total incidents</div></div>
     </div>
 
     <div class="grid contentgrid">
       <div class="stack">
         <div class="panel">
-          <div class="panelhead">
-            <div class="paneltitle"><em>◆</em> Bot Fleet</div>
-            <div class="panelmeta">Showing <b id="botMetaCount">0</b> active</div>
-          </div>
-          <div class="tablewrap">
-            <table>
-              <thead><tr><th>#</th><th>UID</th><th>Status</th><th>Map</th><th>Entity</th><th>Matches</th><th>Lock</th></tr></thead>
-              <tbody id="botTableBody">
-                <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">No bots deployed. Load accounts and start the engine.</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="note" id="botTableNote">Waiting for engine start...</div>
+          <div class="panelhead"><div class="paneltitle"><em>◆</em> Bot Fleet</div><div class="panelmeta">Showing <b id="botMetaCount">0</b> active</div></div>
+          <div class="tablewrap"><table><thead><tr><th>#</th><th>UID</th><th>Status</th><th>Map</th><th>Entity</th><th>Matches</th><th>Lock</th></tr></thead><tbody id="botTableBody"><tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">No bots deployed</td></tr></tbody></table></div>
+          <div class="note" id="botTableNote">Waiting...</div>
         </div>
-
         <div class="panel">
-          <div class="panelhead">
-            <div class="paneltitle"><em>◈</em> Map Rotation</div>
-            <div class="panelmeta">Range <b id="rangeMeta">1 – 24</b></div>
-          </div>
-          <div class="mapgrid" id="mapGrid"></div>
+          <div class="panelhead"><div class="paneltitle"><em>◈</em> Map Rotation</div><div class="panelmeta">Range <b id="rangeMeta">1 – 24</b></div></div>
+          <div class="mapgrid" id="mapGrid" style="grid-template-columns:repeat(6,1fr)"></div>
         </div>
-
         <div class="panel">
-          <div class="panelhead">
-            <div class="paneltitle"><em>▤</em> Terminal</div>
-            <div class="panelmeta">stdout · live</div>
-          </div>
-          <div class="terminal">
-            <div class="terminalbar"><i></i><i></i><i></i><span>zhd@nexus</span></div>
-            <div class="termout" id="termOut"></div>
-          </div>
+          <div class="panelhead"><div class="paneltitle"><em>▤</em> Terminal</div><div class="panelmeta">stdout · live</div></div>
+          <div class="terminal"><div class="terminalbar"><i></i><i></i><i></i><span>zhd@nexus</span></div><div class="termout" id="termOut"></div></div>
         </div>
       </div>
 
       <div class="stack">
         <div class="panel">
-          <div class="panelhead">
-            <div class="paneltitle"><em>◉</em> Load</div>
-            <div class="panelmeta">Live</div>
-          </div>
+          <div class="panelhead"><div class="paneltitle"><em>◉</em> Load</div><div class="panelmeta">Live</div></div>
           <div class="meterlist">
             <div class="meter"><div class="metertop"><span>Bots Playing</span><b id="meterPlaying">0 / 0</b></div><div class="track"><span id="meterPlayingBar" style="--w:0%"></span></div></div>
             <div class="meter"><div class="metertop"><span>Follow Locked</span><b id="meterLock">0 / 0</b></div><div class="track violet"><span id="meterLockBar" style="--w:0%"></span></div></div>
             <div class="meter"><div class="metertop"><span>Success Rate</span><b id="meterSuccess">100%</b></div><div class="track amber"><span id="meterSuccessBar" style="--w:100%"></span></div></div>
           </div>
         </div>
-
         <div class="panel">
-          <div class="panelhead">
-            <div class="paneltitle"><em>▤</em> Recent Events</div>
-            <div class="panelmeta" id="eventCount">0</div>
-          </div>
-          <div class="eventlist" id="eventList">
-            <div class="empty"><span class="glyph">◌</span><strong>No events yet</strong>Start the engine to see live activity</div>
-          </div>
+          <div class="panelhead"><div class="paneltitle"><em>▤</em> Recent Events</div><div class="panelmeta" id="eventCount">0</div></div>
+          <div class="eventlist" id="eventList"><div class="empty"><span class="glyph">◌</span><strong>No events yet</strong>Start the engine</div></div>
         </div>
-
         <div class="panel">
-          <div class="panelhead">
-            <div class="paneltitle"><em>◎</em> Activity Feed</div>
-            <div class="panelmeta">Latest</div>
-          </div>
+          <div class="panelhead"><div class="paneltitle"><em>◎</em> Activity Feed</div><div class="panelmeta">Latest</div></div>
           <div class="feed" id="feedList"></div>
         </div>
       </div>
@@ -379,27 +325,17 @@ tr:hover td{background:rgba(0,240,255,.03)}
 
   <section class="page" data-page="fleet">
     <div class="pagehead">
-      <div>
-        <div class="kicker">// BOT DETAIL</div>
-        <h1>Fleet Deployment</h1>
-        <div class="subtitle">Deep telemetry for every bot in the active rotation</div>
-      </div>
-      <div class="actions">
-        <button class="btn" onclick="scrollToTop()">⟲ Refresh</button>
-      </div>
+      <div><div class="kicker">// BOT DETAIL</div><h1>Fleet Deployment</h1></div>
+      <div class="actions"><button class="btn" onclick="scrollToTop()">⟲ Refresh</button></div>
     </div>
-    <div class="panel">
-      <div class="fleetgrid" id="fleetGrid">
-        <div class="empty" style="grid-column:1/-1"><span class="glyph">▣</span><strong>No bots deployed</strong>Load accounts and start the engine</div>
-      </div>
-    </div>
+    <div class="panel"><div class="fleetgrid" id="fleetGrid"><div class="empty" style="grid-column:1/-1"><span class="glyph">▣</span><strong>No bots deployed</strong></div></div></div>
   </section>
 
   <section class="page" data-page="maps">
     <div class="pagehead">
       <div>
         <div class="kicker">// WORKSHOP ROTATION</div>
-        <h1>Map Manager</h1>
+        <h1>Map Manager <span class="version-badge">NEW</span></h1>
         <div class="subtitle">Add, edit, or delete map codes on the fly</div>
       </div>
       <div class="actions">
@@ -408,20 +344,14 @@ tr:hover td{background:rgba(0,240,255,.03)}
       </div>
     </div>
     <div class="panel">
-      <div class="panelhead"><div class="paneltitle"><em>◈</em> Maps</div><div class="panelmeta"><b id="mapsDoneCount">0</b> completed · <b id="mapsPlayingCount">0</b> in use</div></div>
-      <div class="mapgrid" id="bigMapGrid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))"></div>
-      <div class="note">Click a map to copy its code · Green = passed · Cyan = currently playing · Amber = queued</div>
+      <div class="panelhead"><div class="paneltitle"><em>◈</em> Total Maps</div><div class="panelmeta"><b id="totalMapsCount">0</b> loaded</div></div>
+      <div class="mapgrid" id="bigMapGrid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))"></div>
+      <div class="note">💡 <b>Copy</b> = Copy code · <b>Edit</b> = Change code · <b>Del</b> = Remove map</div>
     </div>
   </section>
 
   <section class="page" data-page="social">
-    <div class="pagehead">
-      <div>
-        <div class="kicker">// SOCIAL ACTIONS</div>
-        <h1>Social Control</h1>
-        <div class="subtitle">Manual follow / subscribe dispatch across all active bots</div>
-      </div>
-    </div>
+    <div class="pagehead"><div><div class="kicker">// SOCIAL ACTIONS</div><h1>Social Control</h1></div></div>
     <div class="grid split2">
       <div class="panel">
         <div class="panelhead"><div class="paneltitle"><em>◈</em> Follow</div><div class="panelmeta">Target UID</div></div>
@@ -429,7 +359,6 @@ tr:hover td{background:rgba(0,240,255,.03)}
           <input class="field wide" id="followTarget" placeholder="Enter target UID...">
           <button class="btn primary" style="width:100%" onclick="manualAction('Follow')">▶ Dispatch Follow</button>
         </div>
-        <div class="note">Sends a Follow request from every loaded account to the target UID. Auto-follow does this automatically once all 20 locks are complete.</div>
       </div>
       <div class="panel">
         <div class="panelhead"><div class="paneltitle"><em>★</em> Subscribe</div><div class="panelmeta">Map Code</div></div>
@@ -437,29 +366,16 @@ tr:hover td{background:rgba(0,240,255,.03)}
           <input class="field wide" id="subTarget" placeholder="FREEFIRE...Q540">
           <button class="btn primary" style="width:100%;background:var(--violet);border-color:var(--violet)" onclick="manualAction('Subscribe')">★ Dispatch Subscribe</button>
         </div>
-        <div class="note">Subscribes every account to a workshop map code. Auto-subscribe runs this per bot automatically for each map in rotation.</div>
       </div>
     </div>
-
     <div class="panel" style="margin-top:12px">
       <div class="panelhead"><div class="paneltitle"><em>◎</em> Social History</div><div class="panelmeta"><b id="socTotalCount">0</b> actions</div></div>
-      <div id="socHistory">
-        <div class="empty"><span class="glyph">◎</span><strong>No actions yet</strong>Dispatch a follow or subscribe to see results</div>
-      </div>
+      <div id="socHistory"><div class="empty"><span class="glyph">◎</span><strong>No actions yet</strong></div></div>
     </div>
   </section>
 
   <section class="page" data-page="logs">
-    <div class="pagehead">
-      <div>
-        <div class="kicker">// TELEMETRY</div>
-        <h1>Live Logs</h1>
-        <div class="subtitle">Real-time engine output with error separation</div>
-      </div>
-      <div class="actions">
-        <button class="btn ghost" onclick="clearLogsUI()">⟲ Clear view</button>
-      </div>
-    </div>
+    <div class="pagehead"><div><div class="kicker">// TELEMETRY</div><h1>Live Logs</h1></div><div class="actions"><button class="btn ghost" onclick="clearLogsUI()">⟲ Clear</button></div></div>
     <div class="panel">
       <div class="logtabs">
         <button class="logtab active" data-tab="all" onclick="switchLogTab('all')">All</button>
@@ -472,11 +388,7 @@ tr:hover td{background:rgba(0,240,255,.03)}
 
   <section class="page" data-page="config">
     <div class="pagehead">
-      <div>
-        <div class="kicker">// CONFIGURATION</div>
-        <h1>Engine Config</h1>
-        <div class="subtitle">Accounts, targets, and engine behaviour</div>
-      </div>
+      <div><div class="kicker">// CONFIGURATION</div><h1>Engine Config <span class="version-badge">NEW</span></h1></div>
     </div>
 
     <!-- JWT MANAGER -->
@@ -484,25 +396,24 @@ tr:hover td{background:rgba(0,240,255,.03)}
       <div class="panelhead"><div class="paneltitle"><em>🔑</em> JWT Auth Cache</div></div>
       <div class="toolbar">
         <button class="btn green" onclick="clearJWT()">🔄 Force Clear JWT Cache</button>
-        <span style="font-size:10px;color:var(--muted)">Bots will re-login automatically on next map cycle.</span>
+        <span style="font-size:10px;color:var(--muted)">Bots re-login on next cycle</span>
       </div>
     </div>
 
     <div class="grid split2">
       <div class="panel">
-        <div class="panelhead"><div class="paneltitle"><em>◉</em> Bot Injection Manager</div><div class="panelmeta"><b id="accCount">0</b> loaded</div></div>
+        <div class="panelhead"><div class="paneltitle"><em>◉</em> Bot Injection <span class="version-badge">NEW</span></div><div class="panelmeta"><b id="accCount">0</b> loaded</div></div>
         <div class="toolbar" style="flex-direction:column;align-items:stretch">
-          <textarea class="field area" id="accountsInput" placeholder='[{"uid":"123456789","password":"pass","account_id":"aid"}]'></textarea>
-          <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:10px">
-            <button class="btn primary" style="flex:1" onclick="injectBots()">➕ INJECT (Append New)</button>
-            <button class="btn" style="flex:1" onclick="replaceBots()">♻️ REPLACE ALL</button>
-            <button class="btn red" style="flex:1" onclick="clearAllBots()">🗑️ CLEAR & KILL ALL</button>
-            <button class="btn sm" style="flex:1" onclick="document.getElementById('fileInput').click()">📤 Upload</button>
-            <input type="file" id="fileInput" accept=".json" style="display:none" onchange="uploadAccounts(event)">
+          <textarea class="field area" id="accountsInput" placeholder='[{"uid":"123","password":"pass","account_id":"aid"}]'></textarea>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+            <button class="btn primary" style="flex:1" onclick="injectBots()">➕ INJECT</button>
+            <button class="btn" style="flex:1" onclick="replaceBots()">♻️ REPLACE</button>
+            <button class="btn red" style="flex:1" onclick="clearAllBots()">🗑️ CLEAR ALL</button>
           </div>
-          <div class="note" style="margin-top:10px">
-            <b>INJECT:</b> Adds new bots without stopping old ones.<br>
-            <b>REPLACE:</b> Kills bots not in this list, starts new ones.
+          <div class="note" style="margin-top:8px">
+            <b>INJECT:</b> Add new bots without stopping old ones<br>
+            <b>REPLACE:</b> Kill bots not in this list<br>
+            <b>CLEAR:</b> Kill all and empty
           </div>
         </div>
       </div>
@@ -524,20 +435,20 @@ tr:hover td{background:rgba(0,240,255,.03)}
             <input type="checkbox" class="switch" id="resumeSw" checked onclick="event.stopPropagation();toggleCfg('resumeToggle')">
           </div>
           <div class="grid split2" style="padding:0;gap:8px">
-            <input class="field" type="number" id="startMap" value="1" min="1" max="24" placeholder="Start map">
-            <input class="field" type="number" id="endMap" value="24" min="1" max="24" placeholder="End map">
+            <input class="field" type="number" id="startMap" value="1" placeholder="Start map">
+            <input class="field" type="number" id="endMap" value="24" placeholder="End map">
           </div>
           <div class="grid split2" style="padding:0;gap:8px" id="timerFields">
-            <input class="field" type="number" id="holdSecs" value="60" min="1" placeholder="Hold (s)">
-            <input class="field" type="number" id="syncSecs" value="10" min="0.1" step="0.1" placeholder="Sync (s)">
+            <input class="field" type="number" id="holdSecs" value="60" placeholder="Hold (s)">
+            <input class="field" type="number" id="syncSecs" value="10" placeholder="Sync (s)">
           </div>
-          <input class="field wide" type="number" id="rejoinDelay" value="2" min="0.1" step="0.1" placeholder="Reconnect delay (s)">
+          <input class="field wide" type="number" id="rejoinDelay" value="2" placeholder="Reconnect delay (s)">
         </div>
       </div>
     </div>
 
     <div class="panel" style="margin-top:12px">
-      <div class="panelhead"><div class="paneltitle"><em>▤</em> Deployment Summary</div></div>
+      <div class="panelhead"><div class="paneltitle"><em>▤</em> Summary</div></div>
       <div class="toolbar">
         <span class="badge info" id="sumAcc">0 accounts</span>
         <span class="badge" id="sumRange">Maps 1-24</span>
@@ -562,11 +473,11 @@ tr:hover td{background:rgba(0,240,255,.03)}
 <!-- MAP MODAL -->
 <div class="modal" id="mapModal">
   <div class="modal-content">
-    <h2 id="mapModalTitle" style="margin-top:0;color:var(--cyan);font-size:16px">Add Map</h2>
-    <input class="field" id="mapInput" style="width:100%;margin:15px 0;font-size:12px;padding:10px" placeholder="FREEFIRE..." />
-    <div style="display:flex;gap:10px;justify-content:flex-end">
-      <button class="btn" onclick="document.getElementById('mapModal').classList.remove('show')">Cancel</button>
-      <button class="btn primary" onclick="saveMap()">Save Map</button>
+    <h2 id="mapModalTitle" style="color:var(--cyan)">Add Map</h2>
+    <input class="field" id="mapInput" style="width:100%;padding:10px;font-size:12px" placeholder="FREEFIRE..." />
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:15px">
+      <button class="btn" onclick="closeMapModal()">Cancel</button>
+      <button class="btn primary" onclick="saveMap()">Save</button>
     </div>
   </div>
 </div>
@@ -576,94 +487,54 @@ tr:hover td{background:rgba(0,240,255,.03)}
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════════════════════════ */
 const S = {
-  running: false,
-  bots: {},
-  logs: [],
-  errors: [],
-  social: {},
-  totals: {},
-  config: {},
-  maps: [],
-  accounts: [],
-  page: 'console',
-  logTab: 'all',
-  searchQ: '',
-  _cfgLoaded: false,
-  editingMapIndex: -1,
+  running: false, bots: {}, logs: [], errors: [], social: {}, totals: {},
+  config: {}, maps: [], accounts: [], page: 'console', logTab: 'all',
+  _cfgLoaded: false, editingMapIndex: -1,
 };
 let ws = null, wsRetry = 0;
+const PAGES = {console:'Console', fleet:'Fleet', maps:'Maps', social:'Social', logs:'Logs', config:'Config'};
 
-const PAGES = {
-  console: 'Console', fleet: 'Fleet', maps: 'Maps', social: 'Social', logs: 'Logs', config: 'Config'
-};
-
-/* ═══════════════════════════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════════════════════════ */
 window.addEventListener('load', () => {
+  console.log('%c⚡ ZHD ENGINE v4.0 LOADED', 'color:#00f0ff;font-size:16px;font-weight:bold');
   loadAccounts();
   loadMaps();
   connectWS();
   startClock();
-  document.getElementById('seqModeSw').checked = true;
-  document.getElementById('resumeSw').checked = true;
+  setTimeout(() => toast('v4.0: Map Editor + Bot Injection active!', 'ok'), 1000);
 });
 
 function startClock() {
   setInterval(() => {
     const d = new Date();
-    document.getElementById('clock').textContent =
-      `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+    document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
   }, 1000);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   NAV
-═══════════════════════════════════════════════════════════════ */
 document.getElementById('nav').addEventListener('click', (e) => {
   const btn = e.target.closest('button[data-page]');
-  if (!btn) return;
-  navTo(btn.dataset.page);
+  if (btn) navTo(btn.dataset.page);
 });
 
 function navTo(page) {
   S.page = page;
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.dataset.page === page));
-  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.dataset.page === page));
-  document.querySelectorAll('.mobilebar button').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+  document.querySelectorAll('.nav button, .mobilebar button').forEach(b => b.classList.toggle('active', b.dataset.page === page));
   document.getElementById('crumbName').textContent = PAGES[page] || page;
   closeSidebar();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({top:0, behavior:'smooth'});
   renderAll();
 }
 
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('overlay').classList.toggle('show');
-}
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('overlay').classList.remove('show');
-}
-function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
 
-/* ═══════════════════════════════════════════════════════════════
-   WEBSOCKET
-═══════════════════════════════════════════════════════════════ */
 function connectWS() {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
   ws = new WebSocket(`${proto}://${location.host}/ws`);
   ws.onopen = () => { wsRetry = 0; setWS('live'); };
-  ws.onmessage = (e) => {
-    try {
-      const msg = JSON.parse(e.data);
-      if (msg.type === 'state') applyState(msg.data);
-    } catch (err) {}
-  };
+  ws.onmessage = (e) => { try { const msg = JSON.parse(e.data); if (msg.type === 'state') applyState(msg.data); } catch (err) {} };
   ws.onclose = () => { setWS('offline'); wsRetry++; setTimeout(connectWS, Math.min(1000 * wsRetry, 5000)); };
   ws.onerror = () => setWS('offline');
 }
@@ -678,9 +549,6 @@ function setWS(status) {
   document.getElementById('liveDot').style.boxShadow = `0 0 10px ${status === 'live' ? 'var(--green)' : 'var(--red)'}`;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   APPLY STATE
-═══════════════════════════════════════════════════════════════ */
 function applyState(d) {
   S.running = d.running || false;
   S.bots = d.bots || {};
@@ -689,6 +557,7 @@ function applyState(d) {
   S.social = d.social || {};
   S.totals = d.totals || {};
   S.config = d.config || {};
+  if (d.maps && d.maps.length) { S.maps = d.maps; }
 
   document.getElementById('engineChip').textContent = S.running ? 'LIVE' : 'IDLE';
   document.getElementById('engineChip').classList.toggle('good', S.running);
@@ -704,6 +573,8 @@ function applyState(d) {
   document.getElementById('navFleetCount').textContent = botCount;
   document.getElementById('navSocCount').textContent = Object.keys(S.social).length;
   document.getElementById('navLogCount').textContent = S.logs.length + S.errors.length;
+  document.getElementById('navMapCount').textContent = S.maps.length;
+  document.getElementById('totalMapsCount').textContent = S.maps.length;
 
   document.getElementById('metricMatches').textContent = S.totals.matches || 0;
   document.getElementById('metricFollows').textContent = S.totals.follows || 0;
@@ -729,13 +600,9 @@ function applyState(d) {
   document.getElementById('sumState').textContent = 'Engine: ' + (S.running ? 'live' : 'idle');
   document.getElementById('sumRange').textContent = `Maps ${S.config.start_map || 1}-${S.config.end_map || 24}`;
 
-  // AUTO-POPULATE CONFIG FIELDS FROM SERVER
   if (!S._cfgLoaded && S.config && Object.keys(S.config).length > 1) {
     S._cfgLoaded = true;
-    const setVal = (id, val) => {
-      const el = document.getElementById(id);
-      if (el && val !== undefined && val !== null && val !== '') el.value = val;
-    };
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined && val !== null && val !== '') el.value = val; };
     setVal('targetUid', S.config.target_uid);
     setVal('startMap', S.config.start_map);
     setVal('endMap', S.config.end_map);
@@ -743,7 +610,6 @@ function applyState(d) {
     setVal('syncSecs', S.config.sync_secs);
     setVal('rejoinDelay', S.config.rejoin_delay);
   }
-
   renderAll();
 }
 
@@ -756,17 +622,13 @@ function renderAll() {
   if (S.page === 'config') renderConfig();
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   RENDER: CONSOLE
-═══════════════════════════════════════════════════════════════ */
 function renderConsole() {
   const entries = Object.entries(S.bots);
   const body = document.getElementById('botTableBody');
   document.getElementById('botMetaCount').textContent = entries.length;
-
   if (!entries.length) {
-    body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">No bots deployed. Load accounts and start the engine.</td></tr>';
-    document.getElementById('botTableNote').textContent = 'Waiting for engine start...';
+    body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">No bots deployed</td></tr>';
+    document.getElementById('botTableNote').textContent = 'Waiting...';
   } else {
     body.innerHTML = entries.map(([k, b]) => {
       const st = (b.status || '').toLowerCase();
@@ -777,253 +639,152 @@ function renderConsole() {
       const lockDone = b.follow_done;
       const lockCls = lockDone ? '' : (b.matches_played >= 20 ? 'warn' : 'bad');
       const lockTxt = lockDone ? '✓ SUCCESS' : `${Math.min(b.matches_played || 0, 20)}/20`;
-      return `<tr>
-        <td style="color:var(--violet);font-weight:900">${k}</td>
-        <td class="uid">${esc((b.uid || '-').slice(0, 10))}</td>
-        <td><span class="badge ${badge}">${esc((b.status || '-').slice(0, 12))}</span></td>
-        <td style="font-family:ui-monospace,monospace">${esc((b.map || '-').slice(0, 12))}</td>
-        <td class="uid">${esc(b.entity || '-')}</td>
-        <td style="color:var(--cyan);font-weight:700">${b.matches_played || 0}</td>
-        <td><span class="badge ${lockCls}">${lockTxt}</span></td>
-      </tr>`;
+      return `<tr><td style="color:var(--violet);font-weight:900">${k}</td><td class="uid">${esc((b.uid || '-').slice(0, 10))}</td><td><span class="badge ${badge}">${esc((b.status || '-').slice(0, 12))}</span></td><td style="font-family:ui-monospace">${esc((b.map || '-').slice(0, 12))}</td><td class="uid">${esc(b.entity || '-')}</td><td style="color:var(--cyan);font-weight:700">${b.matches_played || 0}</td><td><span class="badge ${lockCls}">${lockTxt}</span></td></tr>`;
     }).join('');
     document.getElementById('botTableNote').textContent = `${entries.length} bots · engine ${S.running ? 'live' : 'idle'}`;
   }
-
-  const playing = entries.filter(([, b]) => (b.status || '').toLowerCase().includes('play')).length;
-  const locked = entries.filter(([, b]) => b.follow_done).length;
+  const playing = entries.filter(([,b]) => (b.status||'').toLowerCase().includes('play')).length;
+  const locked = entries.filter(([,b]) => b.follow_done).length;
   const total = entries.length || 1;
   document.getElementById('meterPlaying').textContent = `${playing} / ${entries.length}`;
   document.getElementById('meterLock').textContent = `${locked} / ${entries.length}`;
-  const successPct = Math.max(0, 100 - Math.min(100, ((S.totals.errors || 0) / Math.max(1, S.totals.matches || 1) * 100)));
+  const successPct = Math.max(0, 100 - Math.min(100, ((S.totals.errors||0)/Math.max(1,S.totals.matches||1)*100)));
   document.getElementById('meterSuccess').textContent = `${successPct.toFixed(0)}%`;
-  document.getElementById('meterPlayingBar').style.setProperty('--w', `${(playing / total) * 100}%`);
-  document.getElementById('meterLockBar').style.setProperty('--w', `${(locked / total) * 100}%`);
+  document.getElementById('meterPlayingBar').style.setProperty('--w', `${(playing/total)*100}%`);
+  document.getElementById('meterLockBar').style.setProperty('--w', `${(locked/total)*100}%`);
   document.getElementById('meterSuccessBar').style.setProperty('--w', `${successPct}%`);
-
-  renderEvents();
-  renderFeed();
-  renderTerminal();
+  renderEvents(); renderFeed(); renderTerminal();
 }
 
 function renderEvents() {
   const list = document.getElementById('eventList');
-  const all = [...S.logs.slice(-6)].map(l => ({ ...parseLogLine(l), err: false }));
-  const errs = [...S.errors.slice(-3)].map(l => ({ ...parseLogLine(l), err: true }));
+  const all = [...S.logs.slice(-6)].map(l => ({...parseLogLine(l), err:false}));
+  const errs = [...S.errors.slice(-3)].map(l => ({...parseLogLine(l), err:true}));
   const combined = [...errs, ...all].slice(-6).reverse();
   document.getElementById('eventCount').textContent = combined.length;
-  if (!combined.length) {
-    list.innerHTML = '<div class="empty"><span class="glyph">◌</span><strong>No events yet</strong>Start the engine to see live activity</div>';
-    return;
-  }
-  list.innerHTML = combined.map(ev => `
-    <div class="event">
-      <span class="eventtime">${ev.time || '--:--'}</span>
-      <span class="eventmsg" style="${ev.err ? 'color:#ff8b96' : ''}">${esc(ev.msg)}</span>
-      <span class="badge ${ev.err ? 'bad' : 'info'}">${ev.err ? 'ERR' : 'LOG'}</span>
-    </div>
-  `).join('');
+  if (!combined.length) { list.innerHTML = '<div class="empty"><span class="glyph">◌</span><strong>No events yet</strong></div>'; return; }
+  list.innerHTML = combined.map(ev => `<div class="event"><span class="eventtime">${ev.time||'--:--'}</span><span class="eventmsg" style="${ev.err?'color:#ff8b96':''}">${esc(ev.msg)}</span><span class="badge ${ev.err?'bad':'info'}">${ev.err?'ERR':'LOG'}</span></div>`).join('');
 }
 
 function renderFeed() {
   const feed = document.getElementById('feedList');
   const events = S.logs.slice(-4).reverse();
-  if (!events.length) {
-    feed.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:9px">No activity yet</div>';
-    return;
-  }
-  feed.innerHTML = events.map(l => {
-    const p = parseLogLine(l);
-    return `<div class="feedrow">
-      <div class="feedicon">◉</div>
-      <div><strong>${esc(p.time || 'event')}</strong><p>${esc(p.msg.slice(0, 90))}</p></div>
-    </div>`;
-  }).join('');
+  if (!events.length) { feed.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:9px">No activity</div>'; return; }
+  feed.innerHTML = events.map(l => { const p = parseLogLine(l); return `<div class="feedrow"><div class="feedicon">◉</div><div><strong>${esc(p.time||'event')}</strong><p>${esc(p.msg.slice(0,90))}</p></div></div>`; }).join('');
 }
 
 function renderTerminal() {
   const out = document.getElementById('termOut');
   const logs = [...S.logs.slice(-15)];
-  if (!logs.length) {
-    out.innerHTML = '<div class="termline"><b>$</b><span style="color:#5b8b7f">ZHD engine ready. Configure &amp; start.</span></div>';
-    return;
-  }
-  out.innerHTML = logs.map(l => {
-    const p = parseLogLine(l);
-    const isErr = S.errors.includes(l);
-    return `<div class="termline ${isErr ? 'err' : ''}"><b>[${p.time || '--:--'}]</b><span>${esc(p.msg)}</span></div>`;
-  }).join('');
+  if (!logs.length) { out.innerHTML = '<div class="termline"><b>$</b><span style="color:#5b8b7f">ZHD engine ready.</span></div>'; return; }
+  out.innerHTML = logs.map(l => { const p = parseLogLine(l); return `<div class="termline"><b>[${p.time||'--:--'}]</b><span>${esc(p.msg)}</span></div>`; }).join('');
   out.scrollTop = out.scrollHeight;
 }
 
 function renderMapGrid(targetId) {
   const grid = document.getElementById(targetId);
   if (!grid || !S.maps.length) return;
-  const activeMapCodes = new Set();
-  Object.values(S.bots).forEach(b => { if (b.map && (b.status || '').toLowerCase().includes('play')) activeMapCodes.add(b.map); });
-  const startIdx = (S.config.start_map || 1) - 1;
-  const endIdx = (S.config.end_map || 24) - 1;
-  const statsByMap = {};
-  Object.values(S.bots).forEach(b => {
-    if (b.map && b.matches_played > 0) statsByMap[b.map] = (statsByMap[b.map] || 0) + 1;
-  });
-
-  grid.innerHTML = S.maps.map((code, i) => {
-    const label = `#${String(i + 1).padStart(2, '0')}`;
-    const short = code.slice(8, 12) + '…' + code.slice(-4);
-    const isActive = activeMapCodes.has(code);
-    const inRange = i >= startIdx && i <= endIdx;
-    const done = statsByMap[code] > 0;
-    let cls = '';
-    if (isActive) cls = 'playing';
-    else if (done) cls = 'done';
-    return `<div class="mapcell ${cls}" title="${esc(code)}" onclick="copyCode('${esc(code)}')" style="${!inRange ? 'opacity:.4' : ''}">${label}<small>${short}</small></div>`;
+  const activeSet = new Set(); Object.values(S.bots).forEach(b => { if (b.map && (b.status||'').toLowerCase().includes('play')) activeSet.add(b.map); });
+  grid.innerHTML = S.maps.slice(0, 24).map((code, i) => {
+    const label = `#${String(i+1).padStart(2,'0')}`;
+    const isActive = activeSet.has(code);
+    return `<div class="mapcell ${isActive?'playing':''}" title="${esc(code)}" style="text-align:center;padding:6px 3px;cursor:pointer" onclick="copyCode('${esc(code)}')">${label}</div>`;
   }).join('');
 }
 
-function copyCode(code) {
-  navigator.clipboard.writeText(code).then(() => toast('Map code copied', 'ok'));
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   RENDER: FLEET
-═══════════════════════════════════════════════════════════════ */
-function renderFleet() {
-  const grid = document.getElementById('fleetGrid');
-  const entries = Object.entries(S.bots);
-  if (!entries.length) {
-    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><span class="glyph">▣</span><strong>No bots deployed</strong>Load accounts and start the engine</div>';
-    return;
-  }
-  grid.innerHTML = entries.map(([k, b]) => {
-    const st = (b.status || '').toLowerCase();
-    let cls = '';
-    if (st.includes('play')) cls = 'playing';
-    else if (st.includes('wait') || st.includes('logg') || st.includes('join') || st.includes('cool')) cls = 'wait';
-    else if (st.includes('err') || st.includes('fail')) cls = 'err';
-    const initial = (b.uid || 'Z').substring(0, 1).toUpperCase();
-    const lockDone = b.follow_done;
-    const lockPct = Math.min(100, ((b.matches_played || 0) / 20) * 100);
-    const uidShort = (b.uid || '-').length > 12 ? b.uid.slice(0, 6) + '…' + b.uid.slice(-4) : (b.uid || '-');
-    return `<div class="botcard ${cls}">
-      <div class="bothead">
-        <div style="display:flex;align-items:center;gap:9px;min-width:0">
-          <div class="botav">${esc(initial)}</div>
-          <div style="min-width:0"><div class="botname">Bot #${k}</div><div class="botuid">${esc(uidShort)}</div></div>
-        </div>
-        <span class="badge ${cls === 'playing' ? '' : cls === 'wait' ? 'warn' : cls === 'err' ? 'bad' : 'idle'}">${esc((b.status || 'idle').slice(0, 10))}</span>
-      </div>
-      <div class="botstats">
-        <div class="botstat"><small>Map</small><b>${esc((b.map || '-').slice(0, 10))}</b></div>
-        <div class="botstat"><small>Entity</small><b>${esc(b.entity || '-')}</b></div>
-        <div class="botstat"><small>In match</small><b>${(b.time_in_match || 0).toFixed(0)}s</b></div>
-        <div class="botstat"><small>Total</small><b>${b.matches_played || 0}</b></div>
-      </div>
-      <div class="lockbar">
-        <div class="lockhead"><span>${lockDone ? '✓ Lock complete' : 'Follow progress'}</span><b>${lockDone ? '20/20' : Math.min(b.matches_played || 0, 20) + '/20'}</b></div>
-        <div class="locktrack"><div class="lockfill ${lockDone ? 'done' : ''}" style="width:${lockDone ? 100 : lockPct}%"></div></div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   RENDER: MAPS PAGE
-═══════════════════════════════════════════════════════════════ */
 function renderMapsPage() {
   const grid = document.getElementById('bigMapGrid');
   if (!S.maps.length) { grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Loading maps...</div>'; return; }
   const activeSet = new Set();
-  Object.values(S.bots).forEach(b => { if (b.map && (b.status || '').toLowerCase().includes('play')) activeSet.add(b.map); });
-  const doneSet = new Set(Object.values(S.bots).filter(b => b.matches_played > 0).map(b => b.map));
-  document.getElementById('mapsDoneCount').textContent = doneSet.size;
-  document.getElementById('mapsPlayingCount').textContent = activeSet.size;
-  const startIdx = (S.config.start_map || 1) - 1;
-  const endIdx = (S.config.end_map || 24) - 1;
+  Object.values(S.bots).forEach(b => { if (b.map && (b.status||'').toLowerCase().includes('play')) activeSet.add(b.map); });
   
   grid.innerHTML = S.maps.map((code, i) => {
     const isActive = activeSet.has(code);
-    const isDone = doneSet.has(code);
-    const inRange = i >= startIdx && i <= endIdx;
-    let cls = '';
-    if (isActive) cls = 'playing';
-    else if (isDone) cls = 'done';
-    return `<div class="mapcell ${cls}" style="text-align:left;padding:10px" title="${esc(code)}" style="${!inRange ? 'opacity:.5' : ''}">
-      <b>#${String(i + 1).padStart(2, '0')}</b> ${esc(code.slice(0, 18))}...
+    return `<div class="mapcell ${isActive?'playing':''}" style="text-align:left;padding:12px">
+      <div style="font-weight:700;font-size:10px;color:var(--cyan);margin-bottom:4px">MAP #${String(i+1).padStart(2,'0')}</div>
+      <div style="font-size:9px;color:var(--text);word-break:break-all;line-height:1.4">${esc(code.slice(0, 40))}${code.length > 40 ? '...' : ''}</div>
       <div class="mapactions">
-        <button style="color:var(--cyan)" onclick="copyCode('${esc(code)}')">📋 Copy</button>
-        <button style="color:var(--amber)" onclick="editMap(${i})">✏️ Edit</button>
-        <button style="color:var(--red)" onclick="deleteMap(${i})">🗑️ Del</button>
+        <button onclick="copyCode('${esc(code)}')">📋 Copy</button>
+        <button class="edit" onclick="editMap(${i})">✏️ Edit</button>
+        <button class="del" onclick="deleteMap(${i})">🗑️ Del</button>
       </div>
     </div>`;
   }).join('');
 }
 
-function copyMaps() {
-  navigator.clipboard.writeText(S.maps.join('\n')).then(() => toast('All map codes copied', 'ok'));
+function copyCode(code) { navigator.clipboard.writeText(code); toast('Copied!', 'ok'); }
+function copyMaps() { navigator.clipboard.writeText(S.maps.join('\n')); toast(`All ${S.maps.length} maps copied`, 'ok'); }
+function openMapModal() {
+  S.editingMapIndex = -1;
+  document.getElementById('mapModalTitle').textContent = '➕ Add New Map';
+  document.getElementById('mapInput').value = '';
+  document.getElementById('mapModal').classList.add('show');
 }
-
-/* ═══════════════════════════════════════════════════════════════
-   MAP ACTIONS
-═══════════════════════════════════════════════════════════════ */
-function openMapModal() { 
-  S.editingMapIndex = -1; 
-  document.getElementById('mapModalTitle').textContent='Add Map'; 
-  document.getElementById('mapInput').value=''; 
-  document.getElementById('mapModal').classList.add('show'); 
-}
-function editMap(i) { 
-  S.editingMapIndex = i; 
-  document.getElementById('mapModalTitle').textContent='Edit Map'; 
-  document.getElementById('mapInput').value=S.maps[i]; 
-  document.getElementById('mapModal').classList.add('show'); 
+function closeMapModal() { document.getElementById('mapModal').classList.remove('show'); }
+function editMap(i) {
+  S.editingMapIndex = i;
+  document.getElementById('mapModalTitle').textContent = `✏️ Edit Map #${i+1}`;
+  document.getElementById('mapInput').value = S.maps[i];
+  document.getElementById('mapModal').classList.add('show');
 }
 async function deleteMap(i) {
-  if(!confirm('Delete this map?')) return;
-  S.maps.splice(i, 1); await saveMapsToServer();
+  if (!confirm(`Delete Map #${i+1}?`)) return;
+  S.maps.splice(i, 1);
+  await saveMapsToServer();
 }
 async function saveMap() {
   const val = document.getElementById('mapInput').value.trim();
-  if(!val) return;
-  if(S.editingMapIndex === -1) S.maps.push(val); else S.maps[S.editingMapIndex] = val;
-  await saveMapsToServer(); document.getElementById('mapModal').classList.remove('show');
+  if (!val) { toast('Map code empty', 'err'); return; }
+  if (S.editingMapIndex === -1) S.maps.push(val);
+  else S.maps[S.editingMapIndex] = val;
+  await saveMapsToServer();
+  closeMapModal();
 }
 async function saveMapsToServer() {
   const fd = new FormData(); fd.append('maps_json', JSON.stringify(S.maps));
-  await fetch('/api/maps', {method:'POST', body:fd}); loadMaps(); toast('Maps Saved Live!');
+  const r = await fetch('/api/maps', {method:'POST', body:fd});
+  const j = await r.json();
+  if (j.ok) { toast(`✅ ${j.count} maps saved live!`, 'ok'); loadMaps(); }
+  else toast(j.msg || 'Failed', 'err');
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   RENDER: SOCIAL
-═══════════════════════════════════════════════════════════════ */
+function renderFleet() {
+  const grid = document.getElementById('fleetGrid');
+  const entries = Object.entries(S.bots);
+  if (!entries.length) { grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><span class="glyph">▣</span><strong>No bots deployed</strong></div>'; return; }
+  grid.innerHTML = entries.map(([k, b]) => {
+    const st = (b.status||'').toLowerCase();
+    let cls = '';
+    if (st.includes('play')) cls = 'playing';
+    else if (st.includes('wait')||st.includes('logg')||st.includes('join')||st.includes('cool')) cls = 'wait';
+    else if (st.includes('err')||st.includes('fail')) cls = 'err';
+    const initial = (b.uid||'Z').substring(0,1).toUpperCase();
+    const lockDone = b.follow_done;
+    const lockPct = Math.min(100, ((b.matches_played||0)/20)*100);
+    const uidShort = (b.uid||'-').length > 12 ? b.uid.slice(0,6)+'…'+b.uid.slice(-4) : (b.uid||'-');
+    return `<div class="botcard ${cls}">
+      <div class="bothead"><div style="display:flex;align-items:center;gap:9px;min-width:0"><div class="botav">${esc(initial)}</div><div style="min-width:0"><div class="botname">Bot #${k}</div><div class="botuid">${esc(uidShort)}</div></div></div><span class="badge ${cls==='playing'?'':cls==='wait'?'warn':cls==='err'?'bad':'idle'}">${esc((b.status||'idle').slice(0,10))}</span></div>
+      <div class="botstats"><div class="botstat"><small>Map</small><b>${esc((b.map||'-').slice(0,10))}</b></div><div class="botstat"><small>Entity</small><b>${esc(b.entity||'-')}</b></div><div class="botstat"><small>In match</small><b>${(b.time_in_match||0).toFixed(0)}s</b></div><div class="botstat"><small>Total</small><b>${b.matches_played||0}</b></div></div>
+      <div class="lockbar"><div class="lockhead"><span>${lockDone?'✓ Complete':'Progress'}</span><b>${lockDone?'20/20':Math.min(b.matches_played||0,20)+'/20'}</b></div><div class="locktrack"><div class="lockfill ${lockDone?'done':''}" style="width:${lockDone?100:lockPct}%"></div></div></div>
+    </div>`;
+  }).join('');
+}
+
 function renderSocial() {
   const hist = document.getElementById('socHistory');
   const entries = Object.entries(S.social);
   document.getElementById('socTotalCount').textContent = entries.length;
-  if (!entries.length) {
-    hist.innerHTML = '<div class="empty"><span class="glyph">◎</span><strong>No actions yet</strong>Dispatch a follow or subscribe to see results</div>';
-    return;
-  }
-  hist.innerHTML = entries.slice(-20).reverse().map(([k, s]) => {
-    const st = (s.status || '').toLowerCase();
+  if (!entries.length) { hist.innerHTML = '<div class="empty"><span class="glyph">◎</span><strong>No actions yet</strong></div>'; return; }
+  hist.innerHTML = entries.slice(-20).reverse().map(([k,s]) => {
+    const st = (s.status||'').toLowerCase();
     let cls = 'wait';
     if (st.includes('success')) cls = 'ok';
-    else if (st.includes('lock') || st.includes('need') || st.includes('insufficient')) cls = 'lock';
-    else if (st.includes('fail') || st.includes('err') || st.includes('http')) cls = 'err';
-    return `<div class="socrow">
-      <div class="socidx">#${k}</div>
-      <div class="socmain">
-        <div class="socname">${esc(s.action || '-')}</div>
-        <div class="socmeta">${esc(s.uid || '-')} → ${esc(s.target || s.map || '-')}</div>
-      </div>
-      <div class="socstate ${cls}">${esc(s.status || '-')}</div>
-    </div>`;
+    else if (st.includes('lock')||st.includes('need')) cls = 'lock';
+    else if (st.includes('fail')||st.includes('err')) cls = 'err';
+    return `<div class="socrow"><div class="socidx">#${k}</div><div class="socmain"><div class="socname">${esc(s.action||'-')}</div><div class="socmeta">${esc(s.uid||'-')} → ${esc(s.target||s.map||'-')}</div></div><div class="socstate ${cls}">${esc(s.status||'-')}</div></div>`;
   }).join('');
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   RENDER: BIG LOGS
-═══════════════════════════════════════════════════════════════ */
 function switchLogTab(tab) {
   S.logTab = tab;
   document.querySelectorAll('.logtab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
@@ -1034,196 +795,89 @@ function renderBigLogs() {
   const stream = document.getElementById('bigLogStream');
   if (!stream) return;
   let lines = [];
-  if (S.logTab === 'errors') lines = S.errors.slice(-200).map(l => ({ t: 'err', l }));
-  else if (S.logTab === 'logs') lines = S.logs.slice(-200).map(l => ({ t: 'log', l }));
-  else {
-    lines = [
-      ...S.errors.slice(-100).map(l => ({ t: 'err', l })),
-      ...S.logs.slice(-100).map(l => ({ t: 'log', l }))
-    ];
-  }
-
-  if (!lines.length) {
-    stream.innerHTML = '<div class="empty"><span class="glyph">▤</span><strong>No telemetry</strong>Start the engine to see live logs</div>';
-    return;
-  }
-
-  stream.innerHTML = lines.map(entry => {
-    const p = parseLogLine(entry.l);
-    return `<div class="logrow ${entry.t === 'err' ? 'err' : ''}"><span class="logtime">${p.time || '--:--'}</span><span class="logmsg">${esc(p.msg)}</span></div>`;
-  }).join('');
+  if (S.logTab === 'errors') lines = S.errors.slice(-200).map(l => ({t:'err', l}));
+  else if (S.logTab === 'logs') lines = S.logs.slice(-200).map(l => ({t:'log', l}));
+  else lines = [...S.errors.slice(-100).map(l => ({t:'err', l})), ...S.logs.slice(-100).map(l => ({t:'log', l}))];
+  if (!lines.length) { stream.innerHTML = '<div class="empty"><span class="glyph">▤</span><strong>No telemetry</strong></div>'; return; }
+  stream.innerHTML = lines.map(entry => { const p = parseLogLine(entry.l); return `<div class="logrow ${entry.t==='err'?'err':''}"><span class="logtime">${p.time||'--:--'}</span><span class="logmsg">${esc(p.msg)}</span></div>`; }).join('');
 }
 
-function clearLogsUI() { document.getElementById('bigLogStream').innerHTML = ''; toast('Log view cleared', 'ok'); }
+function clearLogsUI() { document.getElementById('bigLogStream').innerHTML = ''; toast('Cleared', 'ok'); }
+function renderConfig() { document.getElementById('accCount').textContent = S.accounts.length; document.getElementById('sumAcc').textContent = `${S.accounts.length} accounts`; }
 
-/* ═══════════════════════════════════════════════════════════════
-   RENDER: CONFIG
-═══════════════════════════════════════════════════════════════ */
-function renderConfig() {
-  document.getElementById('accCount').textContent = S.accounts.length;
-  document.getElementById('sumAcc').textContent = `${S.accounts.length} accounts`;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   ACTIONS
-═══════════════════════════════════════════════════════════════ */
 async function startEngine() {
   const cfg = {
-    target_uid: (document.getElementById('targetUid').value || '').trim(),
+    target_uid: (document.getElementById('targetUid').value||'').trim(),
     auto_follow: document.getElementById('autoFollowToggle').classList.contains('on'),
     seq_mode: document.getElementById('seqModeToggle').classList.contains('on'),
-    start_map: parseInt(document.getElementById('startMap').value) || 1,
-    end_map: parseInt(document.getElementById('endMap').value) || 24,
+    start_map: parseInt(document.getElementById('startMap').value)||1,
+    end_map: parseInt(document.getElementById('endMap').value)||24,
     resume_mode: document.getElementById('resumeToggle').classList.contains('on'),
-    hold_secs: parseFloat(document.getElementById('holdSecs').value) || 60,
-    sync_secs: parseFloat(document.getElementById('syncSecs').value) || 10,
-    rejoin_delay: parseFloat(document.getElementById('rejoinDelay').value) || 2,
+    hold_secs: parseFloat(document.getElementById('holdSecs').value)||60,
+    sync_secs: parseFloat(document.getElementById('syncSecs').value)||10,
+    rejoin_delay: parseFloat(document.getElementById('rejoinDelay').value)||2,
   };
-  const fd = new FormData();
-  fd.append('config_json', JSON.stringify(cfg));
-  try {
-    const r = await fetch('/api/start', { method: 'POST', body: fd });
-    const j = await r.json();
-    toast(j.ok ? '🚀 Engine started' : (j.msg || 'Failed to start'), j.ok ? 'ok' : 'err');
-  } catch (e) { toast(e.message, 'err'); }
+  const fd = new FormData(); fd.append('config_json', JSON.stringify(cfg));
+  try { const r = await fetch('/api/start', {method:'POST', body:fd}); const j = await r.json(); toast(j.ok?'🚀 Engine started':(j.msg||'Failed'), j.ok?'ok':'err'); } catch(e){ toast(e.message,'err'); }
 }
 
 async function stopEngine() {
-  try {
-    const r = await fetch('/api/stop', { method: 'POST' });
-    const j = await r.json();
-    toast(j.ok ? '⛔ Engine stopped' : (j.msg || 'Failed'), j.ok ? 'ok' : 'err');
-  } catch (e) { toast(e.message, 'err'); }
+  try { const r = await fetch('/api/stop', {method:'POST'}); const j = await r.json(); toast(j.ok?'⛔ Stopped':(j.msg||'Failed'), j.ok?'ok':'err'); } catch(e){ toast(e.message,'err'); }
 }
 
 async function manualAction(type) {
-  const input = document.getElementById(type === 'Follow' ? 'followTarget' : 'subTarget');
-  const target = (input.value || '').trim();
-  if (!target) { toast('Enter a target first', 'info'); return; }
-  const fd = new FormData();
-  fd.append('action', type);
-  fd.append('target', target);
-  try {
-    const r = await fetch('/api/social', { method: 'POST', body: fd });
-    const j = await r.json();
-    toast(j.ok ? `✅ ${type} dispatched` : (j.msg || 'Failed'), j.ok ? 'ok' : 'err');
-    if (j.ok) input.value = '';
-  } catch (e) { toast(e.message, 'err'); }
+  const input = document.getElementById(type==='Follow'?'followTarget':'subTarget');
+  const target = (input.value||'').trim();
+  if (!target) { toast('Enter target', 'info'); return; }
+  const fd = new FormData(); fd.append('action', type); fd.append('target', target);
+  try { const r = await fetch('/api/social', {method:'POST', body:fd}); const j = await r.json(); toast(j.ok?`✅ ${type} dispatched`:(j.msg||'Failed'), j.ok?'ok':'err'); if (j.ok) input.value=''; } catch(e){ toast(e.message,'err'); }
 }
 
-// UPDATED: INJECT BOTS
 async function injectBots() {
   const raw = document.getElementById('accountsInput').value;
-  if (!raw) { toast('Paste accounts JSON first', 'info'); return; }
+  if (!raw.trim()) { toast('Paste JSON', 'info'); return; }
   const fd = new FormData(); fd.append('raw_json', raw);
-  try {
-    const r = await fetch('/api/accounts/inject', { method: 'POST', body: fd });
-    const j = await r.json();
-    if (j.ok) { toast(`🔥 Injected ${j.added} new bots! Total: ${j.total}`, 'ok'); loadAccounts(); }
-    else toast(j.msg || 'Failed', 'err');
-  } catch (e) { toast(e.message, 'err'); }
+  try { const r = await fetch('/api/accounts/inject', {method:'POST', body:fd}); const j = await r.json(); if (j.ok) { toast(`🔥 Injected ${j.added}! Total: ${j.total}`, 'ok'); loadAccounts(); } else toast(j.msg||'Failed', 'err'); } catch(e){ toast(e.message,'err'); }
 }
 
-// UPDATED: REPLACE BOTS
 async function replaceBots() {
   const raw = document.getElementById('accountsInput').value;
-  if (!raw) { toast('Paste accounts JSON first', 'info'); return; }
-  if(!confirm('This will kill bots not in the new list. Continue?')) return;
+  if (!raw.trim()) { toast('Paste JSON', 'info'); return; }
+  if (!confirm('Kill bots not in new list?')) return;
   const fd = new FormData(); fd.append('raw_json', raw);
-  try {
-    const r = await fetch('/api/accounts/replace', { method: 'POST', body: fd });
-    const j = await r.json();
-    if (j.ok) { toast(`♻️ Bots Replaced! Total: ${j.total}`, 'ok'); loadAccounts(); }
-    else toast(j.msg || 'Failed', 'err');
-  } catch (e) { toast(e.message, 'err'); }
+  try { const r = await fetch('/api/accounts/replace', {method:'POST', body:fd}); const j = await r.json(); if (j.ok) { toast(`♻️ Replaced! Total: ${j.total}`, 'ok'); loadAccounts(); } else toast(j.msg||'Failed', 'err'); } catch(e){ toast(e.message,'err'); }
 }
 
-// UPDATED: CLEAR ALL BOTS
 async function clearAllBots() {
-  if(!confirm('Kill all bots and clear JSON?')) return;
-  try {
-    const r = await fetch('/api/accounts/clear', { method: 'POST' });
-    const j = await r.json();
-    if (j.ok) { toast('🗑️ All bots killed & cleared', 'ok'); loadAccounts(); }
-    else toast(j.msg || 'Failed', 'err');
-  } catch (e) { toast(e.message, 'err'); }
+  if (!confirm('Kill ALL bots and clear JSON?')) return;
+  try { const r = await fetch('/api/accounts/clear', {method:'POST'}); const j = await r.json(); if (j.ok) { toast('🗑️ All cleared', 'ok'); loadAccounts(); } else toast(j.msg||'Failed', 'err'); } catch(e){ toast(e.message,'err'); }
 }
 
-// UPDATED: CLEAR JWT
 async function clearJWT() {
-  try {
-    const r = await fetch('/api/jwt/clear', { method: 'POST' });
-    const j = await r.json();
-    toast(j.ok ? '🔑 JWT Cleared! Bots will re-login.' : (j.msg || 'Failed'), j.ok ? 'ok' : 'err');
-  } catch (e) { toast(e.message, 'err'); }
-}
-
-async function uploadAccounts(ev) {
-  const file = ev.target.files[0];
-  if (!file) return;
-  const fd = new FormData();
-  fd.append('file', file);
-  try {
-    const r = await fetch('/api/upload_accounts', { method: 'POST', body: fd });
-    const j = await r.json();
-    if (j.ok) { toast(`${j.count} accounts uploaded`, 'ok'); loadAccounts(); }
-    else toast(j.msg || 'Failed', 'err');
-  } catch (e) { toast(e.message, 'err'); }
-  ev.target.value = '';
+  try { const r = await fetch('/api/jwt/clear', {method:'POST'}); const j = await r.json(); toast(j.ok?'🔑 JWT Cleared!':(j.msg||'Failed'), j.ok?'ok':'err'); } catch(e){ toast(e.message,'err'); }
 }
 
 async function loadAccounts() {
-  try {
-    const r = await fetch('/api/accounts');
-    const j = await r.json();
-    S.accounts = j.accounts || [];
-    if (S.accounts.length) {
-      document.getElementById('accountsInput').value = JSON.stringify(S.accounts, null, 2);
-    } else {
-      document.getElementById('accountsInput').value = '';
-    }
-    document.getElementById('accCount').textContent = S.accounts.length;
-    document.getElementById('sumAcc').textContent = `${S.accounts.length} accounts`;
-  } catch (e) {}
+  try { const r = await fetch('/api/accounts'); const j = await r.json(); S.accounts = j.accounts || []; if (S.accounts.length) document.getElementById('accountsInput').value = JSON.stringify(S.accounts, null, 2); document.getElementById('accCount').textContent = S.accounts.length; document.getElementById('sumAcc').textContent = `${S.accounts.length} accounts`; } catch(e){}
 }
 
 async function loadMaps() {
-  try {
-    const r = await fetch('/api/maps');
-    const j = await r.json();
-    S.maps = j.maps || [];
-    renderMapGrid('mapGrid');
-    if(S.page === 'maps') renderMapsPage();
-  } catch (e) {}
+  try { const r = await fetch('/api/maps'); const j = await r.json(); S.maps = j.maps || []; document.getElementById('navMapCount').textContent = S.maps.length; document.getElementById('totalMapsCount').textContent = S.maps.length; renderMapGrid('mapGrid'); if (S.page === 'maps') renderMapsPage(); } catch(e){}
 }
 
 function saveSnapshot() {
-  const data = { totals: S.totals, bots: S.bots, ts: new Date().toISOString() };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `zhd-snapshot-${Date.now()}.json`;
-  a.click();
+  const data = {totals:S.totals, bots:S.bots, ts:new Date().toISOString()};
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `zhd-snapshot-${Date.now()}.json`; a.click();
   toast('Snapshot downloaded', 'ok');
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   HELPERS
-═══════════════════════════════════════════════════════════════ */
 function toggleCfg(id) {
   const el = document.getElementById(id);
   el.classList.toggle('on');
   if (id === 'autoFollowToggle') document.getElementById('autoFollowSw').checked = el.classList.contains('on');
-  if (id === 'seqModeToggle') {
-    document.getElementById('seqModeSw').checked = el.classList.contains('on');
-    document.getElementById('timerFields').style.display = el.classList.contains('on') ? 'none' : 'grid';
-  }
+  if (id === 'seqModeToggle') { document.getElementById('seqModeSw').checked = el.classList.contains('on'); document.getElementById('timerFields').style.display = el.classList.contains('on') ? 'none' : 'grid'; }
   if (id === 'resumeToggle') document.getElementById('resumeSw').checked = el.classList.contains('on');
-}
-
-function handleSearch(q) {
-  S.searchQ = q.toLowerCase();
-  if (S.page === 'console' || S.page === 'fleet') renderAll();
 }
 
 function toast(msg, type='info') {
@@ -1234,21 +888,9 @@ function toast(msg, type='info') {
   el._t = setTimeout(() => { el.className = 'toast ' + type; }, 3000);
 }
 
-function esc(s) {
-  return String(s || '').replace(/[<>&"]/g, ch => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[ch]));
-}
-
-function parseLogLine(line) {
-  const clean = String(line || '').replace(/\[[^\]]*\]/g, '').trim();
-  const m = clean.match(/^\[?(\d{2}:\d{2}:\d{2})\]?\s*(.+)$/);
-  return m ? { time: m[1], msg: m[2] } : { time: '', msg: clean };
-}
-
-function fmtUptime(sec) {
-  if (sec < 60) return sec + 's';
-  if (sec < 3600) return Math.floor(sec / 60) + 'm';
-  return Math.floor(sec / 3600) + 'h ' + Math.floor((sec % 3600) / 60) + 'm';
-}
+function esc(s) { return String(s||'').replace(/[<>&"]/g, ch => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[ch])); }
+function parseLogLine(line) { const clean = String(line||'').replace(/\[[^\]]*\]/g, '').trim(); const m = clean.match(/^\[?(\d{2}:\d{2}:\d{2})\]?\s*(.+)$/); return m ? {time:m[1], msg:m[2]} : {time:'', msg:clean}; }
+function fmtUptime(sec) { if (sec < 60) return sec+'s'; if (sec < 3600) return Math.floor(sec/60)+'m'; return Math.floor(sec/3600)+'h '+Math.floor((sec%3600)/60)+'m'; }
 </script>
 </body>
 </html>
