@@ -1,5 +1,8 @@
 FROM python:3.11-slim
 
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
 WORKDIR /app
 
 # System deps
@@ -15,12 +18,14 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # App files
 COPY . .
 
+# Persistent data directory (mount volume here on Railway)
+RUN mkdir -p /app/data
+
 # Expose port (Railway provides $PORT)
 EXPOSE 8080
 
-# Healthcheck
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
   CMD curl -f http://localhost:${PORT:-8080}/api/health || exit 1
 
-# Run
+# Shell form so ${PORT} expands
 CMD uvicorn web_app:app --host 0.0.0.0 --port ${PORT:-8080}

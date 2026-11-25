@@ -2,16 +2,16 @@ __pycache__/
 *.pyc
 *.pyo
 .env
+.git/
+.gitignore
 .venv/
 venv/
-1.py
-
-# Runtime data — volume pe jayega
+*.log
 jwt.json
-raja_settings.json
-raja_maps.json
+bot_history.json
+map.json
 progress_seq.json
 progress_timer.json
-map.json
-bot_history.json
+config.json
 accounts.json
+web_config.json
