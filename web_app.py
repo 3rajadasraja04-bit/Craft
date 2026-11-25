@@ -10,7 +10,7 @@ import time
 from pathlib import Path
 from typing import Set, Dict
 
-# Save original streams BEFORE importing vn
+# Save original streams BEFORE importing vn (kyunki vn.py sys.stdout ko redirect karta hai)
 _original_stdout = sys.stdout
 _original_stderr = sys.stderr
 
@@ -38,7 +38,7 @@ ACCOUNTS_FILE   = DATA_DIR / "accounts.json"
 WEB_CONFIG_FILE = DATA_DIR / "web_config.json"
 MAPS_FILE       = DATA_DIR / "maps.json"
 
-# Redirect vn.py data files
+# Redirect vn.py data files to mounted volume
 vn.JWT_CACHE_FILE      = str(DATA_DIR / "jwt.json")
 vn.HISTORY_FILE        = str(DATA_DIR / "bot_history.json")
 vn.MAP_STATS_FILE      = str(DATA_DIR / "map.json")
@@ -46,7 +46,7 @@ vn.PROGRESS_SEQ_FILE   = str(DATA_DIR / "progress_seq.json")
 vn.PROGRESS_TIMER_FILE = str(DATA_DIR / "progress_timer.json")
 vn.CONFIG_FILE         = str(DATA_DIR / "config.json")
 
-# Load Maps dynamically
+# Load Maps dynamically from maps.json
 def load_maps():
     if MAPS_FILE.exists():
         try:
@@ -57,7 +57,7 @@ def load_maps():
         except Exception as e:
             print(f"[BOOT] Map load error: {e}", file=sys.stderr)
     else:
-        # First time run, save default maps to file
+        # First time run: save default maps to file
         save_maps(vn.MAP_CODES)
 
 def save_maps(maps_list):
@@ -84,7 +84,7 @@ app.add_middleware(
 class BotManager:
     def __init__(self):
         self.running = False
-        self.tasks: Dict[str, asyncio.Task] = {} # Store by UID
+        self.tasks: Dict[str, asyncio.Task] = {} # Store running tasks by UID
         self.websockets: Set[WebSocket] = set()
         self.accounts = []
         self.config = {
@@ -150,6 +150,7 @@ class BotManager:
                 except Exception: pass
             await asyncio.sleep(0.8)
 
+    # ─── TASK MANAGEMENT (Zero-Downtime) ───
     def start_bot_task(self, acc):
         uid = acc["uid"]
         if uid in self.tasks and not self.tasks[uid].done(): return # Already running
@@ -163,6 +164,7 @@ class BotManager:
             "total_time_played": 0, "follow_done": False
         }
         
+        # Start actual loop
         task = asyncio.create_task(
             vn.loop_matches(idx, 999, uid, acc["password"], acc.get("aid", ""), float(self.config["rejoin_delay"]))
         )
@@ -177,12 +179,14 @@ class BotManager:
                 if bot.get("uid") == uid: 
                     del vn.STATE["bots"][idx]
 
+    # ─── ENGINE CONTROLS ───
     async def start_engine(self, accounts: list, config: dict) -> dict:
         if self.running: return {"ok": False, "msg": "Engine already running"}
         self.accounts = accounts
         self.config.update(config)
         self.save_config()
         
+        # Apply config to vn module
         vn.SEQ_MODE = bool(self.config["seq_mode"])
         vn.START_MAP_IDX = int(self.config["start_map"])
         vn.END_MAP_IDX = int(self.config["end_map"])
@@ -283,6 +287,7 @@ async def _startup():
 async def index():
     return HTMLResponse((TEMPLATES_DIR / "index.html").read_text(encoding="utf-8"))
 
+# --- MAP APIs ---
 @app.get("/api/maps")
 async def get_maps():
     return {"maps": vn.MAP_CODES}
@@ -296,6 +301,7 @@ async def update_maps(maps_json: str = Form(...)):
         return {"ok": True, "count": len(maps)}
     except Exception as e: return {"ok": False, "msg": str(e)}
 
+# --- ACCOUNT APIs ---
 @app.get("/api/accounts")
 async def get_accounts():
     return {"accounts": manager.accounts}
@@ -318,10 +324,12 @@ async def replace_bots(raw_json: str = Form(...)):
 async def clear_bots():
     return await manager.clear_all()
 
+# --- JWT API ---
 @app.post("/api/jwt/clear")
 async def clear_jwt():
     return manager.clear_jwt()
 
+# --- ENGINE APIs ---
 @app.post("/api/start")
 async def start_engine(config_json: str = Form(...)):
     try: cfg = json.loads(config_json)
@@ -332,12 +340,14 @@ async def start_engine(config_json: str = Form(...)):
 async def stop_engine():
     return await manager.stop_engine()
 
+# --- SOCIAL APIs ---
 @app.post("/api/social")
 async def manual_social(action: str = Form(...), target: str = Form(...)):
     if not manager.accounts: return {"ok": False, "msg": "No accounts"}
     asyncio.create_task(vn.run_social_actions(manager.accounts, action, target))
     return {"ok": True}
 
+# --- WEBSOCKET ---
 @app.websocket("/ws")
 async def ws_endpoint(ws: WebSocket):
     await ws.accept()
