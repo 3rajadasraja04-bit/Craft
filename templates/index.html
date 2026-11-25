@@ -115,6 +115,10 @@ tr:hover td{background:rgba(0,240,255,.03)}
 .mapcell.playing{color:var(--cyan);border-color:var(--cyan);box-shadow:0 0 18px #00f0ff55;animation:mapPulse 1.6s infinite}
 @keyframes mapPulse{0%,100%{box-shadow:0 0 14px #00f0ff25}50%{box-shadow:0 0 22px #00f0ff55}}
 .mapcell small{display:block;font-size:7px;color:var(--muted);margin-top:2px}
+.mapactions{display:flex;gap:4px;margin-top:8px;opacity:0.3;transition:.2s}
+.mapcell:hover .mapactions{opacity:1}
+.mapactions button{flex:1;padding:4px;background:#0f202d;border:1px solid var(--line);border-radius:4px;font-size:8px;color:#fff; cursor:pointer}
+.mapactions button:hover{background:var(--cyan);color:#000}
 .eventlist{padding:4px 15px 10px}
 .event{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #ffffff0b;font-size:9px}
 .event:last-child{border:0}
@@ -213,6 +217,9 @@ tr:hover td{background:rgba(0,240,255,.03)}
 .socstate.lock{color:var(--amber);border-color:#ffd75e50;background:#ffd75e10}
 .ringstat{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-top:6px}
 .ringstat b{color:var(--cyan);font-family:ui-monospace,monospace}
+.modal{display:none;position:fixed;z-index:100;inset:0;background:#0009;backdrop-filter:blur(5px);place-items:center}
+.modal.show{display:grid}
+.modal-content{background:linear-gradient(145deg,#0f1e2b,#070f18);padding:20px;border-radius:12px;border:1px solid var(--cyan);width:min(400px,90%);box-shadow:0 0 30px #00f0ff20}
 @media(max-width:1100px){:root{--side:220px}main{padding:0 18px 30px}.topbar{margin:0 -18px;padding:0 18px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:780px){.shell{display:block}.sidebar{width:265px;transform:translateX(-105%);box-shadow:20px 0 45px #000b}.sidebar.open{transform:none}main{padding:0 12px 88px}.topbar{margin:0 -12px;padding:0 12px;height:59px}.menuBtn{display:block}.crumb{display:none}.searchbox{width:34vw}.topright{gap:5px}.topchip{font-size:7px;padding:6px}.avatar{display:none}.pagehead{align-items:flex-start;flex-direction:column;margin:19px 0 14px}.actions{width:100%}.contentgrid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.mobilebar{display:flex;position:fixed;z-index:25;bottom:0;left:0;right:0;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));background:#06111df2;border-top:1px solid var(--line);backdrop-filter:blur(18px)}.mobilebar button{border:0;background:none;color:var(--muted);font-size:7px;display:grid;gap:3px;justify-items:center;padding:4px 8px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}.mobilebar button span{font-size:16px}.mobilebar button.active{color:var(--cyan)}.mapgrid{grid-template-columns:repeat(4,1fr)}.logstream{max-height:50vh}}
 @media(max-width:410px){.stats{gap:8px}.stat{padding:11px}.statvalue{font-size:22px}.mapgrid{grid-template-columns:repeat(3,1fr)}.event{grid-template-columns:49px minmax(0,1fr) auto;gap:5px}.searchbox{width:31vw}}
@@ -392,16 +399,17 @@ tr:hover td{background:rgba(0,240,255,.03)}
     <div class="pagehead">
       <div>
         <div class="kicker">// WORKSHOP ROTATION</div>
-        <h1>Map Library</h1>
-        <div class="subtitle">24 pre-registered workshop map codes with live progress tracking</div>
+        <h1>Map Manager</h1>
+        <div class="subtitle">Add, edit, or delete map codes on the fly</div>
       </div>
       <div class="actions">
+        <button class="btn primary" onclick="openMapModal()">+ Add Map</button>
         <button class="btn ghost" onclick="copyMaps()">⎘ Copy All</button>
       </div>
     </div>
     <div class="panel">
       <div class="panelhead"><div class="paneltitle"><em>◈</em> Maps</div><div class="panelmeta"><b id="mapsDoneCount">0</b> completed · <b id="mapsPlayingCount">0</b> in use</div></div>
-      <div class="mapgrid" id="bigMapGrid" style="grid-template-columns:repeat(4,1fr)"></div>
+      <div class="mapgrid" id="bigMapGrid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))"></div>
       <div class="note">Click a map to copy its code · Green = passed · Cyan = currently playing · Amber = queued</div>
     </div>
   </section>
@@ -469,26 +477,38 @@ tr:hover td{background:rgba(0,240,255,.03)}
         <h1>Engine Config</h1>
         <div class="subtitle">Accounts, targets, and engine behaviour</div>
       </div>
-      <div class="actions">
-        <button class="btn primary" onclick="saveAccounts()">💾 Save Accounts</button>
+    </div>
+
+    <!-- JWT MANAGER -->
+    <div class="panel" style="margin-bottom:12px">
+      <div class="panelhead"><div class="paneltitle"><em>🔑</em> JWT Auth Cache</div></div>
+      <div class="toolbar">
+        <button class="btn green" onclick="clearJWT()">🔄 Force Clear JWT Cache</button>
+        <span style="font-size:10px;color:var(--muted)">Bots will re-login automatically on next map cycle.</span>
       </div>
     </div>
 
     <div class="grid split2">
       <div class="panel">
-        <div class="panelhead"><div class="paneltitle"><em>◉</em> Accounts</div><div class="panelmeta"><b id="accCount">0</b> loaded</div></div>
+        <div class="panelhead"><div class="paneltitle"><em>◉</em> Bot Injection Manager</div><div class="panelmeta"><b id="accCount">0</b> loaded</div></div>
         <div class="toolbar" style="flex-direction:column;align-items:stretch">
           <textarea class="field area" id="accountsInput" placeholder='[{"uid":"123456789","password":"pass","account_id":"aid"}]'></textarea>
-          <div style="display:flex;gap:7px">
-            <button class="btn green sm" style="flex:1" onclick="saveAccounts()">💾 Save</button>
+          <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:10px">
+            <button class="btn primary" style="flex:1" onclick="injectBots()">➕ INJECT (Append New)</button>
+            <button class="btn" style="flex:1" onclick="replaceBots()">♻️ REPLACE ALL</button>
+            <button class="btn red" style="flex:1" onclick="clearAllBots()">🗑️ CLEAR & KILL ALL</button>
             <button class="btn sm" style="flex:1" onclick="document.getElementById('fileInput').click()">📤 Upload</button>
             <input type="file" id="fileInput" accept=".json" style="display:none" onchange="uploadAccounts(event)">
+          </div>
+          <div class="note" style="margin-top:10px">
+            <b>INJECT:</b> Adds new bots without stopping old ones.<br>
+            <b>REPLACE:</b> Kills bots not in this list, starts new ones.
           </div>
         </div>
       </div>
 
       <div class="panel">
-        <div class="panelhead"><div class="paneltitle"><em>◎</em> Engine</div></div>
+        <div class="panelhead"><div class="paneltitle"><em>◎</em> Engine Config</div></div>
         <div class="toolbar" style="flex-direction:column;align-items:stretch">
           <input class="field wide" id="targetUid" placeholder="Auto-follow target UID...">
           <div class="toggle" id="autoFollowToggle" onclick="toggleCfg('autoFollowToggle')">
@@ -539,6 +559,18 @@ tr:hover td{background:rgba(0,240,255,.03)}
   <button data-page="config" onclick="navTo('config')"><span>⚙</span>Config</button>
 </div>
 
+<!-- MAP MODAL -->
+<div class="modal" id="mapModal">
+  <div class="modal-content">
+    <h2 id="mapModalTitle" style="margin-top:0;color:var(--cyan);font-size:16px">Add Map</h2>
+    <input class="field" id="mapInput" style="width:100%;margin:15px 0;font-size:12px;padding:10px" placeholder="FREEFIRE..." />
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn" onclick="document.getElementById('mapModal').classList.remove('show')">Cancel</button>
+      <button class="btn primary" onclick="saveMap()">Save Map</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 </div>
@@ -561,6 +593,7 @@ const S = {
   logTab: 'all',
   searchQ: '',
   _cfgLoaded: false,
+  editingMapIndex: -1,
 };
 let ws = null, wsRetry = 0;
 
@@ -696,7 +729,7 @@ function applyState(d) {
   document.getElementById('sumState').textContent = 'Engine: ' + (S.running ? 'live' : 'idle');
   document.getElementById('sumRange').textContent = `Maps ${S.config.start_map || 1}-${S.config.end_map || 24}`;
 
-  // ══════ AUTO-POPULATE CONFIG FIELDS FROM SERVER (PATCH) ══════
+  // AUTO-POPULATE CONFIG FIELDS FROM SERVER
   if (!S._cfgLoaded && S.config && Object.keys(S.config).length > 1) {
     S._cfgLoaded = true;
     const setVal = (id, val) => {
@@ -710,7 +743,6 @@ function applyState(d) {
     setVal('syncSecs', S.config.sync_secs);
     setVal('rejoinDelay', S.config.rejoin_delay);
   }
-  // ══════════════════════════════════════════════════════════════
 
   renderAll();
 }
@@ -908,6 +940,7 @@ function renderMapsPage() {
   document.getElementById('mapsPlayingCount').textContent = activeSet.size;
   const startIdx = (S.config.start_map || 1) - 1;
   const endIdx = (S.config.end_map || 24) - 1;
+  
   grid.innerHTML = S.maps.map((code, i) => {
     const isActive = activeSet.has(code);
     const isDone = doneSet.has(code);
@@ -915,15 +948,49 @@ function renderMapsPage() {
     let cls = '';
     if (isActive) cls = 'playing';
     else if (isDone) cls = 'done';
-    return `<div class="mapcell ${cls}" title="${esc(code)}" onclick="copyCode('${esc(code)}')" style="${!inRange ? 'opacity:.5' : ''}">
-      #${String(i + 1).padStart(2, '0')}
-      <small>${esc(code.slice(0, 14))}…</small>
+    return `<div class="mapcell ${cls}" style="text-align:left;padding:10px" title="${esc(code)}" style="${!inRange ? 'opacity:.5' : ''}">
+      <b>#${String(i + 1).padStart(2, '0')}</b> ${esc(code.slice(0, 18))}...
+      <div class="mapactions">
+        <button style="color:var(--cyan)" onclick="copyCode('${esc(code)}')">📋 Copy</button>
+        <button style="color:var(--amber)" onclick="editMap(${i})">✏️ Edit</button>
+        <button style="color:var(--red)" onclick="deleteMap(${i})">🗑️ Del</button>
+      </div>
     </div>`;
   }).join('');
 }
 
 function copyMaps() {
-  navigator.clipboard.writeText(S.maps.join('\n')).then(() => toast('All 24 map codes copied', 'ok'));
+  navigator.clipboard.writeText(S.maps.join('\n')).then(() => toast('All map codes copied', 'ok'));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MAP ACTIONS
+═══════════════════════════════════════════════════════════════ */
+function openMapModal() { 
+  S.editingMapIndex = -1; 
+  document.getElementById('mapModalTitle').textContent='Add Map'; 
+  document.getElementById('mapInput').value=''; 
+  document.getElementById('mapModal').classList.add('show'); 
+}
+function editMap(i) { 
+  S.editingMapIndex = i; 
+  document.getElementById('mapModalTitle').textContent='Edit Map'; 
+  document.getElementById('mapInput').value=S.maps[i]; 
+  document.getElementById('mapModal').classList.add('show'); 
+}
+async function deleteMap(i) {
+  if(!confirm('Delete this map?')) return;
+  S.maps.splice(i, 1); await saveMapsToServer();
+}
+async function saveMap() {
+  const val = document.getElementById('mapInput').value.trim();
+  if(!val) return;
+  if(S.editingMapIndex === -1) S.maps.push(val); else S.maps[S.editingMapIndex] = val;
+  await saveMapsToServer(); document.getElementById('mapModal').classList.remove('show');
+}
+async function saveMapsToServer() {
+  const fd = new FormData(); fd.append('maps_json', JSON.stringify(S.maps));
+  await fetch('/api/maps', {method:'POST', body:fd}); loadMaps(); toast('Maps Saved Live!');
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1044,16 +1111,50 @@ async function manualAction(type) {
   } catch (e) { toast(e.message, 'err'); }
 }
 
-async function saveAccounts() {
-  const raw = document.getElementById('accountsInput').value.trim();
+// UPDATED: INJECT BOTS
+async function injectBots() {
+  const raw = document.getElementById('accountsInput').value;
   if (!raw) { toast('Paste accounts JSON first', 'info'); return; }
-  const fd = new FormData();
-  fd.append('raw_json', raw);
+  const fd = new FormData(); fd.append('raw_json', raw);
   try {
-    const r = await fetch('/api/accounts', { method: 'POST', body: fd });
+    const r = await fetch('/api/accounts/inject', { method: 'POST', body: fd });
     const j = await r.json();
-    if (j.ok) { toast(`${j.count} accounts saved`, 'ok'); loadAccounts(); }
+    if (j.ok) { toast(`🔥 Injected ${j.added} new bots! Total: ${j.total}`, 'ok'); loadAccounts(); }
     else toast(j.msg || 'Failed', 'err');
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+// UPDATED: REPLACE BOTS
+async function replaceBots() {
+  const raw = document.getElementById('accountsInput').value;
+  if (!raw) { toast('Paste accounts JSON first', 'info'); return; }
+  if(!confirm('This will kill bots not in the new list. Continue?')) return;
+  const fd = new FormData(); fd.append('raw_json', raw);
+  try {
+    const r = await fetch('/api/accounts/replace', { method: 'POST', body: fd });
+    const j = await r.json();
+    if (j.ok) { toast(`♻️ Bots Replaced! Total: ${j.total}`, 'ok'); loadAccounts(); }
+    else toast(j.msg || 'Failed', 'err');
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+// UPDATED: CLEAR ALL BOTS
+async function clearAllBots() {
+  if(!confirm('Kill all bots and clear JSON?')) return;
+  try {
+    const r = await fetch('/api/accounts/clear', { method: 'POST' });
+    const j = await r.json();
+    if (j.ok) { toast('🗑️ All bots killed & cleared', 'ok'); loadAccounts(); }
+    else toast(j.msg || 'Failed', 'err');
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+// UPDATED: CLEAR JWT
+async function clearJWT() {
+  try {
+    const r = await fetch('/api/jwt/clear', { method: 'POST' });
+    const j = await r.json();
+    toast(j.ok ? '🔑 JWT Cleared! Bots will re-login.' : (j.msg || 'Failed'), j.ok ? 'ok' : 'err');
   } catch (e) { toast(e.message, 'err'); }
 }
 
@@ -1078,6 +1179,8 @@ async function loadAccounts() {
     S.accounts = j.accounts || [];
     if (S.accounts.length) {
       document.getElementById('accountsInput').value = JSON.stringify(S.accounts, null, 2);
+    } else {
+      document.getElementById('accountsInput').value = '';
     }
     document.getElementById('accCount').textContent = S.accounts.length;
     document.getElementById('sumAcc').textContent = `${S.accounts.length} accounts`;
@@ -1090,6 +1193,7 @@ async function loadMaps() {
     const j = await r.json();
     S.maps = j.maps || [];
     renderMapGrid('mapGrid');
+    if(S.page === 'maps') renderMapsPage();
   } catch (e) {}
 }
 
