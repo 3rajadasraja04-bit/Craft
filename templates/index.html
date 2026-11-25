@@ -5,496 +5,2130 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#05070d">
 <title>ZHD // NEXUS COMMAND DECK v4.0</title>
+
 <style>
+/* ═══════════════════════════════════════════════════════════════
+   ROOT VARIABLES
+═══════════════════════════════════════════════════════════════ */
 :root{
- --bg:#05070d;--bg2:#08111b;--surface:#0b1722;--surface2:#0e202d;--surface3:#132b38;
- --cyan:#00f0ff;--cyan2:#55fbff;--green:#39ff91;--pink:#ff2f92;--violet:#b45cff;
- --amber:#ffd75e;--red:#ff5268;--blue:#4c8dff;--text:#e4faff;--muted:#7895a4;
- --line:rgba(0,240,255,.19);--line2:rgba(255,255,255,.075);
- --shadow:0 14px 50px rgba(0,0,0,.35),0 0 26px rgba(0,240,255,.055);
- --side:252px;--radius:15px;
+  --bg:#05070d;
+  --bg2:#08111b;
+  --surface:#0b1722;
+  --surface2:#0e202d;
+  --surface3:#132b38;
+  --cyan:#00f0ff;
+  --cyan2:#55fbff;
+  --green:#39ff91;
+  --pink:#ff2f92;
+  --violet:#b45cff;
+  --amber:#ffd75e;
+  --red:#ff5268;
+  --blue:#4c8dff;
+  --text:#e4faff;
+  --muted:#7895a4;
+  --line:rgba(0,240,255,.19);
+  --line2:rgba(255,255,255,.075);
+  --shadow:0 14px 50px rgba(0,0,0,.35), 0 0 26px rgba(0,240,255,.055);
+  --side:252px;
+  --radius:15px;
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;min-height:100vh;background:
- radial-gradient(ellipse at 80% -20%,rgba(0,240,255,.13),transparent 38%),
- radial-gradient(ellipse at 0 70%,rgba(180,92,255,.10),transparent 35%),
- radial-gradient(ellipse at 100% 85%,rgba(57,255,145,.045),transparent 32%),var(--bg);
- color:var(--text);font:13px/1.48 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:8;opacity:.12;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.07) 4px);mix-blend-mode:screen}
-body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:7;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.4))}
-button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
-a{color:inherit;text-decoration:none}
-.shell{min-height:100vh;display:grid;grid-template-columns:var(--side) minmax(0,1fr)}
-.sidebar{position:fixed;inset:0 auto 0 0;width:var(--side);z-index:30;padding:20px 14px 15px;background:rgba(4,9,16,.94);border-right:1px solid var(--line);backdrop-filter:blur(22px);display:flex;flex-direction:column;transition:transform .28s}
-.brand{display:flex;align-items:center;gap:12px;padding:5px 8px 22px}
-.brandmark{width:35px;height:35px;display:grid;place-items:center;border:1px solid var(--cyan);color:var(--cyan);transform:rotate(45deg);box-shadow:0 0 22px #00f0ff4d,inset 0 0 15px #00f0ff20;flex-shrink:0}
-.brandmark span{transform:rotate(-45deg);font-size:19px;font-weight:900}
-.brandname{font-size:13px;font-weight:950;letter-spacing:.17em}
-.brandname small{display:block;font-size:8px;color:var(--muted);letter-spacing:.28em;margin-top:3px;font-weight:600}
-.navlabel{font-size:8px;letter-spacing:.23em;color:#527181;padding:12px 10px 7px;text-transform:uppercase}
-.nav{display:grid;gap:4px}
-.nav button{width:100%;display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:9px;border:1px solid transparent;background:transparent;color:#91aab7;text-align:left;font-size:10px;letter-spacing:.035em;transition:.2s;text-transform:uppercase}
-.nav button:hover,.nav button.active{color:var(--cyan);border-color:#00f0ff35;background:linear-gradient(90deg,#00f0ff19,transparent);box-shadow:inset 2px 0 var(--cyan),0 0 18px #00f0ff0b}
-.navicon{width:19px;text-align:center;font-size:15px}
-.navcount{margin-left:auto;font-size:8px;padding:2px 6px;border:1px solid var(--line);border-radius:20px;color:var(--muted)}
-.sidebottom{margin-top:auto;border:1px solid var(--line);border-radius:12px;padding:12px;background:linear-gradient(145deg,#102b37a8,#0b1420)}
-.sidebottom strong{font-size:9px;letter-spacing:.14em}
-.sidebottom p{font-size:8px;color:var(--muted);margin:7px 0 0}
-.livedot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);margin-right:7px}
-main{grid-column:2;min-width:0;padding:0 25px 38px}
-.topbar{height:66px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;background:rgba(5,7,13,.85);backdrop-filter:blur(18px);z-index:20;margin:0 -25px;padding:0 25px}
-.crumb{font-size:9px;letter-spacing:.17em;color:var(--muted);text-transform:uppercase}.crumb b{color:var(--cyan)}
-.topright{display:flex;align-items:center;gap:8px}
-.topchip{padding:7px 9px;border:1px solid var(--line);border-radius:7px;color:var(--cyan);font-size:8px;letter-spacing:.1em;background:#0a1822;text-transform:uppercase;font-weight:700}
-.topchip.good{color:var(--green);border-color:#39ff9140}
-.topchip.bad{color:var(--red);border-color:#ff526840}
-.clock{font:10px ui-monospace,monospace;color:var(--green);min-width:56px;text-align:right}
-.avatar{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--violet));color:#041018;font-weight:950;font-size:9px}
-.menuBtn{display:none;border:1px solid var(--line);background:#0b1824;padding:7px 10px;border-radius:7px}
-.page{display:none;animation:pageIn .25s ease}.page.active{display:block}
-@keyframes pageIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-.pagehead{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:24px 0 17px}
-.kicker{font-size:8px;color:var(--cyan);letter-spacing:.25em;text-transform:uppercase}
-h1{font-size:clamp(22px,2.8vw,31px);line-height:1.1;margin:6px 0 5px;letter-spacing:.015em;font-weight:900}
-.subtitle{font-size:10px;color:var(--muted)}
-.actions{display:flex;gap:7px;flex-wrap:wrap}
-.btn{border:1px solid var(--line);border-radius:8px;padding:9px 12px;background:linear-gradient(135deg,#12303b,#0a1722);color:var(--cyan);font-size:9px;letter-spacing:.11em;text-transform:uppercase;transition:.2s;display:inline-flex;align-items:center;gap:6px;font-weight:700}
-.btn:hover:not(:disabled){border-color:var(--cyan);box-shadow:0 0 20px #00f0ff25;transform:translateY(-1px)}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn.primary{background:var(--cyan);color:#031116;border-color:var(--cyan);font-weight:900}
-.btn.primary:hover:not(:disabled){box-shadow:0 0 25px #00f0ff55}
-.btn.green{color:var(--green);border-color:#39ff9150}
-.btn.green:hover:not(:disabled){background:#39ff9112;border-color:var(--green)}
-.btn.pink{color:var(--pink);border-color:#ff2f9250}
-.btn.red{color:var(--red);border-color:#ff526850}
-.btn.red:hover:not(:disabled){background:#ff526812;border-color:var(--red)}
-.btn.ghost{background:transparent;color:var(--muted)}
-.btn.ghost:hover:not(:disabled){background:#091521;color:var(--text)}
-.btn.sm{padding:6px 10px;font-size:8px}
-.grid{display:grid;gap:12px}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}
-.panel{min-width:0;position:relative;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(145deg,rgba(15,30,43,.96),rgba(7,15,24,.97));box-shadow:var(--shadow);overflow:hidden}
-.panel:before{content:"";position:absolute;left:0;top:0;width:66px;height:1px;background:var(--cyan);box-shadow:0 0 13px var(--cyan)}
-.panelhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid #00f0ff13}
-.paneltitle{font-size:9px;font-weight:850;letter-spacing:.16em;text-transform:uppercase}.paneltitle em{font-style:normal;color:var(--cyan)}
-.panelmeta{font-size:8px;color:var(--muted);letter-spacing:.1em}
-.panelmeta b{color:var(--cyan)}
-.stat{padding:14px 15px;min-height:112px}
-.statlabel{display:flex;justify-content:space-between;color:var(--muted);font-size:8px;letter-spacing:.16em;text-transform:uppercase}
-.staticon{font-size:15px;color:var(--cyan)}
-.statvalue{font-size:clamp(23px,2.7vw,31px);font-weight:900;letter-spacing:-.04em;margin:11px 0 3px;color:var(--cyan);text-shadow:0 0 17px #00f0ff50;font-family:ui-monospace,monospace}
-.stat:nth-child(2) .statvalue{color:var(--green);text-shadow:0 0 17px #39ff9150}
-.stat:nth-child(3) .statvalue{color:var(--violet);text-shadow:0 0 17px #b45cff50}
-.stat:nth-child(4) .statvalue{color:var(--amber);text-shadow:0 0 17px #ffd75e50}
-.statfoot{font-size:8px;color:var(--muted)}
-.contentgrid{grid-template-columns:minmax(0,1.55fr) minmax(255px,.85fr);margin-top:12px}
-.stack{display:grid;gap:12px;align-content:start}
-.tablewrap{overflow:auto;padding:0 13px 8px}
-table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:9px}
-th{text-align:left;color:#668797;font-size:8px;letter-spacing:.13em;padding:10px 8px;border-bottom:1px solid var(--line);text-transform:uppercase;font-weight:700}
-td{padding:11px 8px;border-bottom:1px solid #ffffff0b;color:#cde5ed;font-size:9px}
-tr:last-child td{border-bottom:0}
-tr:hover td{background:rgba(0,240,255,.03)}
-.uid{color:var(--cyan);font:9px ui-monospace,monospace}
-.badge{display:inline-block;padding:4px 6px;border:1px solid #39ff9145;border-radius:5px;color:var(--green);font-size:7px;letter-spacing:.09em;text-transform:uppercase;font-weight:700}
-.badge.warn{color:var(--amber);border-color:#ffd75e55;background:#ffd75e0b}
-.badge.bad{color:var(--pink);border-color:#ff2f9255;background:#ff2f920b}
-.badge.info{color:var(--cyan);border-color:#00f0ff55;background:#00f0ff0b}
-.badge.idle{color:var(--muted);border-color:#7895a455;background:#7895a40b}
-.note{padding:10px 15px;border-top:1px solid #00f0ff12;color:var(--muted);font-size:8px}
-.mapgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:13px}
-.mapcell{border:1px solid #00f0ff28;background:#0a1a26;border-radius:8px;text-align:center;padding:10px 8px;color:#85a8b7;font:9px ui-monospace,monospace;transition:.2s;position:relative;text-align:left}
-.mapcell:hover{border-color:#00f0ff50}
-.mapcell.done{color:var(--green);border-color:#39ff9155;background:#39ff910b}
-.mapcell.playing{color:var(--cyan);border-color:var(--cyan);box-shadow:0 0 14px #00f0ff25;animation:mapPulse 1.6s infinite}
-@keyframes mapPulse{0%,100%{box-shadow:0 0 14px #00f0ff25}50%{box-shadow:0 0 22px #00f0ff55}}
-.mapcell small{display:block;font-size:7px;color:var(--muted);margin-top:4px}
-.mapactions{display:flex;gap:4px;margin-top:8px}
-.mapactions button{flex:1;padding:5px 4px;background:#0f202d;border:1px solid var(--line);border-radius:4px;font-size:9px;color:#fff;cursor:pointer;transition:.15s;font-weight:600}
-.mapactions button:hover{background:var(--cyan);color:#000;border-color:var(--cyan)}
-.mapactions button.del:hover{background:var(--red);border-color:var(--red)}
-.mapactions button.edit:hover{background:var(--amber);border-color:var(--amber);color:#000}
-.eventlist{padding:4px 15px 10px}
-.event{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #ffffff0b;font-size:9px}
-.event:last-child{border:0}
-.eventtime{font:8px ui-monospace,monospace;color:var(--muted)}
-.eventmsg{min-width:0;overflow:hidden;text-overflow:ellipsis;color:#cde5ed}
-.meterlist{padding:14px 16px}
-.meter{margin-bottom:14px}.meter:last-child{margin:0}
-.metertop{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
-.metertop b{color:var(--cyan);font-family:ui-monospace,monospace}
-.track{height:5px;background:#1a2a36;border-radius:8px;overflow:hidden}
-.track span{display:block;height:100%;width:var(--w,0%);background:linear-gradient(90deg,var(--cyan),var(--green));box-shadow:0 0 10px var(--cyan);border-radius:8px;transition:width .45s}
-.track.violet span{background:linear-gradient(90deg,var(--violet),var(--pink));box-shadow:0 0 10px var(--violet)}
-.track.amber span{background:linear-gradient(90deg,var(--amber),var(--pink));box-shadow:0 0 10px var(--amber)}
-.feed{padding:4px 15px 10px}
-.feedrow{display:flex;gap:9px;padding:10px 0;border-bottom:1px solid #ffffff0b}.feedrow:last-child{border:0}
-.feedicon{width:27px;height:27px;flex:0 0 27px;display:grid;place-items:center;border:1px solid var(--line);border-radius:7px;color:var(--cyan);font-size:12px}
-.feedrow strong{font-size:9px}.feedrow p{margin:3px 0 0;color:var(--muted);font-size:8px}
-.terminal{background:#03090d;border-top:1px solid #39ff9130;padding:0;font:9px/1.65 ui-monospace,monospace;color:var(--green);min-height:155px;display:flex;flex-direction:column;overflow:hidden}
-.terminalbar{height:25px;background:#10231e;display:flex;align-items:center;gap:5px;padding:0 10px;flex-shrink:0}
-.terminalbar i{width:6px;height:6px;border-radius:50%;background:var(--pink);display:inline-block}
-.terminalbar i:nth-child(2){background:var(--amber)}
-.terminalbar i:nth-child(3){background:var(--green)}
-.terminalbar span{margin-left:auto;font-size:8px;color:#5b8b7f;letter-spacing:.1em}
-.termout{height:115px;overflow:auto;white-space:pre-wrap;padding:10px 14px;flex:1}
-.termline{display:flex;gap:7px;margin-bottom:2px}
-.termline b{color:var(--cyan);flex-shrink:0}
-.termline.err span{color:var(--pink)}
-.toolbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;padding:12px 14px}
-.field{background:#07131e;border:1px solid var(--line);border-radius:7px;padding:8px 10px;color:var(--text);font-size:9px;min-width:0;outline:none;transition:.15s}
-.field:hover{border-color:#00f0ff40}
-.field:focus{border-color:var(--cyan);box-shadow:0 0 0 2px #00f0ff15}
-.field::placeholder{color:#607c8b}
-.field.wide{width:100%}
-.field.area{width:100%;min-height:96px;resize:vertical;font-family:ui-monospace,monospace;font-size:8px;line-height:1.55;padding:10px}
-.split2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.toggle{display:inline-flex;align-items:center;gap:10px;font-size:9px;color:var(--muted);cursor:pointer;user-select:none;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:#07131e;transition:.15s}
-.toggle:hover{border-color:#00f0ff40}
-.toggle.on{color:var(--cyan);border-color:#00f0ff40;background:#00f0ff08}
-.toggle .tlabel{font-size:9px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
-.switch{appearance:none;width:32px;height:18px;border-radius:20px;background:#263845;position:relative;cursor:pointer;outline:none;border:1px solid #45606c;flex-shrink:0;margin:0}
-.switch:before{content:"";position:absolute;width:12px;height:12px;left:2px;top:2px;background:#8ba1aa;border-radius:50%;transition:.2s}
-.switch:checked{background:#00f0ff35;border-color:var(--cyan)}
-.switch:checked:before{left:16px;background:var(--cyan);box-shadow:0 0 9px var(--cyan)}
-.empty{padding:35px;text-align:center;color:var(--muted)}
-.empty .glyph{font-size:35px;color:var(--cyan);text-shadow:0 0 18px var(--cyan);display:block;margin-bottom:10px}
-.empty strong{display:block;color:var(--text);font-size:11px;margin-bottom:5px}
-.toast{position:fixed;z-index:80;right:18px;bottom:18px;background:#102733;border:1px solid var(--cyan);border-radius:9px;padding:11px 15px;color:var(--cyan);font-size:9px;box-shadow:0 0 25px #00f0ff25;opacity:0;transform:translateY(9px);transition:.2s;pointer-events:none;max-width:340px}
-.toast.show{opacity:1;transform:none}
-.toast.err{border-color:var(--red);color:var(--red);box-shadow:0 0 25px #ff526850}
-.toast.ok{border-color:var(--green);color:var(--green);box-shadow:0 0 25px #39ff9150}
-.mobilebar{display:none}
-.overlay{display:none;position:fixed;z-index:29;inset:0;background:#0009}
-.overlay.show{display:block}
-.fleetgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px;padding:14px}
-.botcard{border:1px solid var(--line);border-radius:12px;background:linear-gradient(145deg,#0e1f2d,#0a1520);padding:14px;position:relative;overflow:hidden;transition:.2s}
-.botcard:hover{border-color:#00f0ff40;transform:translateY(-2px)}
-.botcard:before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--muted);opacity:.4}
-.botcard.playing:before{background:var(--green);box-shadow:0 0 12px var(--green);opacity:1}
-.botcard.wait:before{background:var(--amber);box-shadow:0 0 12px var(--amber);opacity:1}
-.botcard.err:before{background:var(--red);box-shadow:0 0 12px var(--red);opacity:1}
-.bothead{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;gap:8px}
-.botav{width:31px;height:31px;border-radius:8px;background:linear-gradient(135deg,#00f0ff30,#b45cff30);border:1px solid var(--line);display:grid;place-items:center;font-family:ui-monospace,monospace;font-size:11px;font-weight:900;color:var(--cyan);flex-shrink:0}
-.botcard.playing .botav{background:linear-gradient(135deg,#39ff9130,#00f0ff30);color:var(--green);border-color:#39ff9140}
-.botcard.wait .botav{background:linear-gradient(135deg,#ffd75e30,#ff2f9230);color:var(--amber);border-color:#ffd75e40}
-.botcard.err .botav{background:linear-gradient(135deg,#ff526830,#ff2f9230);color:var(--red);border-color:#ff526840}
-.botname{font-size:11px;font-weight:800;color:var(--text)}
-.botuid{font-size:8px;color:var(--muted);font-family:ui-monospace,monospace;margin-top:2px}
-.botstats{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:11px;border-top:1px solid #ffffff0b;margin-top:11px}
-.botstat small{display:block;font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
-.botstat b{font-size:11px;color:var(--cyan);font-family:ui-monospace,monospace;font-weight:700}
-.lockbar{margin-top:11px;padding-top:11px;border-top:1px solid #ffffff0b}
-.lockhead{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
-.lockhead b{color:var(--cyan);font-family:ui-monospace,monospace}
-.locktrack{height:4px;background:#1a2a36;border-radius:3px;overflow:hidden}
-.lockfill{height:100%;background:linear-gradient(90deg,var(--amber),var(--cyan));border-radius:3px;transition:width .5s}
-.lockfill.done{background:linear-gradient(90deg,var(--green),var(--cyan2));box-shadow:0 0 10px #39ff9150}
-.logstream{padding:12px 15px;font-family:ui-monospace,monospace;font-size:9px;max-height:60vh;overflow:auto}
-.logrow{display:flex;gap:9px;padding:5px 0;border-bottom:1px solid #ffffff08;align-items:flex-start;line-height:1.5}
-.logrow:last-child{border:0}
-.logtime{color:#526c79;min-width:52px;flex-shrink:0;font-size:8px;padding-top:1px}
-.logmsg{flex:1;color:#b3d1dc;word-break:break-word}
-.logrow.err .logmsg{color:#ff8b96}
-.logtabs{display:flex;gap:5px;padding:11px 15px;border-bottom:1px solid var(--line)}
-.logtab{padding:5px 11px;border-radius:6px;font-size:9px;color:var(--muted);cursor:pointer;transition:.15s;border:1px solid transparent;background:transparent;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
-.logtab:hover{color:var(--text);background:#0e202d}
-.logtab.active{background:#00f0ff12;color:var(--cyan);border-color:#00f0ff35}
-.socrow{display:grid;grid-template-columns:32px 1fr auto;gap:10px;padding:10px 14px;border-bottom:1px solid #ffffff08;align-items:center;font-size:9px}
-.socrow:last-child{border:0}
-.socidx{color:var(--violet);font-family:ui-monospace,monospace;font-weight:900;font-size:10px}
-.socmain .socname{font-size:9px;color:var(--text);font-weight:700}
-.socmain .socmeta{font-size:8px;color:var(--muted);margin-top:2px;font-family:ui-monospace,monospace}
-.socstate{font-size:8px;padding:3px 7px;border-radius:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;border:1px solid;white-space:nowrap}
-.socstate.ok{color:var(--green);border-color:#39ff9150;background:#39ff9110}
-.socstate.wait{color:var(--cyan);border-color:#00f0ff50;background:#00f0ff10}
-.socstate.err{color:var(--red);border-color:#ff526850;background:#ff526810}
-.socstate.lock{color:var(--amber);border-color:#ffd75e50;background:#ffd75e10}
-.ringstat{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-top:6px}
-.ringstat b{color:var(--cyan);font-family:ui-monospace,monospace}
-.modal{display:none;position:fixed;z-index:100;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);place-items:center;padding:16px}
-.modal.show{display:grid}
-.modal-content{background:linear-gradient(145deg,#0f1e2b,#070f18);padding:20px;border-radius:12px;border:1px solid var(--cyan);width:min(440px,100%);box-shadow:0 0 30px #00f0ff20}
-.modal-content h2{margin:0 0 15px;font-size:15px;color:var(--cyan)}
-.version-badge{display:inline-block;padding:3px 8px;border:1px solid var(--cyan);border-radius:20px;font-size:8px;color:var(--cyan);font-weight:700;letter-spacing:.1em;margin-left:8px}
-@media(max-width:1100px){:root{--side:220px}main{padding:0 18px 30px}.topbar{margin:0 -18px;padding:0 18px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:780px){.shell{display:block}.sidebar{width:265px;transform:translateX(-105%);box-shadow:20px 0 45px #000b}.sidebar.open{transform:none}main{padding:0 12px 88px}.topbar{margin:0 -12px;padding:0 12px;height:59px}.menuBtn{display:block}.crumb{display:none}.topright{gap:5px}.topchip{font-size:7px;padding:6px}.avatar{display:none}.pagehead{align-items:flex-start;flex-direction:column;margin:19px 0 14px}.actions{width:100%}.contentgrid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.mobilebar{display:flex;position:fixed;z-index:25;bottom:0;left:0;right:0;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));background:#06111df2;border-top:1px solid var(--line);backdrop-filter:blur(18px)}.mobilebar button{border:0;background:none;color:var(--muted);font-size:7px;display:grid;gap:3px;justify-items:center;padding:4px 8px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}.mobilebar button span{font-size:16px}.mobilebar button.active{color:var(--cyan)}.mapgrid{grid-template-columns:repeat(2,1fr)}.logstream{max-height:50vh}}
-@media(max-width:410px){.stats{gap:8px}.stat{padding:11px}.statvalue{font-size:22px}.mapgrid{grid-template-columns:1fr}.event{grid-template-columns:49px minmax(0,1fr) auto;gap:5px}}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════════════════ */
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(ellipse at 80% -20%, rgba(0,240,255,.13), transparent 38%),
+    radial-gradient(ellipse at 0 70%, rgba(180,92,255,.10), transparent 35%),
+    radial-gradient(ellipse at 100% 85%, rgba(57,255,145,.045), transparent 32%),
+    var(--bg);
+  color:var(--text);
+  font:13px/1.48 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  overflow-x:hidden;
+}
+
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:8;
+  opacity:.12;
+  background:repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.07) 4px);
+  mix-blend-mode:screen;
+}
+
+body:after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:7;
+  background:radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.4));
+}
+
+button,input,select,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+  color:inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible{
+  outline:2px solid var(--cyan);
+  outline-offset:2px;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   APP LAYOUT
+═══════════════════════════════════════════════════════════════ */
+.shell{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:var(--side) minmax(0,1fr);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════════════════════ */
+.sidebar{
+  position:fixed;
+  inset:0 auto 0 0;
+  width:var(--side);
+  z-index:30;
+  padding:20px 14px 15px;
+  background:rgba(4,9,16,.94);
+  border-right:1px solid var(--line);
+  backdrop-filter:blur(22px);
+  display:flex;
+  flex-direction:column;
+  transition:transform .28s;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:5px 8px 22px;
+}
+
+.brandmark{
+  width:35px;
+  height:35px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--cyan);
+  color:var(--cyan);
+  transform:rotate(45deg);
+  box-shadow:0 0 22px #00f0ff4d, inset 0 0 15px #00f0ff20;
+  flex-shrink:0;
+}
+
+.brandmark span{
+  transform:rotate(-45deg);
+  font-size:19px;
+  font-weight:900;
+}
+
+.brandname{
+  font-size:13px;
+  font-weight:950;
+  letter-spacing:.17em;
+}
+
+.brandname small{
+  display:block;
+  font-size:8px;
+  color:var(--muted);
+  letter-spacing:.28em;
+  margin-top:3px;
+  font-weight:600;
+}
+
+.navlabel{
+  font-size:8px;
+  letter-spacing:.23em;
+  color:#527181;
+  padding:12px 10px 7px;
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.nav{
+  display:grid;
+  gap:4px;
+}
+
+.nav button{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:10px 11px;
+  border-radius:9px;
+  border:1px solid transparent;
+  background:transparent;
+  color:#91aab7;
+  text-align:left;
+  font-size:10px;
+  letter-spacing:.035em;
+  transition:.2s;
+  text-transform:uppercase;
+}
+
+.nav button:hover,
+.nav button.active{
+  color:var(--cyan);
+  border-color:#00f0ff35;
+  background:linear-gradient(90deg, #00f0ff19, transparent);
+  box-shadow:inset 2px 0 var(--cyan), 0 0 18px #00f0ff0b;
+}
+
+.navicon{
+  width:19px;
+  text-align:center;
+  font-size:15px;
+}
+
+.navcount{
+  margin-left:auto;
+  font-size:8px;
+  padding:2px 6px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  color:var(--muted);
+}
+
+.sidebottom{
+  margin-top:auto;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px;
+  background:linear-gradient(145deg, #102b37a8, #0b1420);
+}
+
+.sidebottom strong{
+  font-size:9px;
+  letter-spacing:.14em;
+}
+
+.sidebottom p{
+  font-size:8px;
+  color:var(--muted);
+  margin:7px 0 0;
+}
+
+.livedot{
+  display:inline-block;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 10px var(--green);
+  margin-right:7px;
+}
+
+.ringstat{
+  display:flex;
+  justify-content:space-between;
+  font-size:8px;
+  color:var(--muted);
+  margin-top:6px;
+}
+
+.ringstat b{
+  color:var(--cyan);
+  font-family:ui-monospace, monospace;
+}
+
+.version-badge{
+  display:inline-block;
+  padding:2px 7px;
+  border:1px solid var(--cyan);
+  border-radius:20px;
+  font-size:7px;
+  color:var(--cyan);
+  font-weight:700;
+  letter-spacing:.1em;
+  background:#00f0ff0b;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MAIN CONTENT AREA
+═══════════════════════════════════════════════════════════════ */
+main{
+  grid-column:2;
+  min-width:0;
+  padding:0 25px 38px;
+}
+
+.topbar{
+  height:66px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  position:sticky;
+  top:0;
+  background:rgba(5,7,13,.85);
+  backdrop-filter:blur(18px);
+  z-index:20;
+  margin:0 -25px;
+  padding:0 25px;
+}
+
+.crumb{
+  font-size:9px;
+  letter-spacing:.17em;
+  color:var(--muted);
+  text-transform:uppercase;
+}
+
+.crumb b{
+  color:var(--cyan);
+}
+
+.topright{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.topchip{
+  padding:7px 9px;
+  border:1px solid var(--line);
+  border-radius:7px;
+  color:var(--cyan);
+  font-size:8px;
+  letter-spacing:.1em;
+  background:#0a1822;
+  text-transform:uppercase;
+  font-weight:700;
+}
+
+.topchip.good{
+  color:var(--green);
+  border-color:#39ff9140;
+}
+
+.topchip.bad{
+  color:var(--red);
+  border-color:#ff526840;
+}
+
+.clock{
+  font:10px ui-monospace, monospace;
+  color:var(--green);
+  min-width:56px;
+  text-align:right;
+}
+
+.avatar{
+  width:29px;
+  height:29px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg, var(--cyan), var(--violet));
+  color:#041018;
+  font-weight:950;
+  font-size:9px;
+}
+
+.menuBtn{
+  display:none;
+  border:1px solid var(--line);
+  background:#0b1824;
+  padding:7px 10px;
+  border-radius:7px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGES
+═══════════════════════════════════════════════════════════════ */
+.page{
+  display:none;
+  animation:pageIn .25s ease;
+}
+
+.page.active{
+  display:block;
+}
+
+@keyframes pageIn{
+  from{ opacity:0; transform:translateY(5px); }
+  to{ opacity:1; transform:none; }
+}
+
+.pagehead{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:12px;
+  margin:24px 0 17px;
+}
+
+.kicker{
+  font-size:8px;
+  color:var(--cyan);
+  letter-spacing:.25em;
+  text-transform:uppercase;
+}
+
+h1{
+  font-size:clamp(22px, 2.8vw, 31px);
+  line-height:1.1;
+  margin:6px 0 5px;
+  letter-spacing:.015em;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.subtitle{
+  font-size:10px;
+  color:var(--muted);
+}
+
+.actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════════════════════════ */
+.btn{
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:9px 12px;
+  background:linear-gradient(135deg, #12303b, #0a1722);
+  color:var(--cyan);
+  font-size:9px;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+  transition:.2s;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-weight:700;
+}
+
+.btn:hover:not(:disabled){
+  border-color:var(--cyan);
+  box-shadow:0 0 20px #00f0ff25;
+  transform:translateY(-1px);
+}
+
+.btn:disabled{
+  opacity:.4;
+  cursor:not-allowed;
+}
+
+.btn.primary{
+  background:var(--cyan);
+  color:#031116;
+  border-color:var(--cyan);
+  font-weight:900;
+}
+
+.btn.primary:hover:not(:disabled){
+  box-shadow:0 0 25px #00f0ff55;
+}
+
+.btn.green{
+  color:var(--green);
+  border-color:#39ff9150;
+}
+
+.btn.green:hover:not(:disabled){
+  background:#39ff9112;
+  border-color:var(--green);
+}
+
+.btn.pink{
+  color:var(--pink);
+  border-color:#ff2f9250;
+}
+
+.btn.red{
+  color:var(--red);
+  border-color:#ff526850;
+}
+
+.btn.red:hover:not(:disabled){
+  background:#ff526812;
+  border-color:var(--red);
+}
+
+.btn.ghost{
+  background:transparent;
+  color:var(--muted);
+}
+
+.btn.ghost:hover:not(:disabled){
+  background:#091521;
+  color:var(--text);
+}
+
+.btn.sm{
+  padding:6px 10px;
+  font-size:8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GRID & PANELS
+═══════════════════════════════════════════════════════════════ */
+.grid{
+  display:grid;
+  gap:12px;
+}
+
+.stats{
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+}
+
+.panel{
+  min-width:0;
+  position:relative;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  background:linear-gradient(145deg, rgba(15,30,43,.96), rgba(7,15,24,.97));
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.panel:before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  width:66px;
+  height:1px;
+  background:var(--cyan);
+  box-shadow:0 0 13px var(--cyan);
+}
+
+.panelhead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:14px 16px;
+  border-bottom:1px solid #00f0ff13;
+}
+
+.paneltitle{
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.paneltitle em{
+  font-style:normal;
+  color:var(--cyan);
+}
+
+.panelmeta{
+  font-size:8px;
+  color:var(--muted);
+  letter-spacing:.1em;
+}
+
+.panelmeta b{
+  color:var(--cyan);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STAT CARDS
+═══════════════════════════════════════════════════════════════ */
+.stat{
+  padding:14px 15px;
+  min-height:112px;
+}
+
+.statlabel{
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-size:8px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+
+.staticon{
+  font-size:15px;
+  color:var(--cyan);
+}
+
+.statvalue{
+  font-size:clamp(23px, 2.7vw, 31px);
+  font-weight:900;
+  letter-spacing:-.04em;
+  margin:11px 0 3px;
+  color:var(--cyan);
+  text-shadow:0 0 17px #00f0ff50;
+  font-family:ui-monospace, monospace;
+}
+
+.stat:nth-child(2) .statvalue{
+  color:var(--green);
+  text-shadow:0 0 17px #39ff9150;
+}
+
+.stat:nth-child(3) .statvalue{
+  color:var(--violet);
+  text-shadow:0 0 17px #b45cff50;
+}
+
+.stat:nth-child(4) .statvalue{
+  color:var(--amber);
+  text-shadow:0 0 17px #ffd75e50;
+}
+
+.statfoot{
+  font-size:8px;
+  color:var(--muted);
+}
+
+.contentgrid{
+  grid-template-columns:minmax(0, 1.55fr) minmax(255px, .85fr);
+  margin-top:12px;
+}
+
+.stack{
+  display:grid;
+  gap:12px;
+  align-content:start;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TABLE
+═══════════════════════════════════════════════════════════════ */
+.tablewrap{
+  overflow:auto;
+  padding:0 13px 8px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  white-space:nowrap;
+  font-size:9px;
+}
+
+th{
+  text-align:left;
+  color:#668797;
+  font-size:8px;
+  letter-spacing:.13em;
+  padding:10px 8px;
+  border-bottom:1px solid var(--line);
+  text-transform:uppercase;
+  font-weight:700;
+}
+
+td{
+  padding:11px 8px;
+  border-bottom:1px solid #ffffff0b;
+  color:#cde5ed;
+  font-size:9px;
+}
+
+tr:last-child td{
+  border-bottom:0;
+}
+
+tr:hover td{
+  background:rgba(0,240,255,.03);
+}
+
+.uid{
+  color:var(--cyan);
+  font:9px ui-monospace, monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BADGES
+═══════════════════════════════════════════════════════════════ */
+.badge{
+  display:inline-block;
+  padding:4px 6px;
+  border:1px solid #39ff9145;
+  border-radius:5px;
+  color:var(--green);
+  font-size:7px;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  font-weight:700;
+}
+
+.badge.warn{
+  color:var(--amber);
+  border-color:#ffd75e55;
+  background:#ffd75e0b;
+}
+
+.badge.bad{
+  color:var(--pink);
+  border-color:#ff2f9255;
+  background:#ff2f920b;
+}
+
+.badge.info{
+  color:var(--cyan);
+  border-color:#00f0ff55;
+  background:#00f0ff0b;
+}
+
+.badge.idle{
+  color:var(--muted);
+  border-color:#7895a455;
+  background:#7895a40b;
+}
+
+.note{
+  padding:10px 15px;
+  border-top:1px solid #00f0ff12;
+  color:var(--muted);
+  font-size:8px;
+  line-height:1.6;
+}
+
+.note b{
+  color:var(--cyan);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MAP GRID
+═══════════════════════════════════════════════════════════════ */
+.mapgrid{
+  display:grid;
+  grid-template-columns:repeat(6, 1fr);
+  gap:6px;
+  padding:13px;
+}
+
+.mapcell{
+  border:1px solid #00f0ff28;
+  background:#0a1a26;
+  border-radius:8px;
+  text-align:center;
+  padding:10px 8px;
+  color:#85a8b7;
+  font:9px ui-monospace, monospace;
+  transition:.2s;
+  position:relative;
+  text-align:left;
+}
+
+.mapcell:hover{
+  border-color:#00f0ff50;
+}
+
+.mapcell.done{
+  color:var(--green);
+  border-color:#39ff9155;
+  background:#39ff910b;
+}
+
+.mapcell.playing{
+  color:var(--cyan);
+  border-color:var(--cyan);
+  box-shadow:0 0 14px #00f0ff25;
+  animation:mapPulse 1.6s infinite;
+}
+
+@keyframes mapPulse{
+  0%,100%{ box-shadow:0 0 14px #00f0ff25; }
+  50%{ box-shadow:0 0 22px #00f0ff55; }
+}
+
+.mapcell small{
+  display:block;
+  font-size:7px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.mapactions{
+  display:flex;
+  gap:4px;
+  margin-top:8px;
+}
+
+.mapactions button{
+  flex:1;
+  padding:5px 4px;
+  background:#0f202d;
+  border:1px solid var(--line);
+  border-radius:4px;
+  font-size:9px;
+  color:#fff;
+  cursor:pointer;
+  transition:.15s;
+  font-weight:600;
+}
+
+.mapactions button:hover{
+  background:var(--cyan);
+  color:#000;
+  border-color:var(--cyan);
+}
+
+.mapactions button.del:hover{
+  background:var(--red);
+  border-color:var(--red);
+  color:#fff;
+}
+
+.mapactions button.edit:hover{
+  background:var(--amber);
+  border-color:var(--amber);
+  color:#000;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EVENTS & FEED
+═══════════════════════════════════════════════════════════════ */
+.eventlist{
+  padding:4px 15px 10px;
+}
+
+.event{
+  display:grid;
+  grid-template-columns:58px minmax(0, 1fr) auto;
+  gap:8px;
+  align-items:center;
+  padding:10px 0;
+  border-bottom:1px solid #ffffff0b;
+  font-size:9px;
+}
+
+.event:last-child{
+  border:0;
+}
+
+.eventtime{
+  font:8px ui-monospace, monospace;
+  color:var(--muted);
+}
+
+.eventmsg{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  color:#cde5ed;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   METER BARS
+═══════════════════════════════════════════════════════════════ */
+.meterlist{
+  padding:14px 16px;
+}
+
+.meter{
+  margin-bottom:14px;
+}
+
+.meter:last-child{
+  margin:0;
+}
+
+.metertop{
+  display:flex;
+  justify-content:space-between;
+  font-size:8px;
+  color:var(--muted);
+  margin-bottom:6px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+
+.metertop b{
+  color:var(--cyan);
+  font-family:ui-monospace, monospace;
+}
+
+.track{
+  height:5px;
+  background:#1a2a36;
+  border-radius:8px;
+  overflow:hidden;
+}
+
+.track span{
+  display:block;
+  height:100%;
+  width:var(--w, 0%);
+  background:linear-gradient(90deg, var(--cyan), var(--green));
+  box-shadow:0 0 10px var(--cyan);
+  border-radius:8px;
+  transition:width .45s;
+}
+
+.track.violet span{
+  background:linear-gradient(90deg, var(--violet), var(--pink));
+  box-shadow:0 0 10px var(--violet);
+}
+
+.track.amber span{
+  background:linear-gradient(90deg, var(--amber), var(--pink));
+  box-shadow:0 0 10px var(--amber);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACTIVITY FEED
+═══════════════════════════════════════════════════════════════ */
+.feed{
+  padding:4px 15px 10px;
+}
+
+.feedrow{
+  display:flex;
+  gap:9px;
+  padding:10px 0;
+  border-bottom:1px solid #ffffff0b;
+}
+
+.feedrow:last-child{
+  border:0;
+}
+
+.feedicon{
+  width:27px;
+  height:27px;
+  flex:0 0 27px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--line);
+  border-radius:7px;
+  color:var(--cyan);
+  font-size:12px;
+}
+
+.feedrow strong{
+  font-size:9px;
+}
+
+.feedrow p{
+  margin:3px 0 0;
+  color:var(--muted);
+  font-size:8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TERMINAL
+═══════════════════════════════════════════════════════════════ */
+.terminal{
+  background:#03090d;
+  border-top:1px solid #39ff9130;
+  padding:0;
+  font:9px/1.65 ui-monospace, monospace;
+  color:var(--green);
+  min-height:155px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+.terminalbar{
+  height:25px;
+  background:#10231e;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  padding:0 10px;
+  flex-shrink:0;
+}
+
+.terminalbar i{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--pink);
+  display:inline-block;
+}
+
+.terminalbar i:nth-child(2){
+  background:var(--amber);
+}
+
+.terminalbar i:nth-child(3){
+  background:var(--green);
+}
+
+.terminalbar span{
+  margin-left:auto;
+  font-size:8px;
+  color:#5b8b7f;
+  letter-spacing:.1em;
+}
+
+.termout{
+  height:115px;
+  overflow:auto;
+  white-space:pre-wrap;
+  padding:10px 14px;
+  flex:1;
+}
+
+.termline{
+  display:flex;
+  gap:7px;
+  margin-bottom:2px;
+}
+
+.termline b{
+  color:var(--cyan);
+  flex-shrink:0;
+}
+
+.termline.err span{
+  color:var(--pink);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FORM FIELDS
+═══════════════════════════════════════════════════════════════ */
+.toolbar{
+  display:flex;
+  gap:7px;
+  align-items:center;
+  flex-wrap:wrap;
+  padding:12px 14px;
+}
+
+.field{
+  background:#07131e;
+  border:1px solid var(--line);
+  border-radius:7px;
+  padding:8px 10px;
+  color:var(--text);
+  font-size:9px;
+  min-width:0;
+  outline:none;
+  transition:.15s;
+}
+
+.field:hover{
+  border-color:#00f0ff40;
+}
+
+.field:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 2px #00f0ff15;
+}
+
+.field::placeholder{
+  color:#607c8b;
+}
+
+.field.wide{
+  width:100%;
+}
+
+.field.area{
+  width:100%;
+  min-height:96px;
+  resize:vertical;
+  font-family:ui-monospace, monospace;
+  font-size:8px;
+  line-height:1.55;
+  padding:10px;
+}
+
+.split2{
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOGGLES
+═══════════════════════════════════════════════════════════════ */
+.toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  font-size:9px;
+  color:var(--muted);
+  cursor:pointer;
+  user-select:none;
+  padding:8px 10px;
+  border:1px solid var(--line);
+  border-radius:7px;
+  background:#07131e;
+  transition:.15s;
+}
+
+.toggle:hover{
+  border-color:#00f0ff40;
+}
+
+.toggle.on{
+  color:var(--cyan);
+  border-color:#00f0ff40;
+  background:#00f0ff08;
+}
+
+.toggle .tlabel{
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  font-weight:700;
+}
+
+.switch{
+  appearance:none;
+  width:32px;
+  height:18px;
+  border-radius:20px;
+  background:#263845;
+  position:relative;
+  cursor:pointer;
+  outline:none;
+  border:1px solid #45606c;
+  flex-shrink:0;
+  margin:0;
+}
+
+.switch:before{
+  content:"";
+  position:absolute;
+  width:12px;
+  height:12px;
+  left:2px;
+  top:2px;
+  background:#8ba1aa;
+  border-radius:50%;
+  transition:.2s;
+}
+
+.switch:checked{
+  background:#00f0ff35;
+  border-color:var(--cyan);
+}
+
+.switch:checked:before{
+  left:16px;
+  background:var(--cyan);
+  box-shadow:0 0 9px var(--cyan);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EMPTY STATES
+═══════════════════════════════════════════════════════════════ */
+.empty{
+  padding:35px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.empty .glyph{
+  font-size:35px;
+  color:var(--cyan);
+  text-shadow:0 0 18px var(--cyan);
+  display:block;
+  margin-bottom:10px;
+}
+
+.empty strong{
+  display:block;
+  color:var(--text);
+  font-size:11px;
+  margin-bottom:5px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════════════ */
+.toast{
+  position:fixed;
+  z-index:80;
+  right:18px;
+  bottom:18px;
+  background:#102733;
+  border:1px solid var(--cyan);
+  border-radius:9px;
+  padding:11px 15px;
+  color:var(--cyan);
+  font-size:9px;
+  box-shadow:0 0 25px #00f0ff25;
+  opacity:0;
+  transform:translateY(9px);
+  transition:.2s;
+  pointer-events:none;
+  max-width:340px;
+}
+
+.toast.show{
+  opacity:1;
+  transform:none;
+}
+
+.toast.err{
+  border-color:var(--red);
+  color:var(--red);
+  box-shadow:0 0 25px #ff526850;
+}
+
+.toast.ok{
+  border-color:var(--green);
+  color:var(--green);
+  box-shadow:0 0 25px #39ff9150;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE BAR & OVERLAY
+═══════════════════════════════════════════════════════════════ */
+.mobilebar{
+  display:none;
+}
+
+.overlay{
+  display:none;
+  position:fixed;
+  z-index:29;
+  inset:0;
+  background:#0009;
+}
+
+.overlay.show{
+  display:block;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FLEET CARDS
+═══════════════════════════════════════════════════════════════ */
+.fleetgrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(255px, 1fr));
+  gap:12px;
+  padding:14px;
+}
+
+.botcard{
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:linear-gradient(145deg, #0e1f2d, #0a1520);
+  padding:14px;
+  position:relative;
+  overflow:hidden;
+  transition:.2s;
+}
+
+.botcard:hover{
+  border-color:#00f0ff40;
+  transform:translateY(-2px);
+}
+
+.botcard:before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:2px;
+  background:var(--muted);
+  opacity:.4;
+}
+
+.botcard.playing:before{
+  background:var(--green);
+  box-shadow:0 0 12px var(--green);
+  opacity:1;
+}
+
+.botcard.wait:before{
+  background:var(--amber);
+  box-shadow:0 0 12px var(--amber);
+  opacity:1;
+}
+
+.botcard.err:before{
+  background:var(--red);
+  box-shadow:0 0 12px var(--red);
+  opacity:1;
+}
+
+.bothead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:11px;
+  gap:8px;
+}
+
+.botav{
+  width:31px;
+  height:31px;
+  border-radius:8px;
+  background:linear-gradient(135deg, #00f0ff30, #b45cff30);
+  border:1px solid var(--line);
+  display:grid;
+  place-items:center;
+  font-family:ui-monospace, monospace;
+  font-size:11px;
+  font-weight:900;
+  color:var(--cyan);
+  flex-shrink:0;
+}
+
+.botcard.playing .botav{
+  background:linear-gradient(135deg, #39ff9130, #00f0ff30);
+  color:var(--green);
+  border-color:#39ff9140;
+}
+
+.botcard.wait .botav{
+  background:linear-gradient(135deg, #ffd75e30, #ff2f9230);
+  color:var(--amber);
+  border-color:#ffd75e40;
+}
+
+.botcard.err .botav{
+  background:linear-gradient(135deg, #ff526830, #ff2f9230);
+  color:var(--red);
+  border-color:#ff526840;
+}
+
+.botname{
+  font-size:11px;
+  font-weight:800;
+  color:var(--text);
+}
+
+.botuid{
+  font-size:8px;
+  color:var(--muted);
+  font-family:ui-monospace, monospace;
+  margin-top:2px;
+}
+
+.botstats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  padding-top:11px;
+  border-top:1px solid #ffffff0b;
+  margin-top:11px;
+}
+
+.botstat small{
+  display:block;
+  font-size:7px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:3px;
+}
+
+.botstat b{
+  font-size:11px;
+  color:var(--cyan);
+  font-family:ui-monospace, monospace;
+  font-weight:700;
+}
+
+.lockbar{
+  margin-top:11px;
+  padding-top:11px;
+  border-top:1px solid #ffffff0b;
+}
+
+.lockhead{
+  display:flex;
+  justify-content:space-between;
+  font-size:8px;
+  color:var(--muted);
+  margin-bottom:5px;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+}
+
+.lockhead b{
+  color:var(--cyan);
+  font-family:ui-monospace, monospace;
+}
+
+.locktrack{
+  height:4px;
+  background:#1a2a36;
+  border-radius:3px;
+  overflow:hidden;
+}
+
+.lockfill{
+  height:100%;
+  background:linear-gradient(90deg, var(--amber), var(--cyan));
+  border-radius:3px;
+  transition:width .5s;
+}
+
+.lockfill.done{
+  background:linear-gradient(90deg, var(--green), var(--cyan2));
+  box-shadow:0 0 10px #39ff9150;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LOGS
+═══════════════════════════════════════════════════════════════ */
+.logstream{
+  padding:12px 15px;
+  font-family:ui-monospace, monospace;
+  font-size:9px;
+  max-height:60vh;
+  overflow:auto;
+}
+
+.logrow{
+  display:flex;
+  gap:9px;
+  padding:5px 0;
+  border-bottom:1px solid #ffffff08;
+  align-items:flex-start;
+  line-height:1.5;
+}
+
+.logrow:last-child{
+  border:0;
+}
+
+.logtime{
+  color:#526c79;
+  min-width:52px;
+  flex-shrink:0;
+  font-size:8px;
+  padding-top:1px;
+}
+
+.logmsg{
+  flex:1;
+  color:#b3d1dc;
+  word-break:break-word;
+}
+
+.logrow.err .logmsg{
+  color:#ff8b96;
+}
+
+.logtabs{
+  display:flex;
+  gap:5px;
+  padding:11px 15px;
+  border-bottom:1px solid var(--line);
+}
+
+.logtab{
+  padding:5px 11px;
+  border-radius:6px;
+  font-size:9px;
+  color:var(--muted);
+  cursor:pointer;
+  transition:.15s;
+  border:1px solid transparent;
+  background:transparent;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  font-weight:700;
+}
+
+.logtab:hover{
+  color:var(--text);
+  background:#0e202d;
+}
+
+.logtab.active{
+  background:#00f0ff12;
+  color:var(--cyan);
+  border-color:#00f0ff35;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SOCIAL ROWS
+═══════════════════════════════════════════════════════════════ */
+.socrow{
+  display:grid;
+  grid-template-columns:32px 1fr auto;
+  gap:10px;
+  padding:10px 14px;
+  border-bottom:1px solid #ffffff08;
+  align-items:center;
+  font-size:9px;
+}
+
+.socrow:last-child{
+  border:0;
+}
+
+.socidx{
+  color:var(--violet);
+  font-family:ui-monospace, monospace;
+  font-weight:900;
+  font-size:10px;
+}
+
+.socmain .socname{
+  font-size:9px;
+  color:var(--text);
+  font-weight:700;
+}
+
+.socmain .socmeta{
+  font-size:8px;
+  color:var(--muted);
+  margin-top:2px;
+  font-family:ui-monospace, monospace;
+}
+
+.socstate{
+  font-size:8px;
+  padding:3px 7px;
+  border-radius:5px;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  font-weight:700;
+  border:1px solid;
+  white-space:nowrap;
+}
+
+.socstate.ok{
+  color:var(--green);
+  border-color:#39ff9150;
+  background:#39ff9110;
+}
+
+.socstate.wait{
+  color:var(--cyan);
+  border-color:#00f0ff50;
+  background:#00f0ff10;
+}
+
+.socstate.err{
+  color:var(--red);
+  border-color:#ff526850;
+  background:#ff526810;
+}
+
+.socstate.lock{
+  color:var(--amber);
+  border-color:#ffd75e50;
+  background:#ffd75e10;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════════════════════════ */
+.modal{
+  display:none;
+  position:fixed;
+  z-index:100;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  backdrop-filter:blur(6px);
+  place-items:center;
+  padding:16px;
+}
+
+.modal.show{
+  display:grid;
+}
+
+.modal-content{
+  background:linear-gradient(145deg, #0f1e2b, #070f18);
+  padding:20px;
+  border-radius:12px;
+  border:1px solid var(--cyan);
+  width:min(440px, 100%);
+  box-shadow:0 0 30px #00f0ff20;
+}
+
+.modal-content h2{
+  margin:0 0 15px;
+  font-size:15px;
+  color:var(--cyan);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════ */
+@media(max-width:1100px){
+  :root{ --side:220px; }
+  main{ padding:0 18px 30px; }
+  .topbar{ margin:0 -18px; padding:0 18px; }
+  .stats{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
+}
+
+@media(max-width:780px){
+  .shell{ display:block; }
+  .sidebar{
+    width:265px;
+    transform:translateX(-105%);
+    box-shadow:20px 0 45px #000b;
+  }
+  .sidebar.open{ transform:none; }
+  main{ padding:0 12px 88px; }
+  .topbar{
+    margin:0 -12px;
+    padding:0 12px;
+    height:59px;
+  }
+  .menuBtn{ display:block; }
+  .crumb{ display:none; }
+  .topright{ gap:5px; }
+  .topchip{ font-size:7px; padding:6px; }
+  .avatar{ display:none; }
+  .pagehead{
+    align-items:flex-start;
+    flex-direction:column;
+    margin:19px 0 14px;
+  }
+  .actions{ width:100%; }
+  .contentgrid{ grid-template-columns:1fr; }
+  .stats{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
+  .mobilebar{
+    display:flex;
+    position:fixed;
+    z-index:25;
+    bottom:0;
+    left:0;
+    right:0;
+    justify-content:space-around;
+    padding:8px 4px calc(8px + env(safe-area-inset-bottom));
+    background:#06111df2;
+    border-top:1px solid var(--line);
+    backdrop-filter:blur(18px);
+  }
+  .mobilebar button{
+    border:0;
+    background:none;
+    color:var(--muted);
+    font-size:7px;
+    display:grid;
+    gap:3px;
+    justify-items:center;
+    padding:4px 8px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-weight:700;
+  }
+  .mobilebar button span{ font-size:16px; }
+  .mobilebar button.active{ color:var(--cyan); }
+  .mapgrid{ grid-template-columns:repeat(2, 1fr); }
+  .logstream{ max-height:50vh; }
+}
+
+@media(max-width:410px){
+  .stats{ gap:8px; }
+  .stat{ padding:11px; }
+  .statvalue{ font-size:22px; }
+  .mapgrid{ grid-template-columns:1fr; }
+  .event{ grid-template-columns:49px minmax(0, 1fr) auto; gap:5px; }
+}
 </style>
 </head>
 <body>
 
 <div class="shell">
 
-<aside class="sidebar" id="sidebar">
-  <div class="brand">
-    <div class="brandmark"><span>Z</span></div>
-    <div class="brandname">ZHD ENGINE<small>COMMAND DECK</small></div>
-  </div>
-  <div class="navlabel">Navigation <span class="version-badge">v4.0</span></div>
-  <nav class="nav" id="nav">
-    <button data-page="console" class="active"><span class="navicon">◉</span> Console <span class="navcount" id="navBotCount">0</span></button>
-    <button data-page="fleet"><span class="navicon">▣</span> Fleet <span class="navcount" id="navFleetCount">0</span></button>
-    <button data-page="maps"><span class="navicon">◈</span> Maps <span class="navcount" id="navMapCount">0</span></button>
-    <button data-page="social"><span class="navicon">◎</span> Social <span class="navcount" id="navSocCount">0</span></button>
-    <button data-page="logs"><span class="navicon">▤</span> Logs <span class="navcount" id="navLogCount">0</span></button>
-    <button data-page="config"><span class="navicon">⚙</span> Config</button>
-  </nav>
-
-  <div class="sidebottom">
-    <strong><span class="livedot" id="liveDot"></span>SYSTEM STATUS</strong>
-    <p id="sideStatus">Engine offline</p>
-    <div class="ringstat"><span>Uptime</span><b id="sideUptime">0s</b></div>
-    <div class="ringstat"><span>Active bots</span><b id="sideBots">0</b></div>
-    <div class="ringstat"><span>WS link</span><b id="sideWs">offline</b></div>
-  </div>
-</aside>
-<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-
-<main>
-  <div class="topbar">
-    <button class="menuBtn" onclick="toggleSidebar()">☰</button>
-    <div class="crumb">ZHD <b>/</b> <span id="crumbName">Console</span></div>
-    <div class="topright">
-      <div class="topchip" id="wsChip">WS · offline</div>
-      <div class="topchip" id="engineChip">IDLE</div>
-      <div class="clock" id="clock">--:--:--</div>
-      <div class="avatar">Z</div>
-    </div>
-  </div>
-
-  <section class="page active" data-page="console">
-    <div class="pagehead">
-      <div>
-        <div class="kicker">// SYSTEM OVERVIEW</div>
-        <h1>Nexus Console</h1>
-        <div class="subtitle">Live telemetry from the ZHD bot fleet</div>
-      </div>
-      <div class="actions">
-        <button class="btn primary" id="startBtn" onclick="startEngine()">▶ Start Engine</button>
-        <button class="btn red" id="stopBtn" onclick="stopEngine()" disabled>■ Stop</button>
-        <button class="btn ghost" onclick="saveSnapshot()">⤓ Snapshot</button>
+  <!-- ═══════════════════════════════════════════════════════════
+       SIDEBAR
+  ═══════════════════════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brandmark"><span>Z</span></div>
+      <div class="brandname">
+        ZHD ENGINE
+        <small>COMMAND DECK</small>
       </div>
     </div>
 
-    <div class="grid stats">
-      <div class="panel stat"><div class="statlabel"><span>Total Matches</span><span class="staticon">◉</span></div><div class="statvalue" id="metricMatches">0</div><div class="statfoot">Across all bots</div></div>
-      <div class="panel stat"><div class="statlabel"><span>Follows</span><span class="staticon">◈</span></div><div class="statvalue" id="metricFollows">0</div><div class="statfoot">Locked complete</div></div>
-      <div class="panel stat"><div class="statlabel"><span>Subscribes</span><span class="staticon">★</span></div><div class="statvalue" id="metricSubs">0</div><div class="statfoot">Workshop maps</div></div>
-      <div class="panel stat"><div class="statlabel"><span>Errors</span><span class="staticon">⚠</span></div><div class="statvalue" id="metricErrors">0</div><div class="statfoot">Total incidents</div></div>
+    <div class="navlabel">
+      Navigation
+      <span class="version-badge">v4.0</span>
     </div>
 
-    <div class="grid contentgrid">
-      <div class="stack">
-        <div class="panel">
-          <div class="panelhead"><div class="paneltitle"><em>◆</em> Bot Fleet</div><div class="panelmeta">Showing <b id="botMetaCount">0</b> active</div></div>
-          <div class="tablewrap"><table><thead><tr><th>#</th><th>UID</th><th>Status</th><th>Map</th><th>Entity</th><th>Matches</th><th>Lock</th></tr></thead><tbody id="botTableBody"><tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">No bots deployed</td></tr></tbody></table></div>
-          <div class="note" id="botTableNote">Waiting...</div>
+    <nav class="nav" id="nav">
+      <button data-page="console" class="active">
+        <span class="navicon">◉</span> Console
+        <span class="navcount" id="navBotCount">0</span>
+      </button>
+      <button data-page="fleet">
+        <span class="navicon">▣</span> Fleet
+        <span class="navcount" id="navFleetCount">0</span>
+      </button>
+      <button data-page="maps">
+        <span class="navicon">◈</span> Maps
+        <span class="navcount" id="navMapCount">0</span>
+      </button>
+      <button data-page="social">
+        <span class="navicon">◎</span> Social
+        <span class="navcount" id="navSocCount">0</span>
+      </button>
+      <button data-page="logs">
+        <span class="navicon">▤</span> Logs
+        <span class="navcount" id="navLogCount">0</span>
+      </button>
+      <button data-page="config">
+        <span class="navicon">⚙</span> Config
+      </button>
+    </nav>
+
+    <div class="sidebottom">
+      <strong><span class="livedot" id="liveDot"></span>SYSTEM STATUS</strong>
+      <p id="sideStatus">Engine offline</p>
+      <div class="ringstat"><span>Uptime</span><b id="sideUptime">0s</b></div>
+      <div class="ringstat"><span>Active bots</span><b id="sideBots">0</b></div>
+      <div class="ringstat"><span>WS link</span><b id="sideWs">offline</b></div>
+    </div>
+  </aside>
+
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MAIN
+  ═══════════════════════════════════════════════════════════════ -->
+  <main>
+    <div class="topbar">
+      <button class="menuBtn" onclick="toggleSidebar()">☰</button>
+      <div class="crumb">ZHD <b>/</b> <span id="crumbName">Console</span></div>
+      <div class="topright">
+        <div class="topchip" id="wsChip">WS · offline</div>
+        <div class="topchip" id="engineChip">IDLE</div>
+        <div class="clock" id="clock">--:--:--</div>
+        <div class="avatar">Z</div>
+      </div>
+    </div>
+
+    <!-- ═══════════ CONSOLE PAGE ═══════════ -->
+    <section class="page active" data-page="console">
+      <div class="pagehead">
+        <div>
+          <div class="kicker">// SYSTEM OVERVIEW</div>
+          <h1>Nexus Console</h1>
+          <div class="subtitle">Live telemetry from the ZHD bot fleet across all maps and socials</div>
         </div>
-        <div class="panel">
-          <div class="panelhead"><div class="paneltitle"><em>◈</em> Map Rotation</div><div class="panelmeta">Range <b id="rangeMeta">1 – 24</b></div></div>
-          <div class="mapgrid" id="mapGrid" style="grid-template-columns:repeat(6,1fr)"></div>
-        </div>
-        <div class="panel">
-          <div class="panelhead"><div class="paneltitle"><em>▤</em> Terminal</div><div class="panelmeta">stdout · live</div></div>
-          <div class="terminal"><div class="terminalbar"><i></i><i></i><i></i><span>zhd@nexus</span></div><div class="termout" id="termOut"></div></div>
+        <div class="actions">
+          <button class="btn primary" id="startBtn" onclick="startEngine()">▶ Start Engine</button>
+          <button class="btn red" id="stopBtn" onclick="stopEngine()" disabled>■ Stop</button>
+          <button class="btn ghost" onclick="saveSnapshot()">⤓ Snapshot</button>
         </div>
       </div>
 
-      <div class="stack">
+      <div class="grid stats">
+        <div class="panel stat">
+          <div class="statlabel"><span>Total Matches</span><span class="staticon">◉</span></div>
+          <div class="statvalue" id="metricMatches">0</div>
+          <div class="statfoot">Across all bots</div>
+        </div>
+        <div class="panel stat">
+          <div class="statlabel"><span>Follows</span><span class="staticon">◈</span></div>
+          <div class="statvalue" id="metricFollows">0</div>
+          <div class="statfoot">Locked complete</div>
+        </div>
+        <div class="panel stat">
+          <div class="statlabel"><span>Subscribes</span><span class="staticon">★</span></div>
+          <div class="statvalue" id="metricSubs">0</div>
+          <div class="statfoot">Workshop maps</div>
+        </div>
+        <div class="panel stat">
+          <div class="statlabel"><span>Errors</span><span class="staticon">⚠</span></div>
+          <div class="statvalue" id="metricErrors">0</div>
+          <div class="statfoot">Total incidents</div>
+        </div>
+      </div>
+
+      <div class="grid contentgrid">
+        <div class="stack">
+          <div class="panel">
+            <div class="panelhead">
+              <div class="paneltitle"><em>◆</em> Bot Fleet</div>
+              <div class="panelmeta">Showing <b id="botMetaCount">0</b> active</div>
+            </div>
+            <div class="tablewrap">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>UID</th><th>Status</th><th>Map</th><th>Entity</th><th>Matches</th><th>Lock</th></tr>
+                </thead>
+                <tbody id="botTableBody">
+                  <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">No bots deployed. Load accounts and start the engine.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="note" id="botTableNote">Waiting for engine start...</div>
+          </div>
+
+          <div class="panel">
+            <div class="panelhead">
+              <div class="paneltitle"><em>◈</em> Map Rotation</div>
+              <div class="panelmeta">Range <b id="rangeMeta">1 – 24</b></div>
+            </div>
+            <div class="mapgrid" id="mapGrid" style="grid-template-columns:repeat(6,1fr)"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panelhead">
+              <div class="paneltitle"><em>▤</em> Terminal</div>
+              <div class="panelmeta">stdout · live</div>
+            </div>
+            <div class="terminal">
+              <div class="terminalbar">
+                <i></i><i></i><i></i>
+                <span>zhd@nexus</span>
+              </div>
+              <div class="termout" id="termOut"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="panel">
+            <div class="panelhead">
+              <div class="paneltitle"><em>◉</em> Load</div>
+              <div class="panelmeta">Live</div>
+            </div>
+            <div class="meterlist">
+              <div class="meter">
+                <div class="metertop"><span>Bots Playing</span><b id="meterPlaying">0 / 0</b></div>
+                <div class="track"><span id="meterPlayingBar" style="--w:0%"></span></div>
+              </div>
+              <div class="meter">
+                <div class="metertop"><span>Follow Locked</span><b id="meterLock">0 / 0</b></div>
+                <div class="track violet"><span id="meterLockBar" style="--w:0%"></span></div>
+              </div>
+              <div class="meter">
+                <div class="metertop"><span>Success Rate</span><b id="meterSuccess">100%</b></div>
+                <div class="track amber"><span id="meterSuccessBar" style="--w:100%"></span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelhead">
+              <div class="paneltitle"><em>▤</em> Recent Events</div>
+              <div class="panelmeta" id="eventCount">0</div>
+            </div>
+            <div class="eventlist" id="eventList">
+              <div class="empty">
+                <span class="glyph">◌</span>
+                <strong>No events yet</strong>
+                Start the engine to see live activity
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelhead">
+              <div class="paneltitle"><em>◎</em> Activity Feed</div>
+              <div class="panelmeta">Latest</div>
+            </div>
+            <div class="feed" id="feedList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ FLEET PAGE ═══════════ -->
+    <section class="page" data-page="fleet">
+      <div class="pagehead">
+        <div>
+          <div class="kicker">// BOT DETAIL</div>
+          <h1>Fleet Deployment</h1>
+          <div class="subtitle">Deep telemetry for every bot in the active rotation</div>
+        </div>
+        <div class="actions">
+          <button class="btn" onclick="scrollToTop()">⟲ Refresh</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="fleetgrid" id="fleetGrid">
+          <div class="empty" style="grid-column:1/-1">
+            <span class="glyph">▣</span>
+            <strong>No bots deployed</strong>
+            Load accounts and start the engine
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ MAPS PAGE ═══════════ -->
+    <section class="page" data-page="maps">
+      <div class="pagehead">
+        <div>
+          <div class="kicker">// WORKSHOP ROTATION</div>
+          <h1>Map Manager <span class="version-badge">NEW</span></h1>
+          <div class="subtitle">Add, edit, or delete map codes on the fly</div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" onclick="openMapModal()">+ Add Map</button>
+          <button class="btn ghost" onclick="copyMaps()">⎘ Copy All</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panelhead">
+          <div class="paneltitle"><em>◈</em> Total Maps</div>
+          <div class="panelmeta"><b id="totalMapsCount">0</b> loaded</div>
+        </div>
+        <div class="mapgrid" id="bigMapGrid" style="grid-template-columns:repeat(auto-fill, minmax(220px, 1fr))"></div>
+        <div class="note">
+          💡 <b>Copy</b> = Copy code · <b>Edit</b> = Change code · <b>Del</b> = Remove map
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ SOCIAL PAGE ═══════════ -->
+    <section class="page" data-page="social">
+      <div class="pagehead">
+        <div>
+          <div class="kicker">// SOCIAL ACTIONS</div>
+          <h1>Social Control</h1>
+          <div class="subtitle">Manual follow / subscribe dispatch across all active bots</div>
+        </div>
+      </div>
+
+      <div class="grid split2">
         <div class="panel">
-          <div class="panelhead"><div class="paneltitle"><em>◉</em> Load</div><div class="panelmeta">Live</div></div>
-          <div class="meterlist">
-            <div class="meter"><div class="metertop"><span>Bots Playing</span><b id="meterPlaying">0 / 0</b></div><div class="track"><span id="meterPlayingBar" style="--w:0%"></span></div></div>
-            <div class="meter"><div class="metertop"><span>Follow Locked</span><b id="meterLock">0 / 0</b></div><div class="track violet"><span id="meterLockBar" style="--w:0%"></span></div></div>
-            <div class="meter"><div class="metertop"><span>Success Rate</span><b id="meterSuccess">100%</b></div><div class="track amber"><span id="meterSuccessBar" style="--w:100%"></span></div></div>
+          <div class="panelhead">
+            <div class="paneltitle"><em>◈</em> Follow</div>
+            <div class="panelmeta">Target UID</div>
+          </div>
+          <div class="toolbar">
+            <input class="field wide" id="followTarget" placeholder="Enter target UID...">
+            <button class="btn primary" style="width:100%" onclick="manualAction('Follow')">▶ Dispatch Follow</button>
           </div>
         </div>
         <div class="panel">
-          <div class="panelhead"><div class="paneltitle"><em>▤</em> Recent Events</div><div class="panelmeta" id="eventCount">0</div></div>
-          <div class="eventlist" id="eventList"><div class="empty"><span class="glyph">◌</span><strong>No events yet</strong>Start the engine</div></div>
+          <div class="panelhead">
+            <div class="paneltitle"><em>★</em> Subscribe</div>
+            <div class="panelmeta">Map Code</div>
+          </div>
+          <div class="toolbar">
+            <input class="field wide" id="subTarget" placeholder="FREEFIRE...Q540">
+            <button class="btn primary" style="width:100%;background:var(--violet);border-color:var(--violet)" onclick="manualAction('Subscribe')">★ Dispatch Subscribe</button>
+          </div>
         </div>
-        <div class="panel">
-          <div class="panelhead"><div class="paneltitle"><em>◎</em> Activity Feed</div><div class="panelmeta">Latest</div></div>
-          <div class="feed" id="feedList"></div>
+      </div>
+
+      <div class="panel" style="margin-top:12px">
+        <div class="panelhead">
+          <div class="paneltitle"><em>◎</em> Social History</div>
+          <div class="panelmeta"><b id="socTotalCount">0</b> actions</div>
+        </div>
+        <div id="socHistory">
+          <div class="empty">
+            <span class="glyph">◎</span>
+            <strong>No actions yet</strong>
+            Dispatch a follow or subscribe to see results
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="page" data-page="fleet">
-    <div class="pagehead">
-      <div><div class="kicker">// BOT DETAIL</div><h1>Fleet Deployment</h1></div>
-      <div class="actions"><button class="btn" onclick="scrollToTop()">⟲ Refresh</button></div>
-    </div>
-    <div class="panel"><div class="fleetgrid" id="fleetGrid"><div class="empty" style="grid-column:1/-1"><span class="glyph">▣</span><strong>No bots deployed</strong></div></div></div>
-  </section>
-
-  <section class="page" data-page="maps">
-    <div class="pagehead">
-      <div>
-        <div class="kicker">// WORKSHOP ROTATION</div>
-        <h1>Map Manager <span class="version-badge">NEW</span></h1>
-        <div class="subtitle">Add, edit, or delete map codes on the fly</div>
+    <!-- ═══════════ LOGS PAGE ═══════════ -->
+    <section class="page" data-page="logs">
+      <div class="pagehead">
+        <div>
+          <div class="kicker">// TELEMETRY</div>
+          <h1>Live Logs</h1>
+          <div class="subtitle">Real-time engine output with error separation</div>
+        </div>
+        <div class="actions">
+          <button class="btn ghost" onclick="clearLogsUI()">⟲ Clear view</button>
+        </div>
       </div>
-      <div class="actions">
-        <button class="btn primary" onclick="openMapModal()">+ Add Map</button>
-        <button class="btn ghost" onclick="copyMaps()">⎘ Copy All</button>
-      </div>
-    </div>
-    <div class="panel">
-      <div class="panelhead"><div class="paneltitle"><em>◈</em> Total Maps</div><div class="panelmeta"><b id="totalMapsCount">0</b> loaded</div></div>
-      <div class="mapgrid" id="bigMapGrid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))"></div>
-      <div class="note">💡 <b>Copy</b> = Copy code · <b>Edit</b> = Change code · <b>Del</b> = Remove map</div>
-    </div>
-  </section>
-
-  <section class="page" data-page="social">
-    <div class="pagehead"><div><div class="kicker">// SOCIAL ACTIONS</div><h1>Social Control</h1></div></div>
-    <div class="grid split2">
       <div class="panel">
-        <div class="panelhead"><div class="paneltitle"><em>◈</em> Follow</div><div class="panelmeta">Target UID</div></div>
+        <div class="logtabs">
+          <button class="logtab active" data-tab="all" onclick="switchLogTab('all')">All</button>
+          <button class="logtab" data-tab="logs" onclick="switchLogTab('logs')">Logs</button>
+          <button class="logtab" data-tab="errors" onclick="switchLogTab('errors')">Errors</button>
+        </div>
+        <div class="logstream" id="bigLogStream"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════ CONFIG PAGE ═══════════ -->
+    <section class="page" data-page="config">
+      <div class="pagehead">
+        <div>
+          <div class="kicker">// CONFIGURATION</div>
+          <h1>Engine Config <span class="version-badge">NEW</span></h1>
+          <div class="subtitle">Accounts, JWT, and engine behaviour</div>
+        </div>
+      </div>
+
+      <!-- JWT MANAGER -->
+      <div class="panel" style="margin-bottom:12px">
+        <div class="panelhead">
+          <div class="paneltitle"><em>🔑</em> JWT Auth Cache</div>
+        </div>
         <div class="toolbar">
-          <input class="field wide" id="followTarget" placeholder="Enter target UID...">
-          <button class="btn primary" style="width:100%" onclick="manualAction('Follow')">▶ Dispatch Follow</button>
+          <button class="btn green" onclick="clearJWT()">🔄 Force Clear JWT Cache</button>
+          <span style="font-size:10px;color:var(--muted)">Bots re-login on next cycle</span>
         </div>
       </div>
-      <div class="panel">
-        <div class="panelhead"><div class="paneltitle"><em>★</em> Subscribe</div><div class="panelmeta">Map Code</div></div>
+
+      <div class="grid split2">
+        <div class="panel">
+          <div class="panelhead">
+            <div class="paneltitle"><em>◉</em> Bot Injection <span class="version-badge">NEW</span></div>
+            <div class="panelmeta"><b id="accCount">0</b> loaded</div>
+          </div>
+          <div class="toolbar" style="flex-direction:column;align-items:stretch">
+            <textarea class="field area" id="accountsInput" placeholder='[{"uid":"123","password":"pass","account_id":"aid"}]'></textarea>
+            <div style="display:flex;gap:7px;flex-wrap:wrap">
+              <button class="btn primary" style="flex:1" onclick="injectBots()">➕ INJECT</button>
+              <button class="btn" style="flex:1" onclick="replaceBots()">♻️ REPLACE</button>
+              <button class="btn red" style="flex:1" onclick="clearAllBots()">🗑️ CLEAR ALL</button>
+            </div>
+            <div class="note" style="margin-top:8px">
+              <b>INJECT:</b> Add new bots without stopping old ones<br>
+              <b>REPLACE:</b> Kill bots not in this list<br>
+              <b>CLEAR:</b> Kill all and empty list
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panelhead">
+            <div class="paneltitle"><em>◎</em> Engine Config</div>
+          </div>
+          <div class="toolbar" style="flex-direction:column;align-items:stretch">
+            <input class="field wide" id="targetUid" placeholder="Auto-follow target UID...">
+            <div class="toggle" id="autoFollowToggle" onclick="toggleCfg('autoFollowToggle')">
+              <span class="tlabel">🤖 Auto Follow</span>
+              <input type="checkbox" class="switch" id="autoFollowSw" onclick="event.stopPropagation();toggleCfg('autoFollowToggle')">
+            </div>
+            <div class="toggle on" id="seqModeToggle" onclick="toggleCfg('seqModeToggle')">
+              <span class="tlabel">🏁 Sequential Mode</span>
+              <input type="checkbox" class="switch" id="seqModeSw" checked onclick="event.stopPropagation();toggleCfg('seqModeToggle')">
+            </div>
+            <div class="toggle on" id="resumeToggle" onclick="toggleCfg('resumeToggle')">
+              <span class="tlabel">💾 Resume Progress</span>
+              <input type="checkbox" class="switch" id="resumeSw" checked onclick="event.stopPropagation();toggleCfg('resumeToggle')">
+            </div>
+            <div class="grid split2" style="padding:0;gap:8px">
+              <input class="field" type="number" id="startMap" value="1" placeholder="Start map">
+              <input class="field" type="number" id="endMap" value="24" placeholder="End map">
+            </div>
+            <div class="grid split2" style="padding:0;gap:8px" id="timerFields">
+              <input class="field" type="number" id="holdSecs" value="60" placeholder="Hold (s)">
+              <input class="field" type="number" id="syncSecs" value="10" placeholder="Sync (s)">
+            </div>
+            <input class="field wide" type="number" id="rejoinDelay" value="2" placeholder="Reconnect delay (s)">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:12px">
+        <div class="panelhead">
+          <div class="paneltitle"><em>▤</em> Deployment Summary</div>
+        </div>
         <div class="toolbar">
-          <input class="field wide" id="subTarget" placeholder="FREEFIRE...Q540">
-          <button class="btn primary" style="width:100%;background:var(--violet);border-color:var(--violet)" onclick="manualAction('Subscribe')">★ Dispatch Subscribe</button>
+          <span class="badge info" id="sumAcc">0 accounts</span>
+          <span class="badge" id="sumRange">Maps 1-24</span>
+          <span class="badge warn" id="sumMode">Sequential</span>
+          <span class="badge" id="sumFollow">Follow: off</span>
+          <span class="badge idle" id="sumState">Engine: idle</span>
         </div>
       </div>
-    </div>
-    <div class="panel" style="margin-top:12px">
-      <div class="panelhead"><div class="paneltitle"><em>◎</em> Social History</div><div class="panelmeta"><b id="socTotalCount">0</b> actions</div></div>
-      <div id="socHistory"><div class="empty"><span class="glyph">◎</span><strong>No actions yet</strong></div></div>
-    </div>
-  </section>
+    </section>
 
-  <section class="page" data-page="logs">
-    <div class="pagehead"><div><div class="kicker">// TELEMETRY</div><h1>Live Logs</h1></div><div class="actions"><button class="btn ghost" onclick="clearLogsUI()">⟲ Clear</button></div></div>
-    <div class="panel">
-      <div class="logtabs">
-        <button class="logtab active" data-tab="all" onclick="switchLogTab('all')">All</button>
-        <button class="logtab" data-tab="logs" onclick="switchLogTab('logs')">Logs</button>
-        <button class="logtab" data-tab="errors" onclick="switchLogTab('errors')">Errors</button>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MOBILE BAR
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="mobilebar" id="mobilebar">
+    <button data-page="console" class="active" onclick="navTo('console')"><span>◉</span>Console</button>
+    <button data-page="fleet" onclick="navTo('fleet')"><span>▣</span>Fleet</button>
+    <button data-page="maps" onclick="navTo('maps')"><span>◈</span>Maps</button>
+    <button data-page="social" onclick="navTo('social')"><span>◎</span>Social</button>
+    <button data-page="logs" onclick="navTo('logs')"><span>▤</span>Logs</button>
+    <button data-page="config" onclick="navTo('config')"><span>⚙</span>Config</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MAP MODAL
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="modal" id="mapModal">
+    <div class="modal-content">
+      <h2 id="mapModalTitle">➕ Add New Map</h2>
+      <input class="field" id="mapInput" style="width:100%;padding:10px;font-size:12px" placeholder="FREEFIRE..." />
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:15px">
+        <button class="btn" onclick="closeMapModal()">Cancel</button>
+        <button class="btn primary" onclick="saveMap()">Save</button>
       </div>
-      <div class="logstream" id="bigLogStream"></div>
-    </div>
-  </section>
-
-  <section class="page" data-page="config">
-    <div class="pagehead">
-      <div><div class="kicker">// CONFIGURATION</div><h1>Engine Config <span class="version-badge">NEW</span></h1></div>
-    </div>
-
-    <!-- JWT MANAGER -->
-    <div class="panel" style="margin-bottom:12px">
-      <div class="panelhead"><div class="paneltitle"><em>🔑</em> JWT Auth Cache</div></div>
-      <div class="toolbar">
-        <button class="btn green" onclick="clearJWT()">🔄 Force Clear JWT Cache</button>
-        <span style="font-size:10px;color:var(--muted)">Bots re-login on next cycle</span>
-      </div>
-    </div>
-
-    <div class="grid split2">
-      <div class="panel">
-        <div class="panelhead"><div class="paneltitle"><em>◉</em> Bot Injection <span class="version-badge">NEW</span></div><div class="panelmeta"><b id="accCount">0</b> loaded</div></div>
-        <div class="toolbar" style="flex-direction:column;align-items:stretch">
-          <textarea class="field area" id="accountsInput" placeholder='[{"uid":"123","password":"pass","account_id":"aid"}]'></textarea>
-          <div style="display:flex;gap:7px;flex-wrap:wrap">
-            <button class="btn primary" style="flex:1" onclick="injectBots()">➕ INJECT</button>
-            <button class="btn" style="flex:1" onclick="replaceBots()">♻️ REPLACE</button>
-            <button class="btn red" style="flex:1" onclick="clearAllBots()">🗑️ CLEAR ALL</button>
-          </div>
-          <div class="note" style="margin-top:8px">
-            <b>INJECT:</b> Add new bots without stopping old ones<br>
-            <b>REPLACE:</b> Kill bots not in this list<br>
-            <b>CLEAR:</b> Kill all and empty
-          </div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panelhead"><div class="paneltitle"><em>◎</em> Engine Config</div></div>
-        <div class="toolbar" style="flex-direction:column;align-items:stretch">
-          <input class="field wide" id="targetUid" placeholder="Auto-follow target UID...">
-          <div class="toggle" id="autoFollowToggle" onclick="toggleCfg('autoFollowToggle')">
-            <span class="tlabel">🤖 Auto Follow</span>
-            <input type="checkbox" class="switch" id="autoFollowSw" onclick="event.stopPropagation();toggleCfg('autoFollowToggle')">
-          </div>
-          <div class="toggle on" id="seqModeToggle" onclick="toggleCfg('seqModeToggle')">
-            <span class="tlabel">🏁 Sequential Mode</span>
-            <input type="checkbox" class="switch" id="seqModeSw" checked onclick="event.stopPropagation();toggleCfg('seqModeToggle')">
-          </div>
-          <div class="toggle on" id="resumeToggle" onclick="toggleCfg('resumeToggle')">
-            <span class="tlabel">💾 Resume Progress</span>
-            <input type="checkbox" class="switch" id="resumeSw" checked onclick="event.stopPropagation();toggleCfg('resumeToggle')">
-          </div>
-          <div class="grid split2" style="padding:0;gap:8px">
-            <input class="field" type="number" id="startMap" value="1" placeholder="Start map">
-            <input class="field" type="number" id="endMap" value="24" placeholder="End map">
-          </div>
-          <div class="grid split2" style="padding:0;gap:8px" id="timerFields">
-            <input class="field" type="number" id="holdSecs" value="60" placeholder="Hold (s)">
-            <input class="field" type="number" id="syncSecs" value="10" placeholder="Sync (s)">
-          </div>
-          <input class="field wide" type="number" id="rejoinDelay" value="2" placeholder="Reconnect delay (s)">
-        </div>
-      </div>
-    </div>
-
-    <div class="panel" style="margin-top:12px">
-      <div class="panelhead"><div class="paneltitle"><em>▤</em> Summary</div></div>
-      <div class="toolbar">
-        <span class="badge info" id="sumAcc">0 accounts</span>
-        <span class="badge" id="sumRange">Maps 1-24</span>
-        <span class="badge warn" id="sumMode">Sequential</span>
-        <span class="badge" id="sumFollow">Follow: off</span>
-        <span class="badge idle" id="sumState">Engine: idle</span>
-      </div>
-    </div>
-  </section>
-
-</main>
-
-<div class="mobilebar" id="mobilebar">
-  <button data-page="console" class="active" onclick="navTo('console')"><span>◉</span>Console</button>
-  <button data-page="fleet" onclick="navTo('fleet')"><span>▣</span>Fleet</button>
-  <button data-page="maps" onclick="navTo('maps')"><span>◈</span>Maps</button>
-  <button data-page="social" onclick="navTo('social')"><span>◎</span>Social</button>
-  <button data-page="logs" onclick="navTo('logs')"><span>▤</span>Logs</button>
-  <button data-page="config" onclick="navTo('config')"><span>⚙</span>Config</button>
-</div>
-
-<!-- MAP MODAL -->
-<div class="modal" id="mapModal">
-  <div class="modal-content">
-    <h2 id="mapModalTitle" style="color:var(--cyan)">Add Map</h2>
-    <input class="field" id="mapInput" style="width:100%;padding:10px;font-size:12px" placeholder="FREEFIRE..." />
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:15px">
-      <button class="btn" onclick="closeMapModal()">Cancel</button>
-      <button class="btn primary" onclick="saveMap()">Save</button>
     </div>
   </div>
-</div>
 
-<div class="toast" id="toast"></div>
+  <div class="toast" id="toast"></div>
 
 </div>
 
 <script>
+/* ═══════════════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════════════ */
 const S = {
-  running: false, bots: {}, logs: [], errors: [], social: {}, totals: {},
-  config: {}, maps: [], accounts: [], page: 'console', logTab: 'all',
-  _cfgLoaded: false, editingMapIndex: -1,
+  running: false,
+  bots: {},
+  logs: [],
+  errors: [],
+  social: {},
+  totals: {},
+  config: {},
+  maps: [],
+  accounts: [],
+  page: 'console',
+  logTab: 'all',
+  _cfgLoaded: false,
+  editingMapIndex: -1,
 };
-let ws = null, wsRetry = 0;
-const PAGES = {console:'Console', fleet:'Fleet', maps:'Maps', social:'Social', logs:'Logs', config:'Config'};
 
+let ws = null, wsRetry = 0;
+
+const PAGES = {
+  console: 'Console',
+  fleet: 'Fleet',
+  maps: 'Maps',
+  social: 'Social',
+  logs: 'Logs',
+  config: 'Config'
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════ */
 window.addEventListener('load', () => {
   console.log('%c⚡ ZHD ENGINE v4.0 LOADED', 'color:#00f0ff;font-size:16px;font-weight:bold');
   loadAccounts();
@@ -507,10 +2141,14 @@ window.addEventListener('load', () => {
 function startClock() {
   setInterval(() => {
     const d = new Date();
-    document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+    document.getElementById('clock').textContent =
+      `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
   }, 1000);
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════════════════ */
 document.getElementById('nav').addEventListener('click', (e) => {
   const btn = e.target.closest('button[data-page]');
   if (btn) navTo(btn.dataset.page);
@@ -522,20 +2160,42 @@ function navTo(page) {
   document.querySelectorAll('.nav button, .mobilebar button').forEach(b => b.classList.toggle('active', b.dataset.page === page));
   document.getElementById('crumbName').textContent = PAGES[page] || page;
   closeSidebar();
-  window.scrollTo({top:0, behavior:'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   renderAll();
 }
 
-function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
-function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
-function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
 
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WEBSOCKET
+═══════════════════════════════════════════════════════════════ */
 function connectWS() {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
   ws = new WebSocket(`${proto}://${location.host}/ws`);
   ws.onopen = () => { wsRetry = 0; setWS('live'); };
-  ws.onmessage = (e) => { try { const msg = JSON.parse(e.data); if (msg.type === 'state') applyState(msg.data); } catch (err) {} };
-  ws.onclose = () => { setWS('offline'); wsRetry++; setTimeout(connectWS, Math.min(1000 * wsRetry, 5000)); };
+  ws.onmessage = (e) => {
+    try {
+      const msg = JSON.parse(e.data);
+      if (msg.type === 'state') applyState(msg.data);
+    } catch (err) {}
+  };
+  ws.onclose = () => {
+    setWS('offline');
+    wsRetry++;
+    setTimeout(connectWS, Math.min(1000 * wsRetry, 5000));
+  };
   ws.onerror = () => setWS('offline');
 }
 
@@ -549,6 +2209,9 @@ function setWS(status) {
   document.getElementById('liveDot').style.boxShadow = `0 0 10px ${status === 'live' ? 'var(--green)' : 'var(--red)'}`;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   APPLY STATE
+═══════════════════════════════════════════════════════════════ */
 function applyState(d) {
   S.running = d.running || false;
   S.bots = d.bots || {};
@@ -557,7 +2220,7 @@ function applyState(d) {
   S.social = d.social || {};
   S.totals = d.totals || {};
   S.config = d.config || {};
-  if (d.maps && d.maps.length) { S.maps = d.maps; }
+  if (d.maps && d.maps.length) S.maps = d.maps;
 
   document.getElementById('engineChip').textContent = S.running ? 'LIVE' : 'IDLE';
   document.getElementById('engineChip').classList.toggle('good', S.running);
@@ -602,7 +2265,10 @@ function applyState(d) {
 
   if (!S._cfgLoaded && S.config && Object.keys(S.config).length > 1) {
     S._cfgLoaded = true;
-    const setVal = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined && val !== null && val !== '') el.value = val; };
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el && val !== undefined && val !== null && val !== '') el.value = val;
+    };
     setVal('targetUid', S.config.target_uid);
     setVal('startMap', S.config.start_map);
     setVal('endMap', S.config.end_map);
@@ -610,6 +2276,7 @@ function applyState(d) {
     setVal('syncSecs', S.config.sync_secs);
     setVal('rejoinDelay', S.config.rejoin_delay);
   }
+
   renderAll();
 }
 
@@ -622,13 +2289,17 @@ function renderAll() {
   if (S.page === 'config') renderConfig();
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: CONSOLE
+═══════════════════════════════════════════════════════════════ */
 function renderConsole() {
   const entries = Object.entries(S.bots);
   const body = document.getElementById('botTableBody');
   document.getElementById('botMetaCount').textContent = entries.length;
+
   if (!entries.length) {
-    body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">No bots deployed</td></tr>';
-    document.getElementById('botTableNote').textContent = 'Waiting...';
+    body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">No bots deployed. Load accounts and start the engine.</td></tr>';
+    document.getElementById('botTableNote').textContent = 'Waiting for engine start...';
   } else {
     body.innerHTML = entries.map(([k, b]) => {
       const st = (b.status || '').toLowerCase();
@@ -639,69 +2310,161 @@ function renderConsole() {
       const lockDone = b.follow_done;
       const lockCls = lockDone ? '' : (b.matches_played >= 20 ? 'warn' : 'bad');
       const lockTxt = lockDone ? '✓ SUCCESS' : `${Math.min(b.matches_played || 0, 20)}/20`;
-      return `<tr><td style="color:var(--violet);font-weight:900">${k}</td><td class="uid">${esc((b.uid || '-').slice(0, 10))}</td><td><span class="badge ${badge}">${esc((b.status || '-').slice(0, 12))}</span></td><td style="font-family:ui-monospace">${esc((b.map || '-').slice(0, 12))}</td><td class="uid">${esc(b.entity || '-')}</td><td style="color:var(--cyan);font-weight:700">${b.matches_played || 0}</td><td><span class="badge ${lockCls}">${lockTxt}</span></td></tr>`;
+      return `<tr>
+        <td style="color:var(--violet);font-weight:900">${k}</td>
+        <td class="uid">${esc((b.uid || '-').slice(0, 10))}</td>
+        <td><span class="badge ${badge}">${esc((b.status || '-').slice(0, 12))}</span></td>
+        <td style="font-family:ui-monospace,monospace">${esc((b.map || '-').slice(0, 12))}</td>
+        <td class="uid">${esc(b.entity || '-')}</td>
+        <td style="color:var(--cyan);font-weight:700">${b.matches_played || 0}</td>
+        <td><span class="badge ${lockCls}">${lockTxt}</span></td>
+      </tr>`;
     }).join('');
     document.getElementById('botTableNote').textContent = `${entries.length} bots · engine ${S.running ? 'live' : 'idle'}`;
   }
-  const playing = entries.filter(([,b]) => (b.status||'').toLowerCase().includes('play')).length;
-  const locked = entries.filter(([,b]) => b.follow_done).length;
+
+  const playing = entries.filter(([, b]) => (b.status || '').toLowerCase().includes('play')).length;
+  const locked = entries.filter(([, b]) => b.follow_done).length;
   const total = entries.length || 1;
   document.getElementById('meterPlaying').textContent = `${playing} / ${entries.length}`;
   document.getElementById('meterLock').textContent = `${locked} / ${entries.length}`;
-  const successPct = Math.max(0, 100 - Math.min(100, ((S.totals.errors||0)/Math.max(1,S.totals.matches||1)*100)));
+  const successPct = Math.max(0, 100 - Math.min(100, ((S.totals.errors || 0) / Math.max(1, S.totals.matches || 1) * 100)));
   document.getElementById('meterSuccess').textContent = `${successPct.toFixed(0)}%`;
-  document.getElementById('meterPlayingBar').style.setProperty('--w', `${(playing/total)*100}%`);
-  document.getElementById('meterLockBar').style.setProperty('--w', `${(locked/total)*100}%`);
+  document.getElementById('meterPlayingBar').style.setProperty('--w', `${(playing / total) * 100}%`);
+  document.getElementById('meterLockBar').style.setProperty('--w', `${(locked / total) * 100}%`);
   document.getElementById('meterSuccessBar').style.setProperty('--w', `${successPct}%`);
-  renderEvents(); renderFeed(); renderTerminal();
+
+  renderEvents();
+  renderFeed();
+  renderTerminal();
 }
 
 function renderEvents() {
   const list = document.getElementById('eventList');
-  const all = [...S.logs.slice(-6)].map(l => ({...parseLogLine(l), err:false}));
-  const errs = [...S.errors.slice(-3)].map(l => ({...parseLogLine(l), err:true}));
+  const all = [...S.logs.slice(-6)].map(l => ({ ...parseLogLine(l), err: false }));
+  const errs = [...S.errors.slice(-3)].map(l => ({ ...parseLogLine(l), err: true }));
   const combined = [...errs, ...all].slice(-6).reverse();
   document.getElementById('eventCount').textContent = combined.length;
-  if (!combined.length) { list.innerHTML = '<div class="empty"><span class="glyph">◌</span><strong>No events yet</strong></div>'; return; }
-  list.innerHTML = combined.map(ev => `<div class="event"><span class="eventtime">${ev.time||'--:--'}</span><span class="eventmsg" style="${ev.err?'color:#ff8b96':''}">${esc(ev.msg)}</span><span class="badge ${ev.err?'bad':'info'}">${ev.err?'ERR':'LOG'}</span></div>`).join('');
+  if (!combined.length) {
+    list.innerHTML = '<div class="empty"><span class="glyph">◌</span><strong>No events yet</strong>Start the engine to see live activity</div>';
+    return;
+  }
+  list.innerHTML = combined.map(ev => `
+    <div class="event">
+      <span class="eventtime">${ev.time || '--:--'}</span>
+      <span class="eventmsg" style="${ev.err ? 'color:#ff8b96' : ''}">${esc(ev.msg)}</span>
+      <span class="badge ${ev.err ? 'bad' : 'info'}">${ev.err ? 'ERR' : 'LOG'}</span>
+    </div>
+  `).join('');
 }
 
 function renderFeed() {
   const feed = document.getElementById('feedList');
   const events = S.logs.slice(-4).reverse();
-  if (!events.length) { feed.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:9px">No activity</div>'; return; }
-  feed.innerHTML = events.map(l => { const p = parseLogLine(l); return `<div class="feedrow"><div class="feedicon">◉</div><div><strong>${esc(p.time||'event')}</strong><p>${esc(p.msg.slice(0,90))}</p></div></div>`; }).join('');
+  if (!events.length) {
+    feed.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:9px">No activity yet</div>';
+    return;
+  }
+  feed.innerHTML = events.map(l => {
+    const p = parseLogLine(l);
+    return `<div class="feedrow">
+      <div class="feedicon">◉</div>
+      <div><strong>${esc(p.time || 'event')}</strong><p>${esc(p.msg.slice(0, 90))}</p></div>
+    </div>`;
+  }).join('');
 }
 
 function renderTerminal() {
   const out = document.getElementById('termOut');
   const logs = [...S.logs.slice(-15)];
-  if (!logs.length) { out.innerHTML = '<div class="termline"><b>$</b><span style="color:#5b8b7f">ZHD engine ready.</span></div>'; return; }
-  out.innerHTML = logs.map(l => { const p = parseLogLine(l); return `<div class="termline"><b>[${p.time||'--:--'}]</b><span>${esc(p.msg)}</span></div>`; }).join('');
+  if (!logs.length) {
+    out.innerHTML = '<div class="termline"><b>$</b><span style="color:#5b8b7f">ZHD engine ready. Configure &amp; start.</span></div>';
+    return;
+  }
+  out.innerHTML = logs.map(l => {
+    const p = parseLogLine(l);
+    return `<div class="termline"><b>[${p.time || '--:--'}]</b><span>${esc(p.msg)}</span></div>`;
+  }).join('');
   out.scrollTop = out.scrollHeight;
 }
 
 function renderMapGrid(targetId) {
   const grid = document.getElementById(targetId);
   if (!grid || !S.maps.length) return;
-  const activeSet = new Set(); Object.values(S.bots).forEach(b => { if (b.map && (b.status||'').toLowerCase().includes('play')) activeSet.add(b.map); });
+  const activeSet = new Set();
+  Object.values(S.bots).forEach(b => {
+    if (b.map && (b.status || '').toLowerCase().includes('play')) activeSet.add(b.map);
+  });
   grid.innerHTML = S.maps.slice(0, 24).map((code, i) => {
-    const label = `#${String(i+1).padStart(2,'0')}`;
+    const label = `#${String(i + 1).padStart(2, '0')}`;
     const isActive = activeSet.has(code);
-    return `<div class="mapcell ${isActive?'playing':''}" title="${esc(code)}" style="text-align:center;padding:6px 3px;cursor:pointer" onclick="copyCode('${esc(code)}')">${label}</div>`;
+    return `<div class="mapcell ${isActive ? 'playing' : ''}" title="${esc(code)}" style="text-align:center;padding:6px 3px;cursor:pointer" onclick="copyCode('${esc(code)}')">${label}</div>`;
   }).join('');
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: FLEET
+═══════════════════════════════════════════════════════════════ */
+function renderFleet() {
+  const grid = document.getElementById('fleetGrid');
+  const entries = Object.entries(S.bots);
+  if (!entries.length) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><span class="glyph">▣</span><strong>No bots deployed</strong>Load accounts and start the engine</div>';
+    return;
+  }
+  grid.innerHTML = entries.map(([k, b]) => {
+    const st = (b.status || '').toLowerCase();
+    let cls = '';
+    if (st.includes('play')) cls = 'playing';
+    else if (st.includes('wait') || st.includes('logg') || st.includes('join') || st.includes('cool')) cls = 'wait';
+    else if (st.includes('err') || st.includes('fail')) cls = 'err';
+    const initial = (b.uid || 'Z').substring(0, 1).toUpperCase();
+    const lockDone = b.follow_done;
+    const lockPct = Math.min(100, ((b.matches_played || 0) / 20) * 100);
+    const uidShort = (b.uid || '-').length > 12 ? b.uid.slice(0, 6) + '…' + b.uid.slice(-4) : (b.uid || '-');
+    return `<div class="botcard ${cls}">
+      <div class="bothead">
+        <div style="display:flex;align-items:center;gap:9px;min-width:0">
+          <div class="botav">${esc(initial)}</div>
+          <div style="min-width:0">
+            <div class="botname">Bot #${k}</div>
+            <div class="botuid">${esc(uidShort)}</div>
+          </div>
+        </div>
+        <span class="badge ${cls === 'playing' ? '' : cls === 'wait' ? 'warn' : cls === 'err' ? 'bad' : 'idle'}">${esc((b.status || 'idle').slice(0, 10))}</span>
+      </div>
+      <div class="botstats">
+        <div class="botstat"><small>Map</small><b>${esc((b.map || '-').slice(0, 10))}</b></div>
+        <div class="botstat"><small>Entity</small><b>${esc(b.entity || '-')}</b></div>
+        <div class="botstat"><small>In match</small><b>${(b.time_in_match || 0).toFixed(0)}s</b></div>
+        <div class="botstat"><small>Total</small><b>${b.matches_played || 0}</b></div>
+      </div>
+      <div class="lockbar">
+        <div class="lockhead"><span>${lockDone ? '✓ Complete' : 'Progress'}</span><b>${lockDone ? '20/20' : Math.min(b.matches_played || 0, 20) + '/20'}</b></div>
+        <div class="locktrack"><div class="lockfill ${lockDone ? 'done' : ''}" style="width:${lockDone ? 100 : lockPct}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: MAPS PAGE
+═══════════════════════════════════════════════════════════════ */
 function renderMapsPage() {
   const grid = document.getElementById('bigMapGrid');
-  if (!S.maps.length) { grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Loading maps...</div>'; return; }
+  if (!S.maps.length) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Loading maps...</div>';
+    return;
+  }
   const activeSet = new Set();
-  Object.values(S.bots).forEach(b => { if (b.map && (b.status||'').toLowerCase().includes('play')) activeSet.add(b.map); });
-  
+  Object.values(S.bots).forEach(b => {
+    if (b.map && (b.status || '').toLowerCase().includes('play')) activeSet.add(b.map);
+  });
+
   grid.innerHTML = S.maps.map((code, i) => {
     const isActive = activeSet.has(code);
-    return `<div class="mapcell ${isActive?'playing':''}" style="text-align:left;padding:12px">
-      <div style="font-weight:700;font-size:10px;color:var(--cyan);margin-bottom:4px">MAP #${String(i+1).padStart(2,'0')}</div>
+    return `<div class="mapcell ${isActive ? 'playing' : ''}" style="text-align:left;padding:12px">
+      <div style="font-weight:700;font-size:10px;color:var(--cyan);margin-bottom:4px">MAP #${String(i + 1).padStart(2, '0')}</div>
       <div style="font-size:9px;color:var(--text);word-break:break-all;line-height:1.4">${esc(code.slice(0, 40))}${code.length > 40 ? '...' : ''}</div>
       <div class="mapactions">
         <button onclick="copyCode('${esc(code)}')">📋 Copy</button>
@@ -712,26 +2475,40 @@ function renderMapsPage() {
   }).join('');
 }
 
-function copyCode(code) { navigator.clipboard.writeText(code); toast('Copied!', 'ok'); }
-function copyMaps() { navigator.clipboard.writeText(S.maps.join('\n')); toast(`All ${S.maps.length} maps copied`, 'ok'); }
+function copyCode(code) {
+  navigator.clipboard.writeText(code);
+  toast('Copied!', 'ok');
+}
+
+function copyMaps() {
+  navigator.clipboard.writeText(S.maps.join('\n'));
+  toast(`All ${S.maps.length} maps copied`, 'ok');
+}
+
 function openMapModal() {
   S.editingMapIndex = -1;
   document.getElementById('mapModalTitle').textContent = '➕ Add New Map';
   document.getElementById('mapInput').value = '';
   document.getElementById('mapModal').classList.add('show');
 }
-function closeMapModal() { document.getElementById('mapModal').classList.remove('show'); }
+
+function closeMapModal() {
+  document.getElementById('mapModal').classList.remove('show');
+}
+
 function editMap(i) {
   S.editingMapIndex = i;
-  document.getElementById('mapModalTitle').textContent = `✏️ Edit Map #${i+1}`;
+  document.getElementById('mapModalTitle').textContent = `✏️ Edit Map #${i + 1}`;
   document.getElementById('mapInput').value = S.maps[i];
   document.getElementById('mapModal').classList.add('show');
 }
+
 async function deleteMap(i) {
-  if (!confirm(`Delete Map #${i+1}?`)) return;
+  if (!confirm(`Delete Map #${i + 1}?`)) return;
   S.maps.splice(i, 1);
   await saveMapsToServer();
 }
+
 async function saveMap() {
   const val = document.getElementById('mapInput').value.trim();
   if (!val) { toast('Map code empty', 'err'); return; }
@@ -740,51 +2517,47 @@ async function saveMap() {
   await saveMapsToServer();
   closeMapModal();
 }
+
 async function saveMapsToServer() {
-  const fd = new FormData(); fd.append('maps_json', JSON.stringify(S.maps));
-  const r = await fetch('/api/maps', {method:'POST', body:fd});
+  const fd = new FormData();
+  fd.append('maps_json', JSON.stringify(S.maps));
+  const r = await fetch('/api/maps', { method: 'POST', body: fd });
   const j = await r.json();
   if (j.ok) { toast(`✅ ${j.count} maps saved live!`, 'ok'); loadMaps(); }
   else toast(j.msg || 'Failed', 'err');
 }
 
-function renderFleet() {
-  const grid = document.getElementById('fleetGrid');
-  const entries = Object.entries(S.bots);
-  if (!entries.length) { grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><span class="glyph">▣</span><strong>No bots deployed</strong></div>'; return; }
-  grid.innerHTML = entries.map(([k, b]) => {
-    const st = (b.status||'').toLowerCase();
-    let cls = '';
-    if (st.includes('play')) cls = 'playing';
-    else if (st.includes('wait')||st.includes('logg')||st.includes('join')||st.includes('cool')) cls = 'wait';
-    else if (st.includes('err')||st.includes('fail')) cls = 'err';
-    const initial = (b.uid||'Z').substring(0,1).toUpperCase();
-    const lockDone = b.follow_done;
-    const lockPct = Math.min(100, ((b.matches_played||0)/20)*100);
-    const uidShort = (b.uid||'-').length > 12 ? b.uid.slice(0,6)+'…'+b.uid.slice(-4) : (b.uid||'-');
-    return `<div class="botcard ${cls}">
-      <div class="bothead"><div style="display:flex;align-items:center;gap:9px;min-width:0"><div class="botav">${esc(initial)}</div><div style="min-width:0"><div class="botname">Bot #${k}</div><div class="botuid">${esc(uidShort)}</div></div></div><span class="badge ${cls==='playing'?'':cls==='wait'?'warn':cls==='err'?'bad':'idle'}">${esc((b.status||'idle').slice(0,10))}</span></div>
-      <div class="botstats"><div class="botstat"><small>Map</small><b>${esc((b.map||'-').slice(0,10))}</b></div><div class="botstat"><small>Entity</small><b>${esc(b.entity||'-')}</b></div><div class="botstat"><small>In match</small><b>${(b.time_in_match||0).toFixed(0)}s</b></div><div class="botstat"><small>Total</small><b>${b.matches_played||0}</b></div></div>
-      <div class="lockbar"><div class="lockhead"><span>${lockDone?'✓ Complete':'Progress'}</span><b>${lockDone?'20/20':Math.min(b.matches_played||0,20)+'/20'}</b></div><div class="locktrack"><div class="lockfill ${lockDone?'done':''}" style="width:${lockDone?100:lockPct}%"></div></div></div>
-    </div>`;
-  }).join('');
-}
-
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: SOCIAL
+═══════════════════════════════════════════════════════════════ */
 function renderSocial() {
   const hist = document.getElementById('socHistory');
   const entries = Object.entries(S.social);
   document.getElementById('socTotalCount').textContent = entries.length;
-  if (!entries.length) { hist.innerHTML = '<div class="empty"><span class="glyph">◎</span><strong>No actions yet</strong></div>'; return; }
-  hist.innerHTML = entries.slice(-20).reverse().map(([k,s]) => {
-    const st = (s.status||'').toLowerCase();
+  if (!entries.length) {
+    hist.innerHTML = '<div class="empty"><span class="glyph">◎</span><strong>No actions yet</strong>Dispatch a follow or subscribe to see results</div>';
+    return;
+  }
+  hist.innerHTML = entries.slice(-20).reverse().map(([k, s]) => {
+    const st = (s.status || '').toLowerCase();
     let cls = 'wait';
     if (st.includes('success')) cls = 'ok';
-    else if (st.includes('lock')||st.includes('need')) cls = 'lock';
-    else if (st.includes('fail')||st.includes('err')) cls = 'err';
-    return `<div class="socrow"><div class="socidx">#${k}</div><div class="socmain"><div class="socname">${esc(s.action||'-')}</div><div class="socmeta">${esc(s.uid||'-')} → ${esc(s.target||s.map||'-')}</div></div><div class="socstate ${cls}">${esc(s.status||'-')}</div></div>`;
+    else if (st.includes('lock') || st.includes('need')) cls = 'lock';
+    else if (st.includes('fail') || st.includes('err')) cls = 'err';
+    return `<div class="socrow">
+      <div class="socidx">#${k}</div>
+      <div class="socmain">
+        <div class="socname">${esc(s.action || '-')}</div>
+        <div class="socmeta">${esc(s.uid || '-')} → ${esc(s.target || s.map || '-')}</div>
+      </div>
+      <div class="socstate ${cls}">${esc(s.status || '-')}</div>
+    </div>`;
   }).join('');
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: LOGS
+═══════════════════════════════════════════════════════════════ */
 function switchLogTab(tab) {
   S.logTab = tab;
   document.querySelectorAll('.logtab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
@@ -795,92 +2568,175 @@ function renderBigLogs() {
   const stream = document.getElementById('bigLogStream');
   if (!stream) return;
   let lines = [];
-  if (S.logTab === 'errors') lines = S.errors.slice(-200).map(l => ({t:'err', l}));
-  else if (S.logTab === 'logs') lines = S.logs.slice(-200).map(l => ({t:'log', l}));
-  else lines = [...S.errors.slice(-100).map(l => ({t:'err', l})), ...S.logs.slice(-100).map(l => ({t:'log', l}))];
-  if (!lines.length) { stream.innerHTML = '<div class="empty"><span class="glyph">▤</span><strong>No telemetry</strong></div>'; return; }
-  stream.innerHTML = lines.map(entry => { const p = parseLogLine(entry.l); return `<div class="logrow ${entry.t==='err'?'err':''}"><span class="logtime">${p.time||'--:--'}</span><span class="logmsg">${esc(p.msg)}</span></div>`; }).join('');
+  if (S.logTab === 'errors') lines = S.errors.slice(-200).map(l => ({ t: 'err', l }));
+  else if (S.logTab === 'logs') lines = S.logs.slice(-200).map(l => ({ t: 'log', l }));
+  else lines = [
+    ...S.errors.slice(-100).map(l => ({ t: 'err', l })),
+    ...S.logs.slice(-100).map(l => ({ t: 'log', l }))
+  ];
+  if (!lines.length) {
+    stream.innerHTML = '<div class="empty"><span class="glyph">▤</span><strong>No telemetry</strong>Start the engine to see live logs</div>';
+    return;
+  }
+  stream.innerHTML = lines.map(entry => {
+    const p = parseLogLine(entry.l);
+    return `<div class="logrow ${entry.t === 'err' ? 'err' : ''}"><span class="logtime">${p.time || '--:--'}</span><span class="logmsg">${esc(p.msg)}</span></div>`;
+  }).join('');
 }
 
-function clearLogsUI() { document.getElementById('bigLogStream').innerHTML = ''; toast('Cleared', 'ok'); }
-function renderConfig() { document.getElementById('accCount').textContent = S.accounts.length; document.getElementById('sumAcc').textContent = `${S.accounts.length} accounts`; }
+function clearLogsUI() {
+  document.getElementById('bigLogStream').innerHTML = '';
+  toast('Log view cleared', 'ok');
+}
 
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: CONFIG
+═══════════════════════════════════════════════════════════════ */
+function renderConfig() {
+  document.getElementById('accCount').textContent = S.accounts.length;
+  document.getElementById('sumAcc').textContent = `${S.accounts.length} accounts`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACTIONS
+═══════════════════════════════════════════════════════════════ */
 async function startEngine() {
   const cfg = {
-    target_uid: (document.getElementById('targetUid').value||'').trim(),
+    target_uid: (document.getElementById('targetUid').value || '').trim(),
     auto_follow: document.getElementById('autoFollowToggle').classList.contains('on'),
     seq_mode: document.getElementById('seqModeToggle').classList.contains('on'),
-    start_map: parseInt(document.getElementById('startMap').value)||1,
-    end_map: parseInt(document.getElementById('endMap').value)||24,
+    start_map: parseInt(document.getElementById('startMap').value) || 1,
+    end_map: parseInt(document.getElementById('endMap').value) || 24,
     resume_mode: document.getElementById('resumeToggle').classList.contains('on'),
-    hold_secs: parseFloat(document.getElementById('holdSecs').value)||60,
-    sync_secs: parseFloat(document.getElementById('syncSecs').value)||10,
-    rejoin_delay: parseFloat(document.getElementById('rejoinDelay').value)||2,
+    hold_secs: parseFloat(document.getElementById('holdSecs').value) || 60,
+    sync_secs: parseFloat(document.getElementById('syncSecs').value) || 10,
+    rejoin_delay: parseFloat(document.getElementById('rejoinDelay').value) || 2,
   };
-  const fd = new FormData(); fd.append('config_json', JSON.stringify(cfg));
-  try { const r = await fetch('/api/start', {method:'POST', body:fd}); const j = await r.json(); toast(j.ok?'🚀 Engine started':(j.msg||'Failed'), j.ok?'ok':'err'); } catch(e){ toast(e.message,'err'); }
+  const fd = new FormData();
+  fd.append('config_json', JSON.stringify(cfg));
+  try {
+    const r = await fetch('/api/start', { method: 'POST', body: fd });
+    const j = await r.json();
+    toast(j.ok ? '🚀 Engine started' : (j.msg || 'Failed'), j.ok ? 'ok' : 'err');
+  } catch (e) { toast(e.message, 'err'); }
 }
 
 async function stopEngine() {
-  try { const r = await fetch('/api/stop', {method:'POST'}); const j = await r.json(); toast(j.ok?'⛔ Stopped':(j.msg||'Failed'), j.ok?'ok':'err'); } catch(e){ toast(e.message,'err'); }
+  try {
+    const r = await fetch('/api/stop', { method: 'POST' });
+    const j = await r.json();
+    toast(j.ok ? '⛔ Engine stopped' : (j.msg || 'Failed'), j.ok ? 'ok' : 'err');
+  } catch (e) { toast(e.message, 'err'); }
 }
 
 async function manualAction(type) {
-  const input = document.getElementById(type==='Follow'?'followTarget':'subTarget');
-  const target = (input.value||'').trim();
+  const input = document.getElementById(type === 'Follow' ? 'followTarget' : 'subTarget');
+  const target = (input.value || '').trim();
   if (!target) { toast('Enter target', 'info'); return; }
-  const fd = new FormData(); fd.append('action', type); fd.append('target', target);
-  try { const r = await fetch('/api/social', {method:'POST', body:fd}); const j = await r.json(); toast(j.ok?`✅ ${type} dispatched`:(j.msg||'Failed'), j.ok?'ok':'err'); if (j.ok) input.value=''; } catch(e){ toast(e.message,'err'); }
+  const fd = new FormData();
+  fd.append('action', type);
+  fd.append('target', target);
+  try {
+    const r = await fetch('/api/social', { method: 'POST', body: fd });
+    const j = await r.json();
+    toast(j.ok ? `✅ ${type} dispatched` : (j.msg || 'Failed'), j.ok ? 'ok' : 'err');
+    if (j.ok) input.value = '';
+  } catch (e) { toast(e.message, 'err'); }
 }
 
 async function injectBots() {
   const raw = document.getElementById('accountsInput').value;
-  if (!raw.trim()) { toast('Paste JSON', 'info'); return; }
-  const fd = new FormData(); fd.append('raw_json', raw);
-  try { const r = await fetch('/api/accounts/inject', {method:'POST', body:fd}); const j = await r.json(); if (j.ok) { toast(`🔥 Injected ${j.added}! Total: ${j.total}`, 'ok'); loadAccounts(); } else toast(j.msg||'Failed', 'err'); } catch(e){ toast(e.message,'err'); }
+  if (!raw.trim()) { toast('Paste JSON first', 'info'); return; }
+  const fd = new FormData();
+  fd.append('raw_json', raw);
+  try {
+    const r = await fetch('/api/accounts/inject', { method: 'POST', body: fd });
+    const j = await r.json();
+    if (j.ok) { toast(`🔥 Injected ${j.added} bots! Total: ${j.total}`, 'ok'); loadAccounts(); }
+    else toast(j.msg || 'Failed', 'err');
+  } catch (e) { toast(e.message, 'err'); }
 }
 
 async function replaceBots() {
   const raw = document.getElementById('accountsInput').value;
-  if (!raw.trim()) { toast('Paste JSON', 'info'); return; }
+  if (!raw.trim()) { toast('Paste JSON first', 'info'); return; }
   if (!confirm('Kill bots not in new list?')) return;
-  const fd = new FormData(); fd.append('raw_json', raw);
-  try { const r = await fetch('/api/accounts/replace', {method:'POST', body:fd}); const j = await r.json(); if (j.ok) { toast(`♻️ Replaced! Total: ${j.total}`, 'ok'); loadAccounts(); } else toast(j.msg||'Failed', 'err'); } catch(e){ toast(e.message,'err'); }
+  const fd = new FormData();
+  fd.append('raw_json', raw);
+  try {
+    const r = await fetch('/api/accounts/replace', { method: 'POST', body: fd });
+    const j = await r.json();
+    if (j.ok) { toast(`♻️ Replaced! Total: ${j.total}`, 'ok'); loadAccounts(); }
+    else toast(j.msg || 'Failed', 'err');
+  } catch (e) { toast(e.message, 'err'); }
 }
 
 async function clearAllBots() {
   if (!confirm('Kill ALL bots and clear JSON?')) return;
-  try { const r = await fetch('/api/accounts/clear', {method:'POST'}); const j = await r.json(); if (j.ok) { toast('🗑️ All cleared', 'ok'); loadAccounts(); } else toast(j.msg||'Failed', 'err'); } catch(e){ toast(e.message,'err'); }
+  try {
+    const r = await fetch('/api/accounts/clear', { method: 'POST' });
+    const j = await r.json();
+    if (j.ok) { toast('🗑️ All cleared', 'ok'); loadAccounts(); }
+    else toast(j.msg || 'Failed', 'err');
+  } catch (e) { toast(e.message, 'err'); }
 }
 
 async function clearJWT() {
-  try { const r = await fetch('/api/jwt/clear', {method:'POST'}); const j = await r.json(); toast(j.ok?'🔑 JWT Cleared!':(j.msg||'Failed'), j.ok?'ok':'err'); } catch(e){ toast(e.message,'err'); }
+  try {
+    const r = await fetch('/api/jwt/clear', { method: 'POST' });
+    const j = await r.json();
+    toast(j.ok ? '🔑 JWT Cleared!' : (j.msg || 'Failed'), j.ok ? 'ok' : 'err');
+  } catch (e) { toast(e.message, 'err'); }
 }
 
 async function loadAccounts() {
-  try { const r = await fetch('/api/accounts'); const j = await r.json(); S.accounts = j.accounts || []; if (S.accounts.length) document.getElementById('accountsInput').value = JSON.stringify(S.accounts, null, 2); document.getElementById('accCount').textContent = S.accounts.length; document.getElementById('sumAcc').textContent = `${S.accounts.length} accounts`; } catch(e){}
+  try {
+    const r = await fetch('/api/accounts');
+    const j = await r.json();
+    S.accounts = j.accounts || [];
+    if (S.accounts.length) document.getElementById('accountsInput').value = JSON.stringify(S.accounts, null, 2);
+    document.getElementById('accCount').textContent = S.accounts.length;
+    document.getElementById('sumAcc').textContent = `${S.accounts.length} accounts`;
+  } catch (e) {}
 }
 
 async function loadMaps() {
-  try { const r = await fetch('/api/maps'); const j = await r.json(); S.maps = j.maps || []; document.getElementById('navMapCount').textContent = S.maps.length; document.getElementById('totalMapsCount').textContent = S.maps.length; renderMapGrid('mapGrid'); if (S.page === 'maps') renderMapsPage(); } catch(e){}
+  try {
+    const r = await fetch('/api/maps');
+    const j = await r.json();
+    S.maps = j.maps || [];
+    document.getElementById('navMapCount').textContent = S.maps.length;
+    document.getElementById('totalMapsCount').textContent = S.maps.length;
+    renderMapGrid('mapGrid');
+    if (S.page === 'maps') renderMapsPage();
+  } catch (e) {}
 }
 
 function saveSnapshot() {
-  const data = {totals:S.totals, bots:S.bots, ts:new Date().toISOString()};
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `zhd-snapshot-${Date.now()}.json`; a.click();
+  const data = { totals: S.totals, bots: S.bots, ts: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `zhd-snapshot-${Date.now()}.json`;
+  a.click();
   toast('Snapshot downloaded', 'ok');
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════════════ */
 function toggleCfg(id) {
   const el = document.getElementById(id);
   el.classList.toggle('on');
   if (id === 'autoFollowToggle') document.getElementById('autoFollowSw').checked = el.classList.contains('on');
-  if (id === 'seqModeToggle') { document.getElementById('seqModeSw').checked = el.classList.contains('on'); document.getElementById('timerFields').style.display = el.classList.contains('on') ? 'none' : 'grid'; }
+  if (id === 'seqModeToggle') {
+    document.getElementById('seqModeSw').checked = el.classList.contains('on');
+    document.getElementById('timerFields').style.display = el.classList.contains('on') ? 'none' : 'grid';
+  }
   if (id === 'resumeToggle') document.getElementById('resumeSw').checked = el.classList.contains('on');
 }
 
-function toast(msg, type='info') {
+function toast(msg, type = 'info') {
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.className = 'toast show ' + type;
@@ -888,9 +2744,21 @@ function toast(msg, type='info') {
   el._t = setTimeout(() => { el.className = 'toast ' + type; }, 3000);
 }
 
-function esc(s) { return String(s||'').replace(/[<>&"]/g, ch => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[ch])); }
-function parseLogLine(line) { const clean = String(line||'').replace(/\[[^\]]*\]/g, '').trim(); const m = clean.match(/^\[?(\d{2}:\d{2}:\d{2})\]?\s*(.+)$/); return m ? {time:m[1], msg:m[2]} : {time:'', msg:clean}; }
-function fmtUptime(sec) { if (sec < 60) return sec+'s'; if (sec < 3600) return Math.floor(sec/60)+'m'; return Math.floor(sec/3600)+'h '+Math.floor((sec%3600)/60)+'m'; }
+function esc(s) {
+  return String(s || '').replace(/[<>&"]/g, ch => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[ch]));
+}
+
+function parseLogLine(line) {
+  const clean = String(line || '').replace(/\[[^\]]*\]/g, '').trim();
+  const m = clean.match(/^\[?(\d{2}:\d{2}:\d{2})\]?\s*(.+)$/);
+  return m ? { time: m[1], msg: m[2] } : { time: '', msg: clean };
+}
+
+function fmtUptime(sec) {
+  if (sec < 60) return sec + 's';
+  if (sec < 3600) return Math.floor(sec / 60) + 'm';
+  return Math.floor(sec / 3600) + 'h ' + Math.floor((sec % 3600) / 60) + 'm';
+}
 </script>
 </body>
 </html>
