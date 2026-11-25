@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cyan">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#020204">
+<title>OBSIDIAN // NETRUNNER OS 2080</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════ RESET & VARS ═══════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow-x:hidden;background:#020204;color:#e8ecf5;font-family:'Space Grotesk',sans-serif;-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.5;overscroll-behavior-y:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,textarea{font:inherit;color:inherit;background:none;border:none;outline:none}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(0,243,255,0.4);color:#fff}
+
+:root{
+  --bg-0:#020204; --bg-1:#06070a; --bg-2:#0b0e14; --bg-3:#111622;
+  --panel:rgba(10,14,22,0.75); --panel-hi:rgba(18,24,36,0.9);
+  --border:rgba(0,243,255,0.15); --border-hi:rgba(0,243,255,0.35);
+  --text:#e8ecf5; --text-2:#8b94a8; --text-3:#4a5266;
+  --accent:#00f3ff; --accent-glow:rgba(0,243,255,0.6);
+  --green:#00ff88; --green-glow:rgba(0,255,136,0.5);
+  --purple:#b026ff; --purple-glow:rgba(176,38,255,0.5);
+  --pink:#ff003c; --pink-glow:rgba(255,0,60,0.5);
+  --amber:#ffb800;
+  --radius:12px; --radius-lg:16px;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --font-display:'Orbitron',sans-serif;
+  --font-mono:'Share Tech Mono',monospace;
+}
+[data-theme="pink"]{--accent:var(--pink);--accent-glow:var(--pink-glow);--border:rgba(255,0,60,0.15);--border-hi:rgba(255,0,60,0.4)}
+[data-theme="green"]{--accent:var(--green);--accent-glow:var(--green-glow);--border:rgba(0,255,136,0.15);--border-hi:rgba(0,255,136,0.4)}
+[data-theme="purple"]{--accent:var(--purple);--accent-glow:var(--purple-glow);--border:rgba(176,38,255,0.15);--border-hi:rgba(176,38,255,0.4)}
+
+/* ═══════════ CRT & BACKGROUND LAYERS ═══════════ */
+.bg-layer{position:fixed;inset:0;pointer-events:none;z-index:0}
+.bg-grid{
+  background-image:
+    linear-gradient(rgba(0,243,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,243,255,0.04) 1px,transparent 1px);
+  background-size:40px 40px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,#000 10%,transparent 90%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,#000 10%,transparent 90%);
+  animation:gridDrift 20s linear infinite;
+}
+@keyframes gridDrift{to{background-position:40px 40px}}
+.bg-scanlines{
+  background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(0,0,0,0.3) 2px,rgba(0,0,0,0.3) 4px);
+  opacity:0.6;z-index:9999;mix-blend-mode:overlay;
+}
+.bg-vignette{
+  background:radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.8) 100%);
+  z-index:9998;pointer-events:none;
+}
+.bg-flicker{
+  background:rgba(0,243,255,0.02);z-index:9997;pointer-events:none;
+  animation:flicker 0.15s infinite alternate;
+}
+@keyframes flicker{from{opacity:0.8}to{opacity:1}}
+
+/* ═══════════ BOOT SPLASH ═══════════ */
+.boot{
+  position:fixed;inset:0;z-index:100000;background:#020204;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;padding:20px;
+  transition:opacity 700ms var(--ease),visibility 700ms;
+}
+.boot.hidden{opacity:0;visibility:hidden}
+.boot-logo{display:flex;align-items:center;gap:24px;filter:drop-shadow(0 0 20px var(--accent-glow))}
+.boot-glyph{
+  width:72px;height:72px;position:relative;border:2px solid var(--accent);border-radius:50%;
+  box-shadow:inset 0 0 20px var(--accent-glow),0 0 30px var(--accent-glow);
+  animation:spin 4s linear infinite;
+}
+.boot-glyph::before{content:'';position:absolute;inset:8px;border:2px dashed var(--accent);border-radius:50%;opacity:0.6;animation:spinRev 6s linear infinite}
+.boot-glyph::after{content:'';position:absolute;inset:18px;background:var(--accent);border-radius:50%;animation:pulse 1.5s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spinRev{to{transform:rotate(-360deg)}}
+.boot-title{
+  font-family:var(--font-display);font-size:clamp(28px,6vw,48px);font-weight:900;letter-spacing:0.4em;
+  color:#fff;text-shadow:0 0 10px var(--accent),0 0 20px var(--accent),0 0 40px var(--accent);margin-left:10px;
+}
+.boot-sub{font-family:var(--font-mono);font-size:12px;letter-spacing:0.3em;color:var(--accent);margin-top:8px}
+.boot-log{width:min(500px,100%);font-family:var(--font-mono);font-size:12px;color:var(--text-2);min-height:80px;display:flex;flex-direction:column;gap:6px}
+.boot-log span{opacity:0;animation:bootLine 0.2s forwards}
+@keyframes bootLine{to{opacity:1}}
+.boot-log span b{color:var(--green);text-shadow:0 0 8px var(--green-glow)}
+.boot-progress{width:min(500px,100%);height:4px;background:var(--bg-3);border-radius:2px;overflow:hidden;box-shadow:0 0 10px rgba(0,0,0,0.5)}
+.boot-bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#fff);box-shadow:0 0 15px var(--accent);transition:width 300ms}
+
+/* ═══════════ LAYOUT ═══════════ */
+.app{position:relative;z-index:10;display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+.app.collapsed{grid-template-columns:80px 1fr}
+
+/* ═══════════ SIDEBAR ═══════════ */
+.sidebar{
+  background:linear-gradient(180deg,rgba(6,7,10,0.95),rgba(2,2,4,0.98));
+  border-right:1px solid var(--border);backdrop-filter:blur(30px);
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:hidden;
+  transition:width var(--dur) var(--ease);
+  box-shadow:2px 0 20px rgba(0,0,0,0.5);
+}
+.brand{display:flex;align-items:center;gap:16px;padding:24px 20px;border-bottom:1px solid var(--border);min-height:84px}
+.brand-mark{
+  width:40px;height:40px;flex-shrink:0;border-radius:8px;position:relative;
+  background:linear-gradient(135deg,var(--accent),transparent 80%);
+  box-shadow:0 0 20px var(--accent-glow),inset 0 0 10px #fff;
+  clip-path:polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%);
+}
+.brand-text{overflow:hidden;white-space:nowrap}
+.brand-name{font-family:var(--font-display);font-weight:900;font-size:16px;letter-spacing:0.2em;color:#fff;text-shadow:0 0 10px var(--accent-glow)}
+.brand-tag{font-family:var(--font-mono);font-size:9px;letter-spacing:0.15em;color:var(--accent);margin-top:4px}
+.app.collapsed .brand-text{display:none}
+
+.nav{flex:1;overflow-y:auto;padding:16px 12px;display:flex;flex-direction:column;gap:4px}
+.nav::-webkit-scrollbar{width:4px}
+.nav::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:2px}
+.nav-item{
+  display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:8px;
+  color:var(--text-2);font-size:13px;font-weight:500;transition:all 200ms var(--ease);
+  position:relative;white-space:nowrap;border:1px solid transparent;
+}
+.nav-item .ico{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;opacity:0.6;transition:all 200ms}
+.nav-item:hover{background:rgba(255,255,255,0.03);color:var(--text);border-color:var(--border)}
+.nav-item.active{
+  background:linear-gradient(90deg,rgba(0,243,255,0.1),transparent);
+  color:var(--accent);border-color:var(--border);text-shadow:0 0 8px var(--accent-glow);
+}
+.nav-item.active::before{
+  content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;
+  background:var(--accent);border-radius:2px;box-shadow:0 0 10px var(--accent),0 0 20px var(--accent);
+}
+.nav-item.active .ico{opacity:1;filter:drop-shadow(0 0 6px var(--accent))}
+.app.collapsed .nav-item .lbl{display:none}
+.app.collapsed .nav-item{justify-content:center;padding:12px}
+.nav-section{font-family:var(--font-mono);font-size:10px;letter-spacing:0.2em;color:var(--text-3);padding:16px 16px 8px;text-transform:uppercase}
+.app.collapsed .nav-section{display:none}
+
+.sidebar-foot{padding:16px 20px;border-top:1px solid var(--border);font-family:var(--font-mono);font-size:10px;color:var(--text-3);letter-spacing:0.1em}
+.sidebar-foot .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);margin-right:8px;animation:pulse 1s infinite}
+.sidebar-foot .dot.offline{background:var(--pink);box-shadow:0 0 12px var(--pink)}
+.app.collapsed .sidebar-foot{display:none}
+
+/* ═══════════ MAIN & TOPBAR ═══════════ */
+.main{display:flex;flex-direction:column;min-width:0;overflow-x:hidden}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;padding:16px 24px;gap:16px;
+  background:rgba(2,2,4,0.7);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:20;box-shadow:0 4px 20px rgba(0,0,0,0.5);
+}
+.topbar-left{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+.sidebar-toggle{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--accent);border:1px solid var(--border);background:rgba(0,243,255,0.05);transition:all 200ms}
+.sidebar-toggle:hover{background:rgba(0,243,255,0.15);box-shadow:0 0 15px var(--accent-glow)}
+.breadcrumb{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.15em;color:var(--text-3)}
+.breadcrumb b{color:var(--accent);font-weight:500}
+.breadcrumb .sep{color:var(--text-3)}
+.breadcrumb .cur{color:#fff;text-transform:uppercase;text-shadow:0 0 8px var(--accent-glow)}
+
+.topbar-right{display:flex;align-items:center;gap:12px}
+.clock{font-family:var(--font-mono);font-size:13px;color:var(--accent);padding:8px 14px;border:1px solid var(--border);border-radius:8px;background:rgba(0,243,255,0.05);letter-spacing:0.1em;white-space:nowrap;box-shadow:inset 0 0 10px rgba(0,243,255,0.1)}
+.clock .z{color:var(--text-2);margin-left:6px}
+.icon-btn{width:38px;height:38px;border-radius:8px;position:relative;display:flex;align-items:center;justify-content:center;color:var(--text-2);border:1px solid var(--border);background:rgba(10,14,22,0.6);transition:all 200ms}
+.icon-btn:hover{color:var(--accent);border-color:var(--accent);box-shadow:0 0 15px var(--accent-glow)}
+.badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 5px;background:var(--pink);color:#fff;border-radius:9px;font-family:var(--font-mono);font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;box-shadow:0 0 12px var(--pink-glow)}
+.badge.show{display:flex}
+.avatar{width:38px;height:38px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:900;font-size:16px;color:#000;box-shadow:0 0 20px var(--accent-glow)}
+
+/* ═══════════ WORKSPACE & PANELS ═══════════ */
+.workspace{padding:24px;min-height:0;flex:1;display:flex;flex-direction:column}
+.view{display:none;flex-direction:column;gap:20px;animation:viewIn 400ms var(--ease)}
+.view.active{display:flex}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.panel{
+  background:linear-gradient(180deg,rgba(10,14,22,0.8),rgba(6,7,10,0.9));
+  backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid var(--border);border-radius:var(--radius);
+  position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  transition:border-color 300ms;
+}
+.panel:hover{border-color:var(--border-hi)}
+.panel::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.1),transparent 40%,transparent 60%,var(--accent-glow));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;
+}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);gap:12px;background:rgba(0,0,0,0.2)}
+.panel-title{font-family:var(--font-mono);font-size:12px;letter-spacing:0.2em;color:#fff;text-transform:uppercase;display:flex;align-items:center;gap:10px;font-weight:500;text-shadow:0 0 8px rgba(255,255,255,0.3)}
+.panel-title .ico{color:var(--accent);font-size:16px;filter:drop-shadow(0 0 6px var(--accent))}
+.panel-body{padding:20px}
+.panel-corner{position:absolute;width:12px;height:12px;border-color:var(--accent);opacity:0.8;pointer-events:none;filter:drop-shadow(0 0 4px var(--accent))}
+.panel-corner.tl{top:0;left:0;border-top:2px solid;border-left:2px solid}
+.panel-corner.tr{top:0;right:0;border-top:2px solid;border-right:2px solid}
+.panel-corner.bl{bottom:0;left:0;border-bottom:2px solid;border-left:2px solid}
+.panel-corner.br{bottom:0;right:0;border-bottom:2px solid;border-right:2px solid}
+
+.tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;padding:4px 10px;border-radius:4px;font-weight:700;text-transform:uppercase}
+.tag.live{color:var(--green);background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);box-shadow:0 0 10px rgba(0,255,136,0.2)}
+.tag.sim{color:var(--amber);background:rgba(255,184,0,0.1);border:1px solid rgba(255,184,0,0.3)}
+.tag.warn{color:var(--amber);background:rgba(255,184,0,0.1);border:1px solid rgba(255,184,0,0.3)}
+.tag.err{color:var(--pink);background:rgba(255,0,60,0.1);border:1px solid rgba(255,0,60,0.3)}
+.tag.live::before,.tag.sim::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 1.5s infinite;box-shadow:0 0 8px currentColor}
+@keyframes pulse{50%{opacity:0.3;transform:scale(0.8)}}
+
+/* ═══════════ STAT CARDS ═══════════ */
+.hero-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.stat-card{
+  padding:20px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(10,14,22,0.9),rgba(6,7,10,0.6));
+  border:1px solid var(--border);border-radius:var(--radius);
+  transition:all 300ms var(--ease);
+}
+.stat-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.6),0 0 20px var(--accent-glow)}
+.stat-card::after{content:'';position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,var(--accent-glow),transparent 70%);opacity:0.15;pointer-events:none;transition:opacity 300ms}
+.stat-card:hover::after{opacity:0.3}
+.stat-label{font-family:var(--font-mono);font-size:11px;letter-spacing:0.15em;color:var(--text-2);text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
+.stat-value{font-family:var(--font-display);font-weight:700;font-size:36px;line-height:1;margin-top:14px;color:#fff;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;text-shadow:0 0 15px rgba(255,255,255,0.4)}
+.stat-value.accent{color:var(--accent);text-shadow:0 0 20px var(--accent-glow)}
+.stat-value.green{color:var(--green);text-shadow:0 0 20px var(--green-glow)}
+.stat-value.purple{color:var(--purple);text-shadow:0 0 20px var(--purple-glow)}
+.stat-foot{font-family:var(--font-mono);font-size:11px;color:var(--text-3);margin-top:12px;display:flex;align-items:center;gap:6px}
+.stat-foot .up{color:var(--green);text-shadow:0 0 8px var(--green-glow)}
+.stat-foot .down{color:var(--pink);text-shadow:0 0 8px var(--pink-glow)}
+
+/* ═══════════ GRIDS ═══════════ */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid-main{display:grid;grid-template-columns:2fr 1fr;gap:20px}
+
+/* ═══════════ BOT LIST ═══════════ */
+.bot-list{display:flex;flex-direction:column;gap:10px;max-height:420px;overflow-y:auto;padding-right:6px}
+.bot-list::-webkit-scrollbar{width:4px}
+.bot-list::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:2px}
+.bot-row{
+  display:grid;grid-template-columns:40px 1fr auto auto;align-items:center;gap:16px;
+  padding:12px 16px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid transparent;transition:all 200ms;
+}
+.bot-row:hover{background:rgba(0,243,255,0.05);border-color:var(--border)}
+.bot-idx{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--accent);text-align:center;width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;background:rgba(0,243,255,0.1);border:1px solid var(--border-hi);box-shadow:inset 0 0 10px rgba(0,243,255,0.2)}
+.bot-uid{font-family:var(--font-mono);font-size:12px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bot-uid small{color:var(--text-3);font-size:10px;margin-left:6px}
+.bot-status{font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;padding:4px 10px;border-radius:4px;text-transform:uppercase;font-weight:700}
+.st-playing{color:#000;background:var(--green);box-shadow:0 0 15px var(--green-glow)}
+.st-wait{color:#000;background:var(--amber);box-shadow:0 0 15px rgba(255,184,0,0.5)}
+.st-error{color:#fff;background:var(--pink);box-shadow:0 0 15px var(--pink-glow)}
+.st-default{color:var(--text-2);background:rgba(255,255,255,0.1)}
+.bot-meta{font-family:var(--font-mono);font-size:11px;color:var(--text-3);text-align:right}
+
+/* ═══════════ CHARTS & GAUGES ═══════════ */
+.chart-wrap{position:relative;height:240px;width:100%}
+canvas{display:block;width:100%;height:100%}
+.chart-legend{display:flex;gap:20px;margin-top:16px;font-family:var(--font-mono);font-size:11px;color:var(--text-3)}
+.chart-legend .lg{display:flex;align-items:center;gap:8px}
+.chart-legend .sw{width:10px;height:10px;border-radius:2px;box-shadow:0 0 8px currentColor}
+
+.gauge{position:relative;width:140px;height:140px;display:flex;align-items:center;justify-content:center;margin:0 auto}
+.gauge svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.gauge .val{font-family:var(--font-display);font-weight:700;font-size:24px;color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 0 15px rgba(255,255,255,0.5)}
+.gauge .unit{font-family:var(--font-mono);font-size:10px;color:var(--text-3);margin-top:4px}
+.gauge-center{text-align:center;z-index:2}
+.gauge-label{font-family:var(--font-mono);font-size:11px;letter-spacing:0.15em;color:var(--text-2);text-transform:uppercase;text-align:center;margin-top:12px}
+
+/* ═══════════ LOGS ═══════════ */
+.log-stream{font-family:var(--font-mono);font-size:12px;max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding:4px 0}
+.log-stream::-webkit-scrollbar{width:6px}
+.log-stream::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:3px}
+.log-line{padding:6px 10px;border-radius:4px;display:flex;gap:12px;line-height:1.4;animation:logIn 200ms var(--ease)}
+@keyframes logIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+.log-line:hover{background:rgba(255,255,255,0.03)}
+.log-ts{color:var(--text-3);flex-shrink:0;min-width:70px}
+.log-msg{color:var(--text-2);word-break:break-word}
+.log-line.green .log-msg{color:var(--green);text-shadow:0 0 8px rgba(0,255,136,0.3)}
+.log-line.cyan .log-msg{color:var(--accent);text-shadow:0 0 8px rgba(0,243,255,0.3)}
+.log-line.amber .log-msg{color:var(--amber)}
+.log-line.red .log-msg{color:var(--pink);text-shadow:0 0 8px var(--pink-glow)}
+.log-line.purple .log-msg{color:var(--purple);text-shadow:0 0 8px var(--purple-glow)}
+
+/* ═══════════ FORMS & BUTTONS ═══════════ */
+.btn{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:0.15em;padding:12px 20px;border-radius:8px;
+  border:1px solid var(--border-hi);background:rgba(10,14,22,0.8);color:#fff;
+  transition:all 250ms var(--ease);text-transform:uppercase;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,243,255,0.1);box-shadow:0 0 20px var(--accent-glow)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--purple));color:#000;border-color:transparent;box-shadow:0 0 25px var(--accent-glow)}
+.btn.primary:hover{box-shadow:0 0 40px var(--accent-glow);transform:translateY(-2px)}
+.btn.danger{color:var(--pink);border-color:rgba(255,0,60,0.4)}
+.btn.danger:hover{background:rgba(255,0,60,0.15);box-shadow:0 0 20px var(--pink-glow)}
+.btn.block{width:100%}
+
+.field{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.field label{font-family:var(--font-mono);font-size:11px;letter-spacing:0.15em;color:var(--text-2);text-transform:uppercase}
+.field input,.field select{
+  padding:12px 16px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,0.4);
+  color:#fff;font-family:var(--font-mono);font-size:13px;transition:all 250ms;
+}
+.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,243,255,0.15),0 0 15px var(--accent-glow);background:rgba(0,0,0,0.6)}
+.field-row{display:flex;gap:12px}
+.field-row>*{flex:1}
+
+.switch{position:relative;width:46px;height:24px;background:rgba(255,255,255,0.1);border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:all 250ms}
+.switch::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--text-3);transition:all 250ms}
+.switch.on{background:rgba(0,243,255,0.2);border-color:var(--accent);box-shadow:inset 0 0 10px var(--accent-glow)}
+.switch.on::after{left:24px;background:var(--accent);box-shadow:0 0 10px var(--accent),0 0 20px var(--accent)}
+
+/* ═══════════ NETWORK & TERMINAL ═══════════ */
+.terminal{
+  position:fixed;bottom:0;left:0;right:0;height:50vh;
+  background:rgba(2,2,4,0.95);backdrop-filter:blur(30px);border-top:2px solid var(--accent);
+  z-index:200;display:flex;flex-direction:column;transform:translateY(100%);
+  transition:transform 400ms var(--ease);box-shadow:0 -20px 60px rgba(0,0,0,0.8),0 -5px 20px var(--accent-glow);
+}
+.terminal.show{transform:translateY(0)}
+.terminal-head{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border);background:rgba(10,14,22,0.8)}
+.terminal-title{font-family:var(--font-mono);font-size:12px;letter-spacing:0.2em;color:var(--accent);text-transform:uppercase;text-shadow:0 0 10px var(--accent-glow)}
+.terminal-controls{display:flex;gap:10px}
+.terminal-controls button{font-family:var(--font-mono);font-size:11px;padding:6px 12px;border:1px solid var(--border);border-radius:4px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.1em;transition:all 200ms}
+.terminal-controls button:hover{color:var(--accent);border-color:var(--accent);background:rgba(0,243,255,0.1)}
+.terminal-body{flex:1;overflow-y:auto;padding:16px 20px;font-family:var(--font-mono);font-size:13px;line-height:1.6;color:var(--text-2)}
+.terminal-body::-webkit-scrollbar{width:6px}
+.terminal-body::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:3px}
+.term-line{margin-bottom:4px;white-space:pre-wrap;word-break:break-word;animation:logIn 150ms}
+.term-line .prompt{color:var(--accent);font-weight:700;text-shadow:0 0 8px var(--accent-glow)}
+.term-line .cmd{color:#fff}
+.term-line.out{color:var(--text-2)}
+.term-line.ok{color:var(--green);text-shadow:0 0 8px var(--green-glow)}
+.term-line.warn{color:var(--amber)}
+.term-line.err{color:var(--pink);text-shadow:0 0 8px var(--pink-glow)}
+.term-line.dim{color:var(--text-3)}
+.term-input-row{display:flex;align-items:center;gap:12px;padding:12px 20px;border-top:1px solid var(--border);background:rgba(10,14,22,0.8)}
+.term-prompt{font-family:var(--font-mono);font-size:13px;color:var(--accent);font-weight:700;text-shadow:0 0 10px var(--accent-glow)}
+.term-input{flex:1;background:none;border:none;outline:none;font-family:var(--font-mono);font-size:13px;color:#fff;caret-color:var(--accent)}
+
+/* ═══════════ MODALS & NOTIFICATIONS ═══════════ */
+.notif-panel{
+  position:fixed;top:76px;right:24px;width:360px;max-width:calc(100vw - 48px);
+  background:linear-gradient(180deg,rgba(10,14,22,0.98),rgba(2,2,4,0.98));
+  border:1px solid var(--border-hi);border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,0.8),0 0 20px var(--accent-glow);
+  z-index:100;padding:0;opacity:0;visibility:hidden;transform:translateY(-10px);
+  transition:all 300ms var(--ease);backdrop-filter:blur(30px);
+}
+.notif-panel.show{opacity:1;visibility:visible;transform:translateY(0)}
+.notif-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:12px;letter-spacing:0.15em;color:var(--text-3)}
+.notif-list{max-height:380px;overflow-y:auto}
+.notif-item{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;gap:12px;font-size:13px;transition:background 200ms}
+.notif-item:hover{background:rgba(0,243,255,0.05)}
+.notif-ico{width:28px;height:28px;border-radius:6px;background:rgba(0,243,255,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);font-size:14px;border:1px solid rgba(0,243,255,0.3)}
+.notif-body{flex:1;min-width:0}
+.notif-body .t{color:#fff;font-size:13px}
+.notif-body .d{color:var(--text-3);font-family:var(--font-mono);font-size:11px;margin-top:4px}
+
+/* ═══════════ MOBILE ═══════════ */
+.mobile-topbar{display:none}
+.bottom-nav{display:none}
+
+@media (max-width:1024px){
+  .hero-grid{grid-template-columns:repeat(2,1fr)}
+  .grid-2,.grid-3,.grid-main{grid-template-columns:1fr}
+}
+@media (max-width:768px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;z-index:150;transform:translateX(-100%);transition:transform 300ms var(--ease)}
+  .sidebar.mobile-open{transform:translateX(0);box-shadow:20px 0 60px rgba(0,0,0,0.8)}
+  .sidebar-toggle{display:none}
+  .mobile-topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 20px;background:rgba(2,2,4,0.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:30}
+  .menu-btn{width:40px;height:40px;border-radius:8px;color:var(--accent);font-size:20px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;background:rgba(0,243,255,0.05);box-shadow:0 0 10px var(--accent-glow)}
+  .mobile-brand{font-family:var(--font-display);font-size:14px;letter-spacing:0.25em;color:#fff;text-shadow:0 0 10px var(--accent-glow)}
+  .mobile-status{width:12px;height:12px;border-radius:50%;background:var(--pink);box-shadow:0 0 12px var(--pink)}
+  .mobile-status.online{background:var(--green);box-shadow:0 0 12px var(--green)}
+  .topbar{display:none}
+  .workspace{padding:16px;padding-bottom:90px}
+  .hero-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .stat-card{padding:16px}
+  .stat-value{font-size:28px}
+  .panel-body{padding:16px}
+  .panel-head{padding:14px 16px}
+  .clock{display:none}
+  .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(6,7,10,0.95);backdrop-filter:blur(30px);border-top:1px solid var(--border-hi);padding:10px 6px;padding-bottom:calc(10px + env(safe-area-inset-bottom));box-shadow:0 -10px 30px rgba(0,0,0,0.6),0 0 15px var(--accent-glow)}
+  .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border-radius:8px;color:var(--text-3);font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;transition:all 200ms}
+  .bn-item .ico{font-size:18px}
+  .bn-item.active{color:var(--accent);text-shadow:0 0 8px var(--accent-glow)}
+  .bn-item.active .ico{filter:drop-shadow(0 0 8px var(--accent))}
+  .terminal{height:65vh}
+  .notif-panel{right:12px;left:12px;width:auto}
+  .chart-wrap{height:200px}
+  .gauge{width:110px;height:110px}
+  .gauge .val{font-size:20px}
+}
+@media (max-width:400px){
+  .hero-grid{grid-template-columns:1fr}
+  .stat-value{font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-layer bg-grid" aria-hidden="true"></div>
+<div class="bg-layer bg-vignette" aria-hidden="true"></div>
+<div class="bg-layer bg-flicker" aria-hidden="true"></div>
+<div class="bg-layer bg-scanlines" aria-hidden="true"></div>
+
+<!-- BOOT SPLASH -->
+<div class="boot" id="boot">
+  <div class="boot-logo">
+    <div class="boot-glyph"></div>
+    <div class="boot-text">
+      <div class="boot-title">OBSIDIAN</div>
+      <div class="boot-sub">NETRUNNER OS · 2080</div>
+    </div>
+  </div>
+  <div class="boot-log" id="bootLog"></div>
+  <div class="boot-progress"><div class="boot-bar" id="bootBar"></div></div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div class="brand-text">
+        <div class="brand-name">OBSIDIAN</div>
+        <div class="brand-tag">NETRUNNER // V2080</div>
+      </div>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="nav-section">CORE</div>
+      <button class="nav-item active" data-view="overview"><span class="ico">◈</span><span class="lbl">Overview</span></button>
+      <button class="nav-item" data-view="monitoring"><span class="ico">◐</span><span class="lbl">Monitoring</span></button>
+      <button class="nav-item" data-view="bots"><span class="ico">⬡</span><span class="lbl">Bots</span></button>
+      <button class="nav-item" data-view="social"><span class="ico">✦</span><span class="lbl">Social</span></button>
+      <div class="nav-section">ANALYSIS</div>
+      <button class="nav-item" data-view="analytics"><span class="ico">◇</span><span class="lbl">Analytics</span></button>
+      <button class="nav-item" data-view="logs"><span class="ico">▤</span><span class="lbl">Event Logs</span></button>
+      <div class="nav-section">SYSTEM</div>
+      <button class="nav-item" data-view="security"><span class="ico">⚔</span><span class="lbl">Security</span></button>
+      <button class="nav-item" data-view="network"><span class="ico">◉</span><span class="lbl">Network</span></button>
+      <button class="nav-item" data-view="settings"><span class="ico">⚙</span><span class="lbl">Settings</span></button>
+    </nav>
+    <div class="sidebar-foot">
+      <span class="dot" id="connDot"></span><span id="connText">CONNECTING…</span>
+    </div>
+  </aside>
+
+  <div class="mobile-topbar">
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <div class="mobile-brand">OBSIDIAN</div>
+    <div class="mobile-status" id="mobileStatus"></div>
+  </div>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">☰</button>
+        <div class="breadcrumb">
+          <span>NETRUNNER</span><span class="sep">/</span>
+          <span class="cur" id="crumb">OVERVIEW</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="clock"><span id="clockTime">--:--:--</span> <span class="z" id="clockZone">UTC</span></div>
+        <button class="icon-btn" id="termBtn" title="Terminal (Ctrl+`)">⌨</button>
+        <button class="icon-btn" id="notifBtn">🔔<span class="badge" id="notifBadge">0</span></button>
+        <div class="avatar">N</div>
+      </div>
+    </header>
+
+    <div class="workspace" id="workspace">
+      <!-- OVERVIEW -->
+      <section class="view active" data-view="overview">
+        <div class="hero-grid">
+          <div class="stat-card">
+            <div class="stat-label"><span>TOTAL MATCHES</span><span class="tag live">LIVE</span></div>
+            <div class="stat-value green" id="sMatches">0</div>
+            <div class="stat-foot"><span class="up">▲</span><span>cumulative sessions</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label"><span>FOLLOWS</span><span class="tag live">LIVE</span></div>
+            <div class="stat-value accent" id="sFollows">0</div>
+            <div class="stat-foot"><span>target lock progress</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label"><span>SUBSCRIBES</span><span class="tag live">LIVE</span></div>
+            <div class="stat-value purple" id="sSubs">0</div>
+            <div class="stat-foot"><span>workshop codes</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label"><span>UPTIME</span><span class="tag live">LIVE</span></div>
+            <div class="stat-value" id="sUptime">0s</div>
+            <div class="stat-foot"><span id="sErrors">0 errors</span></div>
+          </div>
+        </div>
+
+        <div class="grid-main">
+          <div class="panel">
+            <span class="panel-corner tl"></span><span class="panel-corner tr"></span>
+            <div class="panel-head">
+              <div class="panel-title"><span class="ico">◈</span><span>ACTIVE BOTS</span></div>
+              <span class="tag live">LIVE</span>
+            </div>
+            <div class="panel-body">
+              <div class="bot-list" id="overviewBots">
+                <div class="bot-row"><div class="bot-idx">—</div><div class="bot-uid">No bots running</div><div class="bot-status st-default">Idle</div><div class="bot-meta">—</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <span class="panel-corner tr"></span><span class="panel-corner bl"></span>
+            <div class="panel-head">
+              <div class="panel-title"><span class="ico">▶</span><span>ENGINE CONTROL</span></div>
+              <span class="tag" id="engineTag">IDLE</span>
+            </div>
+            <div class="panel-body">
+              <div class="field"><label>Target UID</label><input id="inpTarget" placeholder="enter target uid"></div>
+              <div class="field-row">
+                <div class="field"><label>Start Map</label><input id="inpStart" type="number" value="1" min="1" max="24"></div>
+                <div class="field"><label>End Map</label><input id="inpEnd" type="number" value="24" min="1" max="24"></div>
+              </div>
+              <div class="field-row">
+                <div class="field"><label>Mode</label><select id="inpMode"><option value="seq">SEQ</option><option value="timer">TIMER</option></select></div>
+                <div class="field"><label>Hold (s)</label><input id="inpHold" type="number" value="60" min="1"></div>
+              </div>
+              <div style="display:flex;gap:12px;margin-top:12px">
+                <button class="btn primary block" id="btnStart">▶ START</button>
+                <button class="btn danger block" id="btnStop">■ STOP</button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px">
+                <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-2);letter-spacing:0.1em">AUTO-FOLLOW</span>
+                <div class="switch" id="swAutoFollow"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <span class="panel-corner tl"></span><span class="panel-corner br"></span>
+          <div class="panel-head">
+            <div class="panel-title"><span class="ico">▤</span><span>REAL-TIME EVENT STREAM</span></div>
+            <span class="tag live">LIVE</span>
+          </div>
+          <div class="panel-body">
+            <div class="log-stream" id="overviewLogs"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MONITORING -->
+      <section class="view" data-view="monitoring">
+        <div class="grid-3">
+          <div class="panel"><div class="panel-head"><div class="panel-title"><span class="ico">◐</span>CPU LOAD</div><span class="tag sim">SIM</span></div><div class="panel-body"><div class="gauge"><svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="60" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/><circle id="gCpu" cx="70" cy="70" r="60" fill="none" stroke="var(--accent)" stroke-width="10" stroke-dasharray="377" stroke-dashoffset="377" stroke-linecap="round" style="filter:drop-shadow(0 0 10px var(--accent-glow))"/></svg><div class="gauge-center"><div class="val" id="vCpu">0%</div></div></div><div class="gauge-label">Neural Processor</div></div></div>
+          <div class="panel"><div class="panel-head"><div class="panel-title"><span class="ico">◑</span>MEMORY</div><span class="tag sim">SIM</span></div><div class="panel-body"><div class="gauge"><svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="60" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/><circle id="gMem" cx="70" cy="70" r="60" fill="none" stroke="var(--green)" stroke-width="10" stroke-dasharray="377" stroke-dashoffset="377" stroke-linecap="round" style="filter:drop-shadow(0 0 10px var(--green-glow))"/></svg><div class="gauge-center"><div class="val" id="vMem">0%</div></div></div><div class="gauge-label">Cache Buffer</div></div></div>
+          <div class="panel"><div class="panel-head"><div class="panel-title"><span class="ico">◒</span>NETWORK</div><span class="tag sim">SIM</span></div><div class="panel-body"><div class="gauge"><svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="60" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/><circle id="gNet" cx="70" cy="70" r="60" fill="none" stroke="var(--purple)" stroke-width="10" stroke-dasharray="377" stroke-dashoffset="377" stroke-linecap="round" style="filter:drop-shadow(0 0 10px var(--purple-glow))"/></svg><div class="gauge-center"><div class="val" id="vNet">0%</div></div></div><div class="gauge-label">Packet Flow</div></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><span class="ico">◈</span>SYSTEM TELEMETRY</div><span class="tag sim">SIM</span></div>
+          <div class="panel-body">
+            <div class="chart-wrap"><canvas id="chartTelemetry"></canvas></div>
+            <div class="chart-legend">
+              <span class="lg"><span class="sw" style="background:var(--accent);box-shadow:0 0 8px var(--accent)"></span>CPU</span>
+              <span class="lg"><span class="sw" style="background:var(--green);box-shadow:0 0 8px var(--green)"></span>MEM</span>
+              <span class="lg"><span class="sw" style="background:var(--purple);box-shadow:0 0 8px var(--purple)"></span>NET</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BOTS -->
+      <section class="view" data-view="bots">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><span class="ico">⬡</span>BOT REGISTRY</div>
+            <span class="tag live">LIVE</span>
+          </div>
+          <div class="panel-body">
+            <div class="log-stream" id="botsDetail" style="max-height:none">
+              <div style="color:var(--text-3);padding:20px;text-align:center">No bots active. Start the engine from Overview.</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><span class="ico">▤</span>ACCOUNT LIST</div><span class="tag live">LIVE</span></div>
+          <div class="panel-body"><div id="accountsList" style="font-family:var(--font-mono);font-size:12px;color:var(--text-2)">Loading…</div></div>
+        </div>
+      </section>
+
+      <!-- SOCIAL -->
+      <section class="view" data-view="social">
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title"><span class="ico">🎯</span>FOLLOW TARGET</div><span class="tag live">LIVE</span></div>
+            <div class="panel-body">
+              <div class="field"><label>Target UID</label><input id="socFollowUid" placeholder="target uid"></div>
+              <button class="btn primary block" id="btnFollow">EXECUTE FOLLOW</button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title"><span class="ico">⭐</span>SUBSCRIBE MAP</div><span class="tag live">LIVE</span></div>
+            <div class="panel-body">
+              <div class="field"><label>Map Code</label><input id="socSubCode" placeholder="FREEFIRE… or Q07D64"></div>
+              <button class="btn primary block" id="btnSub">EXECUTE SUBSCRIBE</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><span class="ico">◈</span>SOCIAL ACTION STATUS</div><span class="tag live">LIVE</span></div>
+          <div class="panel-body"><div id="socialStatus" style="font-family:var(--font-mono);font-size:12px;color:var(--text-2)">No actions yet</div></div>
+        </div>
+      </section>
+
+      <!-- ANALYTICS -->
+      <section class="view" data-view="analytics">
+        <div class="grid-2">
+          <div class="panel"><div class="panel-head"><div class="panel-title"><span class="ico">◇</span>MATCHES OVER TIME</div><span class="tag live">LIVE</span></div><div class="panel-body"><div class="chart-wrap"><canvas id="chartMatches"></canvas></div></div></div>
+          <div class="panel"><div class="panel-head"><div class="panel-title"><span class="ico">◇</span>ACTIVITY DISTRIBUTION</div><span class="tag live">LIVE</span></div><div class="panel-body"><div class="chart-wrap"><canvas id="chartDist"></canvas></div><div class="chart-legend"><span class="lg"><span class="sw" style="background:var(--green);box-shadow:0 0 8px var(--green)"></span>Matches</span><span class="lg"><span class="sw" style="background:var(--accent);box-shadow:0 0 8px var(--accent)"></span>Follows</span><span class="lg"><span class="sw" style="background:var(--purple);box-shadow:0 0 8px var(--purple)"></span>Subscribes</span></div></div></div>
+        </div>
+      </section>
+
+      <!-- LOGS -->
+      <section class="view" data-view="logs">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><span class="ico">▤</span>EVENT STREAM</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn" data-logfilter="all" style="padding:6px 12px;font-size:10px">ALL</button>
+              <button class="btn" data-logfilter="green" style="padding:6px 12px;font-size:10px">OK</button>
+              <button class="btn" data-logfilter="red" style="padding:6px 12px;font-size:10px">ERR</button>
+            </div>
+          </div>
+          <div class="panel-body"><div class="log-stream" id="fullLogs" style="max-height:560px"></div></div>
+        </div>
+      </section>
+
+      <!-- SECURITY -->
+      <section class="view" data-view="security">
+        <div class="grid-2">
+          <div class="panel"><div class="panel-head"><div class="panel-title"><span class="ico">⚔</span>SECURITY POSTURE</div></div><div class="panel-body">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px;color:#fff">AES-128 Encryption</span><span class="tag live">ACTIVE</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px;color:#fff">JWT Caching</span><span class="tag live">ACTIVE</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px;color:#fff">TEA Payload Crypto</span><span class="tag live">ACTIVE</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0"><span style="font-size:13px;color:#fff">CRC7 Validation</span><span class="tag live">ACTIVE</span></div>
+          </div></div>
+          <div class="panel"><div class="panel-head"><div class="panel-title"><span class="ico">▤</span>THREAT LOG</div><span class="tag sim">SIM</span></div><div class="panel-body">
+            <div class="log-stream"><div class="log-line green"><span class="log-ts">--:--</span><span class="log-msg">No security events</span></div></div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- NETWORK -->
+      <section class="view" data-view="network">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><span class="ico">◉</span>NETWORK TOPOLOGY</div><span class="tag sim">SIM</span></div>
+          <div class="panel-body">
+            <div class="net-map" id="netMap" style="position:relative;height:300px;overflow:hidden;border-radius:var(--radius);background:rgba(0,0,0,0.3);border:1px solid var(--border)"><svg class="net-svg" id="netSvg" style="position:absolute;inset:0;width:100%;height:100%"></svg></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><span class="ico">▤</span>CONNECTIONS</div><span class="tag live">LIVE</span></div>
+          <div class="panel-body">
+            <table class="tbl" style="width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:12px">
+              <thead><tr><th style="text-align:left;padding:12px;color:var(--text-3);border-bottom:1px solid var(--border)">Bot</th><th style="text-align:left;padding:12px;color:var(--text-3);border-bottom:1px solid var(--border)">UID</th><th style="text-align:left;padding:12px;color:var(--text-3);border-bottom:1px solid var(--border)">Status</th><th style="text-align:left;padding:12px;color:var(--text-3);border-bottom:1px solid var(--border)">Map</th><th style="text-align:left;padding:12px;color:var(--text-3);border-bottom:1px solid var(--border)">Entity</th></tr></thead>
+              <tbody id="netTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="view" data-view="settings">
+        <div class="grid-2">
+          <div class="panel"><div class="panel-head"><div class="panel-title"><span class="ico">⚙</span>APPEARANCE</div></div><div class="panel-body">
+            <div class="field"><label>Accent Theme</label>
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn" data-theme="cyan" style="border-color:#00f3ff;color:#00f3ff">CYAN</button>
+                <button class="btn" data-theme="green" style="border-color:#00ff88;color:#00ff88">GREEN</button>
+                <button class="btn" data-theme="purple" style="border-color:#b026ff;color:#b026ff">PURPLE</button>
+                <button class="btn" data-theme="pink" style="border-color:#ff003c;color:#ff003c">PINK</button>
+              </div>
+            </div>
+          </div></div>
+          <div class="panel"><div class="panel-head"><div class="panel-title"><span class="ico">⚙</span>ENGINE CONFIG</div></div><div class="panel-body">
+            <div class="field"><label>Target UID</label><input id="setTarget"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0"><span style="font-size:13px;color:#fff">Auto Follow</span><div class="switch" id="setSwFollow"></div></div>
+            <button class="btn primary block" id="btnSaveCfg" style="margin-top:12px">SAVE CONFIG</button>
+          </div></div>
+        </div>
+        <div class="panel"><div class="panel-head"><div class="panel-title"><span class="ico">⚙</span>KEYBOARD SHORTCUTS</div></div><div class="panel-body">
+          <table class="tbl" style="width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:12px"><tbody>
+            <tr><td style="padding:10px 0;color:var(--accent);font-weight:700">Ctrl + `</td><td style="padding:10px 0;color:var(--text-2)">Toggle Terminal</td></tr>
+            <tr><td style="padding:10px 0;color:var(--accent);font-weight:700">Ctrl + K</td><td style="padding:10px 0;color:var(--text-2)">Focus Terminal</td></tr>
+            <tr><td style="padding:10px 0;color:var(--accent);font-weight:700">Ctrl + M</td><td style="padding:10px 0;color:var(--text-2)">Toggle Sidebar</td></tr>
+            <tr><td style="padding:10px 0;color:var(--accent);font-weight:700">Esc</td><td style="padding:10px 0;color:var(--text-2)">Close panels / modals</td></tr>
+          </tbody></table>
+        </div></div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="bn-item active" data-view="overview"><span class="ico">◈</span><span>Home</span></button>
+    <button class="bn-item" data-view="monitoring"><span class="ico">◐</span><span>Monitor</span></button>
+    <button class="bn-item" data-view="bots"><span class="ico">⬡</span><span>Bots</span></button>
+    <button class="bn-item" data-view="logs"><span class="ico">▤</span><span>Logs</span></button>
+    <button class="bn-item" data-view="settings"><span class="ico">⚙</span><span>More</span></button>
+  </nav>
+</div>
+
+<!-- Terminal -->
+<div class="terminal" id="terminal">
+  <div class="terminal-head">
+    <div class="terminal-title">⌨ NETRUNNER SHELL</div>
+    <div class="terminal-controls">
+      <button id="termClear">clear</button>
+      <button id="termClose">✕ close</button>
+    </div>
+  </div>
+  <div class="terminal-body" id="termBody"></div>
+  <form class="term-input-row" id="termForm">
+    <span class="term-prompt">netrunner@obsidian:~$</span>
+    <input class="term-input" id="termInput" autocomplete="off" spellcheck="false" placeholder="type 'help' for commands">
+  </form>
+</div>
+
+<!-- Notification Panel -->
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-head"><span>NOTIFICATIONS</span><button id="notifClear" style="font-size:11px;color:var(--text-3);letter-spacing:0.15em">CLEAR</button></div>
+  <div class="notif-list" id="notifList"><div class="notif-item"><div class="notif-ico">ℹ</div><div class="notif-body"><div class="t">System ready</div><div class="d">Now</div></div></div></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   OBSIDIAN NETRUNNER OS 2080 · Frontend Logic
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const fmt = (n, d=0) => Number(n).toLocaleString(undefined,{maximumFractionDigits:d});
+
+const state = {
+  view: 'overview',
+  ws: null,
+  connected: false,
+  snapshot: null,
+  notifications: [],
+  notifUnread: 0,
+  logFilter: 'all',
+  termHistory: [],
+  termHistoryIdx: -1,
+  matchesSeries: [],
+  lastTotalMatches: 0,
+};
+
+/* ── Boot Sequence ── */
+const bootLines = [
+  'initializing netrunner core',
+  'loading cryptographic modules',
+  'mounting encrypted filesystem',
+  'establishing secure channel',
+  'handshake complete',
+  'ready',
+];
+function runBoot(){
+  const log = $('#bootLog'), bar = $('#bootBar');
+  let i = 0;
+  const iv = setInterval(()=>{
+    if (i >= bootLines.length){
+      clearInterval(iv);
+      setTimeout(()=>$('#boot').classList.add('hidden'), 400);
+      return;
+    }
+    const line = document.createElement('span');
+    line.innerHTML = `> ${bootLines[i]} <b>[OK]</b>`;
+    log.appendChild(line);
+    bar.style.width = ((i+1)/bootLines.length*100)+'%';
+    i++;
+  }, 200);
+}
+
+/* ── Clock ── */
+function tickClock(){
+  const now = new Date();
+  $('#clockTime').textContent = now.toTimeString().slice(0,8);
+  const offset = -now.getTimezoneOffset()/60;
+  $('#clockZone').textContent = offset === 0 ? 'UTC' : (offset>0?'+':'')+offset;
+}
+
+/* ── Navigation ── */
+function setView(v){
+  state.view = v;
+  $$('.view').forEach(x=>x.classList.toggle('active', x.dataset.view===v));
+  $$('.nav-item').forEach(x=>x.classList.toggle('active', x.dataset.view===v));
+  $$('.bn-item').forEach(x=>x.classList.toggle('active', x.dataset.view===v));
+  $('#crumb').textContent = v.toUpperCase();
+  $('#sidebar').classList.remove('mobile-open');
+}
+$$('.nav-item, .bn-item').forEach(b=>b.addEventListener('click', ()=>setView(b.dataset.view)));
+$('#sidebarToggle').addEventListener('click', ()=>$('#app').classList.toggle('collapsed'));
+$('#menuBtn').addEventListener('click', ()=>$('#sidebar').classList.toggle('mobile-open'));
+
+/* ── Terminal ── */
+const term = $('#terminal'), termBody = $('#termBody'), termInput = $('#termInput');
+function termShow(){ term.classList.add('show'); setTimeout(()=>termInput.focus(), 300); }
+function termHide(){ term.classList.remove('show'); }
+function termWrite(text, cls='out'){
+  const line = document.createElement('div');
+  line.className = 'term-line ' + cls;
+  line.innerHTML = text;
+  termBody.appendChild(line);
+  termBody.scrollTop = termBody.scrollHeight;
+}
+function termPrompt(cmd){
+  termWrite(`<span class="prompt">netrunner@obsidian:~$</span> <span class="cmd">${escapeHtml(cmd)}</span>`, 'in');
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+$('#termBtn').addEventListener('click', ()=>{ term.classList.contains('show') ? termHide() : termShow(); });
+$('#termClose').addEventListener('click', termHide);
+$('#termClear').addEventListener('click', ()=>termBody.innerHTML='');
+
+$('#termForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const cmd = termInput.value.trim();
+  if (!cmd) return;
+  termInput.value = '';
+  state.termHistory.push(cmd);
+  state.termHistoryIdx = state.termHistory.length;
+  termPrompt(cmd);
+  await execCmd(cmd);
+});
+
+termInput.addEventListener('keydown', e=>{
+  if (e.key === 'ArrowUp'){
+    e.preventDefault();
+    if (state.termHistoryIdx > 0) { state.termHistoryIdx--; termInput.value = state.termHistory[state.termHistoryIdx] || ''; }
+  } else if (e.key === 'ArrowDown'){
+    e.preventDefault();
+    if (state.termHistoryIdx < state.termHistory.length - 1) { state.termHistoryIdx++; termInput.value = state.termHistory[state.termHistoryIdx] || ''; }
+    else { state.termHistoryIdx = state.termHistory.length; termInput.value = ''; }
+  }
+});
+
+async function execCmd(raw){
+  const [cmd, ...args] = raw.split(/\s+/);
+  const arg = args.join(' ');
+  switch(cmd.toLowerCase()){
+    case 'help':
+      termWrite('<span style="color:var(--accent)">AVAILABLE COMMANDS</span>', 'dim');
+      termWrite('  help                — show this help');
+      termWrite('  clear               — clear terminal');
+      termWrite('  status              — snapshot engine state');
+      termWrite('  bots                — list active bots');
+      termWrite('  start               — start engine');
+      termWrite('  stop                — stop engine');
+      termWrite('  maps                — list available map codes');
+      termWrite('  follow &lt;uid&gt;        — execute follow action');
+      termWrite('  subscribe &lt;code&gt;    — execute subscribe action');
+      termWrite('  theme &lt;name&gt;        — cyan|green|purple|pink');
+      termWrite('  date                — show current date/time');
+      termWrite('  whoami              — identity');
+      termWrite('  echo &lt;text&gt;         — echo text');
+      termWrite('  connect             — reconnect websocket');
+      termWrite('  exit                — close terminal');
+      break;
+    case 'clear': termBody.innerHTML=''; break;
+    case 'status':
+      if (!state.snapshot) { termWrite('no snapshot available', 'warn'); break; }
+      const t = state.snapshot.totals || {};
+      termWrite(`running: ${state.snapshot.running ? '<span style="color:var(--green);text-shadow:0 0 10px var(--green)">YES</span>' : '<span style="color:var(--pink);text-shadow:0 0 10px var(--pink)">NO</span>'}`);
+      termWrite(`matches: ${t.matches} · follows: ${t.follows} · subscribes: ${t.subscribes} · errors: ${t.errors}`);
+      termWrite(`uptime: ${fmt(state.snapshot.uptime)}s · bots: ${Object.keys(state.snapshot.bots||{}).length}`);
+      break;
+    case 'bots':
+      if (!state.snapshot || !Object.keys(state.snapshot.bots||{}).length) { termWrite('no bots active', 'warn'); break; }
+      Object.entries(state.snapshot.bots).forEach(([i,b])=>{
+        termWrite(`  #${i}  ${b.uid}  →  ${b.status}  ·  map: ${b.map||'-'}  ·  eid: ${b.entity||'-'}`);
+      });
+      break;
+    case 'start':
+      termWrite('starting engine…');
+      try {
+        const r = await fetch('/api/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(getCfg())}).then(r=>r.json());
+        termWrite(r.ok ? `<span style="color:var(--green)">✓ engine started · ${r.bots} bots</span>` : `<span style="color:var(--pink)">✗ ${r.error}</span>`);
+      } catch(e){ termWrite('✗ ' + e.message, 'err'); }
+      break;
+    case 'stop':
+      termWrite('stopping engine…');
+      try {
+        const r = await fetch('/api/stop',{method:'POST'}).then(r=>r.json());
+        termWrite(r.ok ? '<span style="color:var(--green)">✓ engine stopped</span>' : `<span style="color:var(--pink)">✗ ${r.error||'not running'}</span>`);
+      } catch(e){ termWrite('✗ ' + e.message, 'err'); }
+      break;
+    case 'maps':
+      try {
+        const r = await fetch('/api/maps').then(r=>r.json());
+        r.maps.forEach((m,i)=>termWrite(`  #${String(i+1).padStart(2,'0')}  ${m}`));
+      } catch(e){ termWrite('✗ ' + e.message, 'err'); }
+      break;
+    case 'follow':
+      if (!arg) { termWrite('usage: follow <uid>', 'warn'); break; }
+      try {
+        const r = await fetch('/api/social',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'Follow',target:arg})}).then(r=>r.json());
+        termWrite(r.ok ? `<span style="color:var(--green)">✓ follow queued (${r.queued} accounts)</span>` : `<span style="color:var(--pink)">✗ ${r.error}</span>`);
+      } catch(e){ termWrite('✗ ' + e.message, 'err'); }
+      break;
+    case 'subscribe':
+      if (!arg) { termWrite('usage: subscribe <map_code>', 'warn'); break; }
+      try {
+        const r = await fetch('/api/social',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'Subscribe',target:arg})}).then(r=>r.json());
+        termWrite(r.ok ? `<span style="color:var(--green)">✓ subscribe queued (${r.queued} accounts)</span>` : `<span style="color:var(--pink)">✗ ${r.error}</span>`);
+      } catch(e){ termWrite('✗ ' + e.message, 'err'); }
+      break;
+    case 'theme':
+      if (!arg) { termWrite('usage: theme <cyan|green|purple|pink>', 'warn'); break; }
+      setTheme(arg);
+      termWrite(`<span style="color:var(--green)">✓ theme set to ${arg}</span>`);
+      break;
+    case 'date': termWrite(new Date().toString()); break;
+    case 'whoami': termWrite('netrunner@obsidian (privileged session)', 'ok'); break;
+    case 'echo': termWrite(escapeHtml(arg)); break;
+    case 'connect': connectWS(); termWrite('reconnecting…'); break;
+    case 'exit': termHide(); break;
+    default:
+      termWrite(`unknown command: ${escapeHtml(cmd)} — type 'help'`, 'err');
+  }
+}
+
+/* ── Theme ── */
+function setTheme(name){
+  document.documentElement.dataset.theme = name;
+  localStorage.setItem('obsidian-theme', name);
+}
+$$('[data-theme]').forEach(b=>{
+  if (b.dataset.theme && b.tagName==='BUTTON') b.addEventListener('click', ()=>setTheme(b.dataset.theme));
+});
+const savedTheme = localStorage.getItem('obsidian-theme');
+if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+
+/* ── Notifications ── */
+function pushNotif(icon, title, detail){
+  state.notifications.unshift({icon, title, detail, time: new Date()});
+  state.notifUnread++;
+  renderNotifs();
+}
+function renderNotifs(){
+  const list = $('#notifList');
+  const b = $('#notifBadge');
+  if (state.notifications.length === 0){
+    list.innerHTML = '<div class="notif-item"><div class="notif-ico">ℹ</div><div class="notif-body"><div class="t">No notifications</div></div></div>';
+    b.classList.remove('show');
+    return;
+  }
+  list.innerHTML = state.notifications.slice(0,20).map(n=>`
+    <div class="notif-item">
+      <div class="notif-ico">${n.icon}</div>
+      <div class="notif-body"><div class="t">${escapeHtml(n.title)}</div><div class="d">${n.time.toTimeString().slice(0,8)} · ${escapeHtml(n.detail||'')}</div></div>
+    </div>`).join('');
+  if (state.notifUnread > 0) { b.textContent = state.notifUnread > 9 ? '9+' : state.notifUnread; b.classList.add('show'); }
+}
+$('#notifBtn').addEventListener('click', e=>{ e.stopPropagation(); $('#notifPanel').classList.toggle('show'); state.notifUnread = 0; renderNotifs(); });
+$('#notifClear').addEventListener('click', ()=>{ state.notifications = []; renderNotifs(); });
+document.addEventListener('click', e=>{
+  if (!e.target.closest('#notifBtn') && !e.target.closest('#notifPanel')) $('#notifPanel').classList.remove('show');
+});
+
+/* ── WebSocket ── */
+function connectWS(){
+  if (state.ws && state.ws.readyState === WebSocket.OPEN) state.ws.close();
+  const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  try {
+    const ws = new WebSocket(`${proto}//${location.host}/ws`);
+    ws.onopen = ()=>{ state.connected = true; updateConn(); termWrite('<span style="color:var(--green)">✓ websocket connected</span>', 'ok'); pushNotif('🔗','WebSocket connected','backend online'); };
+    ws.onclose = ()=>{ state.connected = false; updateConn(); };
+    ws.onerror = ()=>{ state.connected = false; updateConn(); };
+    ws.onmessage = ev=>{
+      try {
+        const msg = JSON.parse(ev.data);
+        if (msg.type === 'init' || msg.type === 'status'){
+          state.snapshot = msg.data;
+          renderSnapshot();
+        } else if (msg.type === 'log' || msg.type === 'err'){
+          appendLog(msg.data, msg.type);
+        }
+      } catch(e){}
+    };
+    state.ws = ws;
+  } catch(e){ state.connected = false; updateConn(); }
+}
+
+function updateConn(){
+  const dot = $('#connDot'), txt = $('#connText'), mstat = $('#mobileStatus');
+  if (state.connected){
+    dot.classList.remove('offline'); txt.textContent = 'ONLINE';
+    mstat.classList.add('online');
+  } else {
+    dot.classList.add('offline'); txt.textContent = 'OFFLINE';
+    mstat.classList.remove('online');
+  }
+}
+
+/* ── Snapshot Rendering ── */
+function renderSnapshot(){
+  const s = state.snapshot;
+  if (!s) return;
+  const t = s.totals || {};
+  $('#sMatches').textContent = fmt(t.matches || 0);
+  $('#sFollows').textContent = fmt(t.follows || 0);
+  $('#sSubs').textContent = fmt(t.subscribes || 0);
+  $('#sUptime').textContent = fmt(s.uptime || 0) + 's';
+  $('#sErrors').textContent = fmt(t.errors || 0) + ' errors';
+
+  const et = $('#engineTag');
+  if (s.running){ et.textContent = 'RUNNING'; et.className = 'tag live'; }
+  else { et.textContent = 'IDLE'; et.className = 'tag'; }
+
+  const bots = Object.entries(s.bots || {});
+  const renderRow = ([i,b])=>{
+    const st = b.status || '—';
+    const cls = st.includes('Play') ? 'st-playing' : st.includes('Wait') ? 'st-wait' : st.includes('Err') ? 'st-error' : 'st-default';
+    return `<div class="bot-row"><div class="bot-idx">${i}</div><div class="bot-uid">${b.uid}<small>${b.aid||''}</small></div><div class="bot-status ${cls}">${st}</div><div class="bot-meta">${b.map || '—'}<br><span style="font-size:10px;opacity:0.7">${fmt(b.matches_played||0)}m</span></div></div>`;
+  };
+  $('#overviewBots').innerHTML = bots.length ? bots.map(renderRow).join('') : '<div class="bot-row"><div class="bot-idx">—</div><div class="bot-uid">No bots running</div><div class="bot-status st-default">Idle</div><div class="bot-meta">—</div></div>';
+
+  $('#botsDetail').innerHTML = bots.length
+    ? bots.map(([i,b])=>`<div class="log-line ${b.status?.includes('Play')?'green':b.status?.includes('Err')?'red':'cyan'}"><span class="log-ts">#${i}</span><span class="log-msg">uid: ${b.uid} · aid: ${b.aid||'-'} · status: ${b.status} · map: ${b.map||'-'} · eid: ${b.entity||'-'} · matches: ${b.matches_played||0} · time: ${fmt(b.time_in_match||0,1)}s</span></div>`).join('')
+    : '<div style="color:var(--text-3);padding:20px;text-align:center">No bots active.</div>';
+
+  $('#netTable').innerHTML = bots.length
+    ? bots.map(([i,b])=>`<tr><td style="padding:10px;border-bottom:1px solid var(--border)">#${i}</td><td style="padding:10px;border-bottom:1px solid var(--border)">${b.uid}</td><td style="padding:10px;border-bottom:1px solid var(--border)">${b.status}</td><td style="padding:10px;border-bottom:1px solid var(--border)">${b.map||'—'}</td><td style="padding:10px;border-bottom:1px solid var(--border)">${b.entity||'—'}</td></tr>`).join('')
+    : '<tr><td colspan="5" style="text-align:center;color:var(--text-3);padding:20px">No active bots</td></tr>';
+
+  const soc = Object.entries(s.social || {});
+  $('#socialStatus').innerHTML = soc.length
+    ? soc.map(([i,x])=>`<div style="padding:8px 0;border-bottom:1px solid var(--border)"><b>#${i}</b> · ${x.action} → ${escapeHtml(String(x.target||''))} · <span style="color:${x.status==='Success'?'var(--green)':'var(--amber)'}">${x.status}</span></div>`).join('')
+    : 'No actions yet';
+
+  if ((t.matches||0) !== state.lastTotalMatches){
+    state.lastTotalMatches = t.matches || 0;
+    state.matchesSeries.push(state.lastTotalMatches);
+    if (state.matchesSeries.length > 40) state.matchesSeries.shift();
+  }
+
+  drawCharts();
+}
+
+/* ── Logs ── */
+const allLogs = [];
+function appendLog(entry, kind){
+  allLogs.push({...entry, kind});
+  if (allLogs.length > 200) allLogs.shift();
+  renderLogs();
+  if (kind === 'err') pushNotif('⚠','Error', entry.msg);
+}
+function renderLogs(){
+  const filter = state.logFilter;
+  const html = allLogs.slice(-100).map(e=>{
+    if (filter !== 'all' && e.style !== filter) return '';
+    return `<div class="log-line ${e.style||''}"><span class="log-ts">${e.ts||'--:--:--'}</span><span class="log-msg">${escapeHtml(e.msg||'')}</span></div>`;
+  }).join('');
+  $('#overviewLogs').innerHTML = allLogs.slice(-10).map(e=>`<div class="log-line ${e.style||''}"><span class="log-ts">${e.ts||'--:--:--'}</span><span class="log-msg">${escapeHtml(e.msg||'')}</span></div>`).join('') || '<div style="color:var(--text-3)">Awaiting events…</div>';
+  $('#fullLogs').innerHTML = html || '<div style="color:var(--text-3)">No logs</div>';
+}
+$$('[data-logfilter]').forEach(b=>b.addEventListener('click', ()=>{ state.logFilter = b.dataset.logfilter; renderLogs(); }));
+
+/* ── Config API ── */
+function getCfg(){
+  return {
+    seq_mode: ($('#inpMode')?.value || 'seq') === 'seq',
+    start_map: parseInt($('#inpStart')?.value || '1'),
+    end_map: parseInt($('#inpEnd')?.value || '24'),
+    hold_secs: parseFloat($('#inpHold')?.value || '60'),
+    sync_secs: 10,
+    rejoin_delay: 2,
+    target: $('#inpTarget')?.value || '',
+    auto_follow: $('#swAutoFollow')?.classList.contains('on'),
+    accounts_file: 'accounts.json',
+    resume: true,
+  };
+}
+$('#swAutoFollow').addEventListener('click', ()=>$('#swAutoFollow').classList.toggle('on'));
+$('#setSwFollow').addEventListener('click', ()=>$('#setSwFollow').classList.toggle('on'));
+
+$('#btnStart').addEventListener('click', async ()=>{
+  try {
+    const r = await fetch('/api/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(getCfg())}).then(r=>r.json());
+    pushNotif(r.ok?'▶':'⚠', r.ok?'Engine started':(r.error||'start failed'), r.ok?`${r.bots} bots`: '');
+    termWrite(r.ok?`<span style="color:var(--green)">✓ engine started · ${r.bots} bots</span>`:`<span style="color:var(--pink)">✗ ${r.error}</span>`);
+  } catch(e){ pushNotif('⚠','Start failed', e.message); }
+});
+$('#btnStop').addEventListener('click', async ()=>{
+  try {
+    const r = await fetch('/api/stop',{method:'POST'}).then(r=>r.json());
+    pushNotif('■', r.ok?'Engine stopped':(r.error||'stop failed'));
+  } catch(e){ pushNotif('⚠','Stop failed', e.message); }
+});
+
+$('#btnFollow').addEventListener('click', async ()=>{
+  const t = $('#socFollowUid').value.trim(); if (!t) return;
+  try {
+    const r = await fetch('/api/social',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'Follow',target:t})}).then(r=>r.json());
+    pushNotif('🎯', r.ok?`Follow queued (${r.queued})`:r.error||'failed');
+  } catch(e){ pushNotif('⚠','Follow error', e.message); }
+});
+$('#btnSub').addEventListener('click', async ()=>{
+  const t = $('#socSubCode').value.trim(); if (!t) return;
+  try {
+    const r = await fetch('/api/social',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'Subscribe',target:t})}).then(r=>r.json());
+    pushNotif('⭐', r.ok?`Subscribe queued (${r.queued})`:r.error||'failed');
+  } catch(e){ pushNotif('⚠','Subscribe error', e.message); }
+});
+$('#btnSaveCfg').addEventListener('click', async ()=>{
+  const body = { target: $('#setTarget').value, auto_follow: $('#setSwFollow').classList.contains('on') };
+  try {
+    const r = await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json());
+    pushNotif('⚙', r.ok?'Config saved':'save failed');
+  } catch(e){ pushNotif('⚠','Save error', e.message); }
+});
+
+/* ── Accounts load ── */
+async function loadAccounts(){
+  try {
+    const r = await fetch('/api/accounts').then(r=>r.json());
+    const accs = r.accounts || [];
+    $('#accountsList').innerHTML = accs.length
+      ? accs.map((a,i)=>`<div style="padding:8px 0;border-bottom:1px solid var(--border)">#${i+1} · uid: ${a.uid} · aid: ${a.aid||'—'}</div>`).join('')
+      : '<span style="color:var(--text-3)">No accounts in accounts.json</span>';
+  } catch(e){ $('#accountsList').textContent = 'Failed to load'; }
+}
+
+/* ── Charts (canvas) ── */
+const charts = {};
+function setupChart(id){
+  const cv = $(id); if (!cv) return null;
+  const dpr = window.devicePixelRatio || 1;
+  const rect = cv.getBoundingClientRect();
+  cv.width = rect.width * dpr; cv.height = rect.height * dpr;
+  const ctx = cv.getContext('2d'); ctx.scale(dpr,dpr);
+  return {cv, ctx, w: rect.width, h: rect.height};
+}
+
+function drawCharts(){
+  const tel = $('#chartTelemetry');
+  if (tel){
+    const ctx = setupChart('#chartTelemetry'); if (!ctx) return;
+    const {w,h,ctx:c} = ctx;
+    c.clearRect(0,0,w,h);
+    c.strokeStyle = 'rgba(255,255,255,0.05)'; c.lineWidth = 1;
+    for(let i=0;i<5;i++){ c.beginPath(); c.moveTo(0, (h/4)*i); c.lineTo(w,(h/4)*i); c.stroke(); }
+    const now = Date.now()/1000;
+    const sim = (phase, amp, base)=>{
+      const pts = [];
+      for (let i=0;i<60;i++){
+        const t = now + i*0.2;
+        pts.push(base + Math.sin(t*phase)*amp + Math.sin(t*phase*2.3)*amp*0.4);
+      }
+      return pts;
+    };
+    const drawSeries = (pts, color, glow)=>{
+      c.strokeStyle = color; c.lineWidth = 2; c.beginPath();
+      pts.forEach((v,i)=>{ const x=(i/(pts.length-1))*w; const y=h-(v/100)*h; i?c.lineTo(x,y):c.moveTo(x,y); });
+      c.stroke();
+      if (glow){ c.shadowColor = color; c.shadowBlur = 10; c.stroke(); c.shadowBlur = 0; }
+    };
+    drawSeries(sim(1.2, 12, 45), 'rgba(0,243,255,0.9)', true);
+    drawSeries(sim(0.8, 8, 60), 'rgba(0,255,136,0.8)', false);
+    drawSeries(sim(1.6, 15, 30), 'rgba(176,38,255,0.7)', false);
+  }
+
+  const mc = $('#chartMatches');
+  if (mc){
+    const ctx = setupChart('#chartMatches'); if (!ctx) return;
+    const {w,h,ctx:c} = ctx;
+    c.clearRect(0,0,w,h);
+    c.strokeStyle = 'rgba(255,255,255,0.05)';
+    for(let i=0;i<5;i++){ c.beginPath(); c.moveTo(0,(h/4)*i); c.lineTo(w,(h/4)*i); c.stroke(); }
+    const series = state.matchesSeries.length ? state.matchesSeries : [0,0];
+    const max = Math.max(...series, 1);
+    c.strokeStyle = 'rgba(0,255,136,0.9)'; c.lineWidth = 2;
+    c.beginPath();
+    series.forEach((v,i)=>{ const x=(i/Math.max(series.length-1,1))*w; const y=h-(v/max)*h*0.9; i?c.lineTo(x,y):c.moveTo(x,y); });
+    c.stroke();
+    c.shadowColor = 'rgba(0,255,136,0.8)'; c.shadowBlur = 12; c.stroke(); c.shadowBlur = 0;
+    c.fillStyle = 'rgba(0,255,136,0.08)';
+    c.lineTo(w,h); c.lineTo(0,h); c.closePath(); c.fill();
+  }
+
+  const dc = $('#chartDist');
+  if (dc){
+    const ctx = setupChart('#chartDist'); if (!ctx) return;
+    const {w,h,ctx:c} = ctx;
+    c.clearRect(0,0,w,h);
+    const t = state.snapshot?.totals || {matches:0,follows:0,subscribes:0};
+    const items = [
+      {label:'Matches', v:t.matches||0, color:'#00ff88'},
+      {label:'Follows', v:t.follows||0, color:'#00f3ff'},
+      {label:'Subscribes', v:t.subscribes||0, color:'#b026ff'},
+    ];
+    const max = Math.max(1, ...items.map(i=>i.v));
+    const barW = w/items.length * 0.5;
+    items.forEach((it,i)=>{
+      const x = (w/items.length)*i + (w/items.length - barW)/2;
+      const barH = (it.v/max) * h * 0.75;
+      const y = h - barH - 24;
+      c.fillStyle = it.color;
+      c.shadowColor = it.color; c.shadowBlur = 15;
+      c.fillRect(x, y, barW, barH);
+      c.shadowBlur = 0;
+      c.fillStyle = 'rgba(255,255,255,0.7)';
+      c.font = '11px "Share Tech Mono", monospace';
+      c.textAlign = 'center';
+      c.fillText(it.label, x + barW/2, h - 8);
+      c.fillStyle = it.color;
+      c.fillText(String(it.v), x + barW/2, y - 8);
+    });
+  }
+}
+
+function updateGauges(){
+  const cpu = 30 + Math.random()*40;
+  const mem = 45 + Math.random()*25;
+  const net = 20 + Math.random()*50;
+  const setG = (id, val, vId)=>{
+    const el = $(id); if (!el) return;
+    const total = 377;
+    el.style.strokeDashoffset = total - (total * val/100);
+    el.style.transition = 'stroke-dashoffset 600ms ease';
+    $(vId).textContent = Math.round(val) + '%';
+  };
+  setG('#gCpu', cpu, '#vCpu');
+  setG('#gMem', mem, '#vMem');
+  setG('#gNet', net, '#vNet');
+}
+
+function buildNetMap(){
+  const map = $('#netMap'), svg = $('#netSvg');
+  if (!map || !svg) return;
+  svg.innerHTML = '';
+  const w = map.clientWidth || 400, h = map.clientHeight || 300;
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  const center = {x:w/2, y:h/2};
+  const nodes = [];
+  const n = 8;
+  for (let i=0;i<n;i++){
+    const a = (i/n) * Math.PI*2;
+    const r = Math.min(w,h)*0.36;
+    nodes.push({x: center.x + Math.cos(a)*r, y: center.y + Math.sin(a)*r});
+  }
+  nodes.forEach(nd=>{
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', center.x); line.setAttribute('y1', center.y);
+    line.setAttribute('x2', nd.x); line.setAttribute('y2', nd.y);
+    line.setAttribute('stroke', 'rgba(0,243,255,0.2)');
+    line.setAttribute('stroke-width', '1.5');
+    line.setAttribute('stroke-dasharray', '4 6');
+    svg.appendChild(line);
+  });
+  const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  c.setAttribute('cx', center.x); c.setAttribute('cy', center.y); c.setAttribute('r', 24);
+  c.setAttribute('fill', 'rgba(0,243,255,0.1)');
+  c.setAttribute('stroke', 'rgba(0,243,255,0.8)');
+  c.setAttribute('stroke-width', '2');
+  c.style.filter = 'drop-shadow(0 0 10px var(--accent))';
+  svg.appendChild(c);
+  map.querySelectorAll('.net-node').forEach(n=>n.remove());
+  nodes.forEach(nd=>{
+    const el = document.createElement('div');
+    el.className = 'net-node';
+    el.style.position = 'absolute';
+    el.style.width = '16px'; el.style.height = '16px';
+    el.style.borderRadius = '50%';
+    el.style.background = 'var(--bg-2)';
+    el.style.border = '2px solid var(--accent)';
+    el.style.transform = 'translate(-50%,-50%)';
+    el.style.boxShadow = '0 0 15px var(--accent-glow)';
+    el.style.left = nd.x + 'px';
+    el.style.top = nd.y + 'px';
+    map.appendChild(el);
+  });
+}
+
+/* ── Keyboard shortcuts ── */
+document.addEventListener('keydown', e=>{
+  if (e.ctrlKey && e.key === '`'){ e.preventDefault(); term.classList.contains('show') ? termHide() : termShow(); }
+  if (e.ctrlKey && e.key === 'k'){ e.preventDefault(); termShow(); }
+  if (e.ctrlKey && e.key === 'm'){ e.preventDefault(); $('#app').classList.toggle('collapsed'); }
+  if (e.key === 'Escape'){ termHide(); $('#notifPanel').classList.remove('show'); $('#modal').classList.remove('show'); }
+});
+
+/* ── Init ── */
+window.addEventListener('load', ()=>{
+  runBoot();
+  tickClock(); setInterval(tickClock, 1000);
+  updateGauges(); setInterval(updateGauges, 2500);
+  connectWS();
+  loadAccounts();
+  buildNetMap();
+  termWrite('<span style="color:var(--accent)">OBSIDIAN NETRUNNER OS · v2080</span>');
+  termWrite('Type <span style="color:var(--green)">help</span> for available commands.');
+  setTimeout(()=>{ loadAccounts(); if (state.snapshot?.target) $('#setTarget').value = state.snapshot.target; if (state.snapshot?.auto_follow) $('#setSwFollow').classList.add('on'); }, 1500);
+});
+window.addEventListener('resize', ()=>{ drawCharts(); buildNetMap(); });
+</script>
+</body>
+</html>

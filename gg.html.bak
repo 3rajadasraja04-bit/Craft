@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070b12">
+<title>NETRUNNER // Command OS</title>
+<style>
+:root{
+ --bg:#070b12;--panel:rgba(13,22,32,.88);--panel2:#0b1420;--line:rgba(68,238,255,.18);
+ --cyan:#42efff;--green:#7dffb2;--purple:#a78bfa;--pink:#ff5ca8;--yellow:#ffd76a;
+ --text:#d9f5fa;--muted:#76909d;--glow:0 0 22px rgba(66,239,255,.15);
+ --radius:15px;--sidebar:238px
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 72% -10%,#12303b 0,transparent 38%),radial-gradient(ellipse at 0 70%,#101b35 0,transparent 35%),var(--bg);color:var(--text);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:10;opacity:.12;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.045) 4px);mix-blend-mode:screen}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.42));}
+button,input{font:inherit}button{cursor:pointer;color:inherit}
+.app{display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);min-height:100vh}
+.sidebar{position:fixed;z-index:20;inset:0 auto 0 0;width:var(--sidebar);padding:22px 15px;background:rgba(5,11,18,.94);border-right:1px solid var(--line);backdrop-filter:blur(20px);display:flex;flex-direction:column;transition:transform .3s}
+.brand{display:flex;align-items:center;gap:11px;padding:3px 8px 27px;font-weight:900;letter-spacing:.16em;font-size:13px}
+.brand-mark{width:29px;height:29px;border:1px solid var(--cyan);display:grid;place-items:center;color:var(--cyan);transform:rotate(45deg);box-shadow:0 0 16px #42efff55}
+.brand-mark span{transform:rotate(-45deg)}
+.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:.28em;margin-top:2px}
+.nav-label{font-size:9px;color:#54717d;letter-spacing:.2em;padding:12px 10px 7px;text-transform:uppercase}
+.nav{display:grid;gap:5px}
+.nav button{border:1px solid transparent;background:transparent;text-align:left;padding:11px 12px;border-radius:9px;color:#91aab4;display:flex;gap:12px;align-items:center;font-size:12px;transition:.2s}
+.nav button:hover,.nav button.active{color:var(--cyan);border-color:#42efff30;background:linear-gradient(90deg,#42efff18,transparent);box-shadow:inset 2px 0 var(--cyan)}
+.nav .ico{width:17px;text-align:center;font-size:15px}
+.sidebar-bottom{margin-top:auto;border:1px solid var(--line);border-radius:12px;padding:13px;background:linear-gradient(145deg,#102b35aa,#0b1420)}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);margin-right:7px}
+.sidebar-bottom strong{font-size:10px;letter-spacing:.14em}.sidebar-bottom p{font-size:10px;color:var(--muted);margin:8px 0 0}
+main{grid-column:2;min-width:0;padding:0 28px 32px}
+.topbar{height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);gap:12px}
+.crumb{font-size:10px;color:var(--muted);letter-spacing:.16em}.crumb b{color:var(--cyan)}
+.top-actions{display:flex;align-items:center;gap:9px}
+.search{width:min(230px,28vw);background:#0b1621;border:1px solid var(--line);border-radius:8px;padding:9px 11px;color:var(--text);outline:none;font-size:11px}
+.search:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #42efff12}
+.pill{border:1px solid var(--line);background:#0b1822;padding:8px 11px;border-radius:8px;font-size:10px;letter-spacing:.1em;color:var(--cyan)}
+.pill.green{color:var(--green);border-color:#7dffb244}.avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#061018;font-weight:900;font-size:10px}
+.menu-btn{display:none;border:1px solid var(--line);background:#0b1822;border-radius:8px;padding:8px 10px}
+.page-head{display:flex;justify-content:space-between;align-items:end;margin:27px 0 20px;gap:14px}
+.eyebrow{font-size:9px;letter-spacing:.24em;color:var(--cyan);text-transform:uppercase}
+h1{font-size:clamp(22px,3vw,31px);letter-spacing:.03em;margin:5px 0 3px;font-weight:750}
+.sub{color:var(--muted);font-size:11px}
+.head-right{display:flex;gap:8px}
+.btn{border:1px solid var(--line);background:linear-gradient(135deg,#12303b,#0c1722);padding:10px 13px;border-radius:8px;color:var(--cyan);font-size:10px;letter-spacing:.12em;text-transform:uppercase;transition:.2s}
+.btn:hover{box-shadow:0 0 20px #42efff2e;border-color:var(--cyan);transform:translateY(-1px)}
+.btn.primary{background:var(--cyan);color:#041016;font-weight:900}
+.grid{display:grid;gap:14px}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+.panel{position:relative;min-width:0;background:linear-gradient(145deg,rgba(16,29,41,.94),rgba(8,15,24,.96));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--glow);overflow:hidden}
+.panel:before{content:"";position:absolute;left:0;top:0;width:70px;height:1px;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.stat{padding:17px 17px 15px;min-height:120px}
+.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:9px;letter-spacing:.16em;text-transform:uppercase}
+.stat-icon{font-size:16px;color:var(--cyan)}
+.stat-value{font-size:clamp(23px,3vw,31px);font-weight:800;letter-spacing:-.04em;margin:12px 0 4px;color:var(--cyan);text-shadow:0 0 18px #42efff55}
+.stat:nth-child(2) .stat-value{color:var(--pink);text-shadow:0 0 18px #ff5ca855}.stat:nth-child(3) .stat-value{color:var(--green);text-shadow:0 0 18px #7dffb255}.stat:nth-child(4) .stat-value{color:var(--yellow);text-shadow:0 0 18px #ffd76a55}
+.stat-foot{font-size:9px;color:var(--muted)}.up{color:var(--green)}
+.content-grid{grid-template-columns:minmax(0,1.65fr) minmax(260px,.85fr);margin-top:14px}
+.panel-head{padding:16px 18px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #42efff12}
+.panel-title{font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:800}.panel-title span{color:var(--cyan)}
+.panel-meta{font-size:9px;color:var(--muted)}
+.chart-wrap{padding:14px 16px 12px;height:215px}.chart-wrap canvas{width:100%;height:100%;display:block}
+.legend{display:flex;gap:15px;padding:0 18px 15px;color:var(--muted);font-size:9px}.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;background:var(--cyan)}
+.activity{padding:4px 17px 12px}.activity-row{display:grid;grid-template-columns:65px 1fr 90px;gap:10px;align-items:center;padding:13px 0;border-bottom:1px solid #ffffff0c;font-size:10px}
+.activity-row:last-child{border:0}.time{color:var(--muted);font-variant-numeric:tabular-nums}.source{color:#8ca8b4}.status{justify-self:end;border:1px solid #7dffb244;color:var(--green);padding:4px 7px;border-radius:5px;font-size:8px;letter-spacing:.1em}.status.warn{color:var(--yellow);border-color:#ffd76a44}.status.block{color:var(--pink);border-color:#ff5ca844}
+.right-stack{display:grid;gap:14px;align-content:start}.feed{padding:5px 16px 12px}.feed-item{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid #ffffff0c}.feed-item:last-child{border:0}.feed-icon{width:27px;height:27px;flex:0 0 27px;border:1px solid var(--line);border-radius:7px;display:grid;place-items:center;color:var(--cyan)}
+.feed-item strong{font-size:10px;display:block}.feed-item p{margin:3px 0 0;color:var(--muted);font-size:9px}
+.terminal{background:#050b10;border:1px solid #7dffb233;border-radius:0 0 12px 12px;padding:13px 15px;font:10px/1.7 ui-monospace,SFMono-Regular,monospace;color:var(--green);min-height:142px}
+.term-bar{height:28px;background:#10271f;display:flex;align-items:center;gap:6px;padding:0 11px}.term-bar i{width:6px;height:6px;border-radius:50%;background:var(--pink)}.term-bar i:nth-child(2){background:var(--yellow)}.term-bar i:nth-child(3){background:var(--green)}
+.term-output{height:85px;overflow:auto;white-space:pre-wrap}.term-line{display:flex;gap:7px}.term-line span{color:var(--cyan)}.term-input{background:transparent;border:0;outline:0;color:var(--green);width:75%;font:inherit}
+.resources{padding:15px 18px 17px}.resource{margin:0 0 14px}.resource:last-child{margin:0}.resource-top{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:7px}.bar{height:5px;background:#172733;border-radius:10px;overflow:hidden}.bar b{display:block;height:100%;width:var(--w);background:linear-gradient(90deg,var(--cyan),var(--green));box-shadow:0 0 12px var(--cyan);border-radius:10px;transition:width .5s}
+.section{display:none}.section.active{display:block;animation:fade .35s ease}@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.placeholder{padding:35px;text-align:center;color:var(--muted)}.placeholder h2{color:var(--text);font-size:18px}.placeholder .big{font-size:35px;color:var(--cyan);text-shadow:0 0 20px #42efff88}
+.toast{position:fixed;right:20px;bottom:20px;z-index:50;background:#10232d;border:1px solid var(--cyan);color:var(--cyan);padding:12px 16px;border-radius:9px;box-shadow:0 0 24px #42efff33;opacity:0;transform:translateY(12px);transition:.25s;pointer-events:none;font-size:11px}.toast.show{opacity:1;transform:none}
+.modal-back{display:none;position:fixed;inset:0;z-index:40;background:#02060bd9;backdrop-filter:blur(8px);place-items:center;padding:18px}.modal-back.show{display:grid}.modal{width:min(430px,100%);background:#0b1722;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 0 40px #42efff22}.modal h2{margin:0 0 7px;font-size:17px}.modal p{color:var(--muted);font-size:11px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+.mobile-overlay{display:none}
+@media(max-width:1050px){:root{--sidebar:205px}main{padding:0 20px 28px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.app{display:block}.sidebar{transform:translateX(-105%);width:260px;box-shadow:20px 0 50px #0009}.sidebar.open{transform:none}.mobile-overlay.show{display:block;position:fixed;inset:0;background:#0009;z-index:19}.menu-btn{display:block}main{padding:0 13px 90px}.topbar{height:62px}.crumb{display:none}.search{width:42vw}.top-actions{gap:6px}.pill{padding:8px;font-size:9px}.page-head{margin:22px 0 15px;align-items:start}.head-right .btn{padding:9px 8px;font-size:9px}.content-grid{grid-template-columns:1fr}.stats{gap:9px}.stat{padding:13px;min-height:108px}.stat-value{margin:10px 0 3px}.right-stack{grid-template-columns:1fr}.activity-row{grid-template-columns:58px 1fr 72px;gap:7px}.chart-wrap{height:190px}.mobile-bottom{position:fixed;z-index:18;bottom:0;left:0;right:0;display:flex;justify-content:space-around;padding:9px 5px calc(9px + env(safe-area-inset-bottom));background:#07111beF;border-top:1px solid var(--line);backdrop-filter:blur(18px)}.mobile-bottom button{background:none;border:0;color:var(--muted);font-size:9px;display:grid;gap:3px;justify-items:center}.mobile-bottom button.active{color:var(--cyan)}.mobile-bottom span{font-size:17px}}
+@media(min-width:761px){.mobile-bottom{display:none}}
+@media(max-width:390px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat-value{font-size:22px}.search{width:37vw}.avatar{display:none}.page-head{flex-direction:column}.head-right{width:100%}}
+</style>
+</head>
+<body>
+<div class="mobile-overlay" id="overlay" onclick="toggleMenu(false)"></div>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+ <div class="brand"><div class="brand-mark"><span>⌘</span></div><div>NETRUNNER<small>COMMAND OS / 08.4</small></div></div>
+ <div class="nav-label">Workspace</div>
+ <nav class="nav" id="sideNav">
+  <button class="active" data-page="overview"><span class="ico">◈</span>Overview</button>
+  <button data-page="systems"><span class="ico">▦</span>Systems</button>
+  <button data-page="security"><span class="ico">⬡</span>Security</button>
+  <button data-page="network"><span class="ico">⌁</span>Network</button>
+  <button data-page="analytics"><span class="ico">▥</span>Analytics</button>
+  <button data-page="logs"><span class="ico">≋</span>Event Logs</button>
+ </nav>
+ <div class="nav-label">Configuration</div>
+ <nav class="nav">
+  <button data-page="settings"><span class="ico">⚙</span>Settings</button>
+ </nav>
+ <div class="sidebar-bottom"><div><i class="live-dot"></i><strong>DEMO ENVIRONMENT</strong></div><p>Interface telemetry is simulated locally. No real server or device is being monitored.</p></div>
+</aside>
+<main>
+ <header class="topbar">
+  <div style="display:flex;align-items:center;gap:12px"><button class="menu-btn" onclick="toggleMenu()">☰</button><div class="crumb">NETRUNNER <b>//</b> <span id="crumb">OVERVIEW</span></div></div>
+  <div class="top-actions"><input class="search" id="search" placeholder="⌕  Search activity..." aria-label="Search activity"><button class="pill" onclick="showToast('Workspace synchronized locally')">↻ SYNC</button><button class="pill green" onclick="showToast('Demo environment secure')">● SECURE</button><div class="avatar">NX</div></div>
+ </header>
+ <section class="section active" id="page-overview">
+  <div class="page-head"><div><div class="eyebrow">/ command center / live interface</div><h1>System Overview</h1><div class="sub">Last refreshed <span id="updated">--:--:--</span> UTC · <span id="clock">--:--:--</span></div></div><div class="head-right"><button class="btn" onclick="showToast('Report generated in demo mode')">↗ Export</button><button class="btn primary" onclick="runScan()">＋ Run scan</button></div></div>
+  <div class="grid stats">
+   <article class="panel stat"><div class="stat-top">Active nodes <span class="stat-icon">◈</span></div><div class="stat-value" id="nodes">2,847</div><div class="stat-foot"><span class="up">▲ 12%</span> from last cycle</div></article>
+   <article class="panel stat"><div class="stat-top">Threats blocked <span class="stat-icon">⬡</span></div><div class="stat-value" id="threats">156</div><div class="stat-foot">Demo counter · <span style="color:var(--pink)">simulated</span></div></article>
+   <article class="panel stat"><div class="stat-top">Uptime <span class="stat-icon">⏱</span></div><div class="stat-value">99.97%</div><div class="stat-foot"><span class="up">● Stable</span> · local demo state</div></article>
+   <article class="panel stat"><div class="stat-top">Bandwidth <span class="stat-icon">⌁</span></div><div class="stat-value" id="bandwidth">847<span style="font-size:13px">Gbps</span></div><div class="stat-foot">Nominal load · simulated</div></article>
+  </div>
+  <div class="grid content-grid">
+   <div class="grid" style="gap:14px;align-content:start">
+    <article class="panel"><div class="panel-head"><div class="panel-title"><span>//</span> Network throughput</div><div class="panel-meta">LAST 60 SECONDS · DEMO</div></div><div class="chart-wrap"><canvas id="chart"></canvas></div><div class="legend"><span><i></i>Inbound traffic</span><span><i style="background:var(--green)"></i>Outbound traffic</span></div></article>
+    <article class="panel"><div class="panel-head"><div class="panel-title"><span>//</span> Recent activity</div><button class="btn" onclick="navigate('logs')">View all →</button></div><div class="activity" id="activity">
+     <div class="activity-row"><span class="time">03:42:15</span><span>Authentication handshake <span class="source">· NODE-14</span></span><span class="status">SUCCESS</span></div>
+     <div class="activity-row"><span class="time">03:41:08</span><span>Firewall policy updated <span class="source">· CORE</span></span><span class="status">COMPLETE</span></div>
+     <div class="activity-row"><span class="time">03:40:22</span><span>Unusual packet pattern <span class="source">· EDGE-03</span></span><span class="status warn">REVIEW</span></div>
+     <div class="activity-row"><span class="time">03:38:55</span><span>Data sync completed <span class="source">· NODE-07</span></span><span class="status">SUCCESS</span></div>
+    </div></article>
+   </div>
+   <div class="right-stack">
+    <article class="panel"><div class="panel-head"><div class="panel-title"><span>//</span> Intelligence feed</div><span class="panel-meta">LOCAL DEMO</span></div><div class="feed">
+     <div class="feed-item"><div class="feed-icon">⬡</div><div><strong>Security protocol active</strong><p>All demo security modules report nominal status</p></div></div>
+     <div class="feed-item"><div class="feed-icon" style="color:var(--yellow)">⚠</div><div><strong>Traffic threshold notice</strong><p>Simulated load is approaching the configured threshold</p></div></div>
+     <div class="feed-item"><div class="feed-icon" style="color:var(--green)">▣</div><div><strong>Interface update available</strong><p>Visual module version 08.4 is running</p></div></div>
+    </div></article>
+    <article class="panel"><div class="panel-head"><div class="panel-title"><span>//</span> Resource monitor</div><span class="panel-meta">SIMULATED</span></div><div class="resources">
+     <div class="resource"><div class="resource-top"><span>CPU LOAD</span><b id="cpuLabel">42%</b></div><div class="bar"><b id="cpuBar" style="--w:42%"></b></div></div>
+     <div class="resource"><div class="resource-top"><span>MEMORY</span><b id="memLabel">68%</b></div><div class="bar"><b id="memBar" style="--w:68%"></b></div></div>
+     <div class="resource"><div class="resource-top"><span>NETWORK I/O</span><b id="netLabel">31%</b></div><div class="bar"><b id="netBar" style="--w:31%"></b></div></div>
+    </div></article>
+    <article class="panel"><div class="panel-head"><div class="panel-title"><span>//</span> Command terminal</div><span class="panel-meta">LOCAL SHELL</span></div><div class="term-bar"><i></i><i></i><i></i></div><div class="terminal"><div class="term-output" id="termOutput">NETRUNNER OS [Version 08.4]
+Interface shell initialized.
+Type <b>help</b> to view available commands.</div><div class="term-line"><span>nx@runner:~$</span><input class="term-input" id="termInput" autocomplete="off" spellcheck="false" aria-label="Terminal command"></div></div></article>
+   </div>
+  </div>
+ </section>
+ <section class="section" id="page-systems"><div class="page-head"><div><div class="eyebrow">/ infrastructure</div><h1>Systems Matrix</h1><div class="sub">Local demonstration node registry</div></div></div><div class="grid stats"><article class="panel stat"><div class="stat-top">Online nodes</div><div class="stat-value">24</div><div class="stat-foot">Demo registry</div></article><article class="panel stat"><div class="stat-top">Offline nodes</div><div class="stat-value">02</div><div class="stat-foot">No real devices queried</div></article></div><article class="panel" style="margin-top:14px"><div class="panel-head"><div class="panel-title"><span>//</span> Node registry</div></div><div class="activity"><div class="activity-row"><span class="time">NODE-01</span><span>Core gateway · Primary cluster</span><span class="status">ONLINE</span></div><div class="activity-row"><span class="time">NODE-07</span><span>Data relay · East sector</span><span class="status">ONLINE</span></div><div class="activity-row"><span class="time">NODE-14</span><span>Auth service · Secure zone</span><span class="status">ONLINE</span></div><div class="activity-row"><span class="time">NODE-22</span><span>Backup relay · Standby</span><span class="status warn">STANDBY</span></div></div></article></section>
+ <section class="section" id="page-security"><div class="page-head"><div><div class="eyebrow">/ protection layer</div><h1>Security Center</h1><div class="sub">Illustrative security posture · not a real security scan</div></div><button class="btn primary" onclick="runScan()">Run demo scan</button></div><div class="grid stats"><article class="panel stat"><div class="stat-top">Posture score</div><div class="stat-value">A+</div><div class="stat-foot">Demo assessment</div></article><article class="panel stat"><div class="stat-top">Rules enabled</div><div class="stat-value">128</div><div class="stat-foot">Sample policy set</div></article><article class="panel stat"><div class="stat-top">Alerts</div><div class="stat-value">03</div><div class="stat-foot">Sample events</div></article><article class="panel stat"><div class="stat-top">Encryption</div><div class="stat-value">AES</div><div class="stat-foot">Illustrative label only</div></article></div></section>
+ <section class="section" id="page-network"><div class="page-head"><div><div class="eyebrow">/ connectivity</div><h1>Network Topology</h1><div class="sub">Conceptual topology visualization</div></div></div><article class="panel placeholder"><div class="big">◎</div><h2>CORE ⇄ EDGE ⇄ RELAY</h2><p>Three-layer network model · sample topology only</p><button class="btn" onclick="showToast('Topology view refreshed')">Refresh topology</button></article></section>
+ <section class="section" id="page-analytics"><div class="page-head"><div><div class="eyebrow">/ telemetry lab</div><h1>Analytics Center</h1><div class="sub">Generated demo metrics</div></div></div><article class="panel"><div class="panel-head"><div class="panel-title"><span>//</span> Performance profile</div></div><div class="chart-wrap" style="height:300px"><canvas id="chart2"></canvas></div></article></section>
+ <section class="section" id="page-logs"><div class="page-head"><div><div class="eyebrow">/ observability</div><h1>Event Logs</h1><div class="sub">Filter the sample activity stream using search</div></div></div><article class="panel"><div class="panel-head"><div class="panel-title"><span>//</span> Event stream</div><span class="panel-meta">4 RECORDS</span></div><div class="activity" id="allLogs"><div class="activity-row"><span class="time">03:42:15</span><span>Authentication handshake · NODE-14</span><span class="status">SUCCESS</span></div><div class="activity-row"><span class="time">03:41:08</span><span>Firewall policy updated · CORE</span><span class="status">COMPLETE</span></div><div class="activity-row"><span class="time">03:40:22</span><span>Unusual packet pattern · EDGE-03</span><span class="status warn">REVIEW</span></div><div class="activity-row"><span class="time">03:38:55</span><span>Data sync completed · NODE-07</span><span class="status">SUCCESS</span></div></div></article></section>
+ <section class="section" id="page-settings"><div class="page-head"><div><div class="eyebrow">/ preferences</div><h1>Interface Settings</h1><div class="sub">Customize this local dashboard</div></div></div><article class="panel" style="padding:20px"><div class="panel-title"><span>//</span> Accent profile</div><p class="sub">Choose the interface highlight color.</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin:18px 0"><button class="btn" onclick="setAccent('#42efff')">CYAN</button><button class="btn" onclick="setAccent('#a78bfa')">VIOLET</button><button class="btn" onclick="setAccent('#7dffb2')">MATRIX</button><button class="btn" onclick="setAccent('#ff5ca8')">PINK</button></div><button class="btn" onclick="showToast('Settings are stored for this page session')">Save session settings</button></article></section>
+ <nav class="mobile-bottom" id="mobileNav"><button class="active" data-page="overview"><span>◈</span>Home</button><button data-page="systems"><span>▦</span>Systems</button><button data-page="security"><span>⬡</span>Security</button><button data-page="analytics"><span>▥</span>Stats</button><button data-page="settings"><span>⚙</span>Settings</button></nav>
+</main></div>
+<div class="toast" id="toast" role="status"></div>
+<div class="modal-back" id="modal"><div class="modal"><div class="eyebrow">/ confirmation required</div><h2 id="modalTitle">Execute demo scan?</h2><p id="modalText">This runs a visual demo action only. It does not scan networks or devices.</p><div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="confirmScan()">Confirm</button></div></div></div>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+function showToast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),2400)}
+function toggleMenu(force){const open=force===undefined?!$('#sidebar').classList.contains('open'):force;$('#sidebar').classList.toggle('open',open);$('#overlay').classList.toggle('show',open)}
+function navigate(page){$$('.section').forEach(s=>s.classList.toggle('active',s.id==='page-'+page));$$('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));$('#crumb').textContent=page.toUpperCase();toggleMenu(false);if(page==='analytics')drawChart($('#chart2'))}
+$$('[data-page]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.page)));
+function tick(){const d=new Date();$('#clock').textContent=d.toLocaleTimeString();$('#updated').textContent=d.toISOString().slice(11,19)}
+tick();setInterval(tick,1000);
+function drawChart(canvas){if(!canvas)return;const ctx=canvas.getContext('2d'),r=canvas.getBoundingClientRect(),dpr=devicePixelRatio||1;canvas.width=r.width*dpr;canvas.height=r.height*dpr;ctx.scale(dpr,dpr);const w=r.width,h=r.height;ctx.clearRect(0,0,w,h);ctx.strokeStyle='rgba(125,170,185,.13)';ctx.lineWidth=1;for(let i=1;i<5;i++){let y=h*i/5;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}function line(color,amp,offset){ctx.beginPath();for(let i=0;i<60;i++){let x=i/59*w,y=h*.53+Math.sin(i*.23+offset)*amp+Math.sin(i*.71+offset)*amp*.25+(Math.random()-.5)*5;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.strokeStyle=color;ctx.lineWidth=2;ctx.shadowColor=color;ctx.shadowBlur=9;ctx.stroke();ctx.shadowBlur=0}line('#42efff',h*.19,1);line('#7dffb2',h*.13,3)}
+drawChart($('#chart'));window.addEventListener('resize',()=>{drawChart($('#chart'));if($('#page-analytics').classList.contains('active'))drawChart($('#chart2'))});
+function updateResources(){[['cpu',25,78],['mem',54,82],['net',18,66]].forEach(([id,min,max])=>{let v=Math.floor(min+Math.random()*(max-min));$('#'+id+'Label').textContent=v+'%';$('#'+id+'Bar').style.setProperty('--w',v+'%')});$('#nodes').textContent=(2800+Math.floor(Math.random()*100)).toLocaleString();$('#bandwidth').innerHTML=(800+Math.floor(Math.random()*100))+'<span style="font-size:13px">Gbps</span>'}
+setInterval(updateResources,3500);
+function runScan(){$('#modal').classList.add('show')}function closeModal(){$('#modal').classList.remove('show')}function confirmScan(){closeModal();showToast('Demo scan complete · no external systems accessed');$('#threats').textContent=157+Math.floor(Math.random()*4)}
+function setAccent(c){document.documentElement.style.setProperty('--cyan',c);showToast('Accent profile updated')}
+const termCommands={help:'Available: help, status, clear, time, scan, theme cyan|violet|green|pink',status:'NETRUNNER UI: ONLINE\\nEnvironment: LOCAL DEMO\\nExternal connections: NONE',time:()=>new Date().toString(),scan:'Demo scan ready. Use the RUN SCAN button to preview confirmation.',clear:'__CLEAR__'};
+$('#termInput').addEventListener('keydown',e=>{if(e.key!=='Enter')return;const input=e.target,cmd=input.value.trim().toLowerCase();if(!cmd)return;const out=$('#termOutput');let result=termCommands[cmd];if(cmd.startsWith('theme ')){const c=cmd.split(' ')[1],map={cyan:'#42efff',violet:'#a78bfa',green:'#7dffb2',pink:'#ff5ca8'};if(map[c]){setAccent(map[c]);result='Accent set to '+c}else result='Unknown theme. Try cyan, violet, green or pink.'}if(typeof result==='function')result=result();if(!result)result='Command not found: '+cmd+' (type help)';if(result==='__CLEAR__')out.textContent='';else out.textContent+='\\n\\nnx@runner:~$ '+cmd+'\\n'+result;out.scrollTop=out.scrollHeight;input.value=''});
+$('#search').addEventListener('input',e=>{const q=e.target.value.toLowerCase();$$('#activity .activity-row, #allLogs .activity-row').forEach(row=>row.style.display=row.textContent.toLowerCase().includes(q)?'grid':'none')});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();toggleMenu(false)}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#search').focus()}});
+</script>
+</body></html>
