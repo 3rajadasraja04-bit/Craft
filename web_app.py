@@ -1,5 +1,5 @@
 """
-ZHD CYBER ENGINE — Web Control Backend v5.0 (Cyberpunk HUD)
+ZHD CYBER ENGINE — Web Control Backend v4.0 (Final)
 """
 import asyncio
 import json
@@ -58,7 +58,7 @@ def save_maps(maps_list):
 
 load_maps()
 
-app = FastAPI(title="ZHD Cyber Engine", version="5.0")
+app = FastAPI(title="ZHD Cyber Engine", version="4.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 class BotManager:
@@ -115,18 +115,6 @@ class BotManager:
         try: self.config.update(json.loads(WEB_CONFIG_FILE.read_text()))
         except Exception: pass
 
-    def apply_vn_config(self):
-        vn.SEQ_MODE = bool(self.config["seq_mode"])
-        vn.START_MAP_IDX = int(self.config["start_map"])
-        vn.END_MAP_IDX = int(self.config["end_map"])
-        vn.RESUME_MODE = bool(self.config["resume_mode"])
-        vn.AUTO_FOLLOW_TARGET = str(self.config["target_uid"])
-        vn.AUTO_FOLLOW_ENABLED = bool(self.config["auto_follow"])
-        vn.ROTATION["hold_secs"] = float(self.config["hold_secs"])
-        vn.ROTATION["sync_secs"] = float(self.config["sync_secs"])
-        vn.ROTATION["range_start"] = int(self.config["start_map"]) - 1
-        vn.ROTATION["range_end"] = int(self.config["end_map"]) - 1
-
     async def state_pusher(self):
         while True:
             if self.websockets:
@@ -154,10 +142,22 @@ class BotManager:
             for idx, bot in list(vn.STATE["bots"].items()):
                 if bot.get("uid") == uid: del vn.STATE["bots"][idx]
 
-    async def start_engine(self) -> dict:
+    async def start_engine(self, accounts: list, config: dict) -> dict:
         if self.running: return {"ok": False, "msg": "Engine already running"}
-        self.apply_vn_config()
+        self.accounts = accounts
+        self.config.update(config)
+        self.save_config()
+        vn.SEQ_MODE = bool(self.config["seq_mode"])
+        vn.START_MAP_IDX = int(self.config["start_map"])
+        vn.END_MAP_IDX = int(self.config["end_map"])
+        vn.RESUME_MODE = bool(self.config["resume_mode"])
+        vn.AUTO_FOLLOW_TARGET = str(self.config["target_uid"])
+        vn.AUTO_FOLLOW_ENABLED = bool(self.config["auto_follow"])
+        vn.ROTATION["hold_secs"] = float(self.config["hold_secs"])
+        vn.ROTATION["sync_secs"] = float(self.config["sync_secs"])
         vn.ROTATION["start_time"] = time.time()
+        vn.ROTATION["range_start"] = int(self.config["start_map"]) - 1
+        vn.ROTATION["range_end"] = int(self.config["end_map"]) - 1
         self.running = True
         for acc in self.accounts: self.start_bot_task(acc)
         vn.hdr(f"🚀 ENGINE STARTED — {len(self.accounts)} BOTS")
@@ -244,14 +244,27 @@ async def update_maps(maps_json: str = Form(...)):
 @app.get("/api/accounts")
 async def get_accounts(): return {"accounts": manager.accounts}
 
+@app.post("/api/accounts")
+async def save_accounts(raw_json: str = Form(...)):
+    try:
+        data = json.loads(raw_json)
+        manager.accounts = [a for a in data if isinstance(a, dict) and "uid" in a]
+        ACCOUNTS_FILE.write_text(json.dumps(manager.accounts, indent=2))
+        return {"ok": True, "count": len(manager.accounts)}
+    except Exception as e: return {"ok": False, "msg": str(e)}
+
 @app.post("/api/accounts/inject")
 async def inject_bots(raw_json: str = Form(...)):
-    try: return await manager.inject_bots(json.loads(raw_json))
+    try:
+        data = json.loads(raw_json)
+        return await manager.inject_bots(data)
     except Exception as e: return {"ok": False, "msg": str(e)}
 
 @app.post("/api/accounts/replace")
 async def replace_bots(raw_json: str = Form(...)):
-    try: return await manager.replace_bots(json.loads(raw_json))
+    try:
+        data = json.loads(raw_json)
+        return await manager.replace_bots(data)
     except Exception as e: return {"ok": False, "msg": str(e)}
 
 @app.post("/api/accounts/clear")
@@ -260,37 +273,19 @@ async def clear_bots(): return await manager.clear_all()
 @app.post("/api/jwt/clear")
 async def clear_jwt(): return manager.clear_jwt()
 
-# 🔥 NEW: CONFIG UPDATE API (Fixes the Auto-Follow Toggle issue)
-@app.post("/api/config/update")
-async def update_config(config_json: str = Form(...)):
-    try:
-        cfg = json.loads(config_json)
-        manager.config.update(cfg)
-        manager.save_config()
-        manager.apply_vn_config()
-        vn.ok("⚙️ Engine Config Updated Live!")
-        return {"ok": True, "config": manager.config}
-    except Exception as e: return {"ok": False, "msg": str(e)}
-
 @app.post("/api/start")
-async def start_engine():
-    return await manager.start_engine()
+async def start_engine(config_json: str = Form(...)):
+    try: cfg = json.loads(config_json)
+    except: return {"ok": False, "msg": "Bad JSON"}
+    return await manager.start_engine(manager.accounts, cfg)
 
 @app.post("/api/stop")
 async def stop_engine(): return await manager.stop_engine()
 
-# 🔥 NEW: SOCIAL DELAY (Fixes HTTP 500 error by adding gap between bots)
 @app.post("/api/social")
 async def manual_social(action: str = Form(...), target: str = Form(...)):
     if not manager.accounts: return {"ok": False, "msg": "No accounts"}
-    
-    async def run_social_with_delay():
-        for acc in manager.accounts:
-            # Run single bot action
-            asyncio.create_task(vn.execute_social_action(1, acc["uid"], acc.get("aid", ""), action, target, acc["password"]))
-            await asyncio.sleep(0.5) # Delay of 0.5s between each bot
-            
-    asyncio.create_task(run_social_with_delay())
+    asyncio.create_task(vn.run_social_actions(manager.accounts, action, target))
     return {"ok": True}
 
 @app.websocket("/ws")
