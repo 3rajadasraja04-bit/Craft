@@ -220,6 +220,7 @@ def _engine_runner(cfg, accounts):
     except Exception: traceback.print_exc()
     finally:
         engine_state.update({"running": False, "loop": None, "tasks": [], "bot_tasks": {}, "monitor_task": None})
+        vn.STATE["bots"].clear() # 🔴 FIX: Memory clear on stop
         try: loop.close()
         except Exception: pass
 
@@ -327,6 +328,9 @@ def api_bots_add():
 @app.route("/api/bots/all", methods=["DELETE"])
 def api_bots_delete_all():
     save_accounts([])
+    # 🔴 FIX: Clear memory when deleting all bots
+    with _accounts_lock:
+        vn.STATE["bots"].clear()
     return jsonify({"ok": True, "message": "All bots deleted"})
 
 @app.route("/api/bots/<uid>", methods=["DELETE"])
@@ -335,6 +339,11 @@ def api_bots_delete(uid):
         accounts = load_accounts(); n = len(accounts); accounts = [a for a in accounts if a["uid"] != uid]
         if len(accounts) == n: return jsonify({"ok": False, "error": "Bot not found"}), 404
         save_accounts(accounts)
+        # 🔴 FIX: Clear specific bot from memory
+        for idx, b in list(vn.STATE["bots"].items()):
+            if b.get("uid") == uid:
+                del vn.STATE["bots"][idx]
+                break
     return jsonify({"ok": True, "bots": accounts})
 
 @app.route("/api/bots/import", methods=["POST"])
