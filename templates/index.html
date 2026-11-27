@@ -24,49 +24,52 @@
     #fx-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 99998; }
 
     .app-container { max-width: 800px; margin: 0 auto; width: 100%; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 70px; }
-    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid var(--border); background: rgba(10, 10, 18, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(0, 255, 255, 0.1); border: 1px solid var(--cyan); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; box-shadow: 0 0 10px rgba(0,255,255,0.3); }
+    
+    /* FIX: TOPBAR CLOCK CUT ISSUE */
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 8px; border-bottom: 1px solid var(--border); background: rgba(10, 10, 18, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; gap: 5px; }
+    .brand { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(0, 255, 255, 0.1); border: 1px solid var(--cyan); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; box-shadow: 0 0 10px rgba(0,255,255,0.3); flex-shrink: 0; }
     .avatar img { width: 100%; height: 100%; object-fit: cover; }
     
-    .logo { 
-      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 12px; letter-spacing: 1px; 
-      background: linear-gradient(90deg, var(--pink), var(--cyan), var(--green), var(--yellow), var(--pink)); background-size: 300% 100%;
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-      animation: logo-shine 3s linear infinite, logo-glow-pulse 2s alternate infinite;
-      display: flex; align-items: baseline; gap: 4px; white-space: nowrap; max-width: 55vw; overflow: hidden; text-overflow: ellipsis;
+    /* FIX: NEON PULSE LOGO */
+    .neon-pulse-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 11px;
+      color: #fff;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      animation: text-breath 2s ease-in-out infinite alternate;
+      white-space: nowrap; 
+      max-width: 42vw; 
+      overflow: hidden; 
+      text-overflow: ellipsis;
     }
-    
-    @keyframes logo-shine { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
-    @keyframes logo-glow-pulse { 0% { filter: drop-shadow(0 0 2px rgba(255,0,127,0.5)) drop-shadow(0 0 5px rgba(0,255,255,0.3)); } 100% { filter: drop-shadow(0 0 8px rgba(255,0,127,1)) drop-shadow(0 0 15px rgba(0,255,255,0.8)); } }
+    .neon-pulse-logo .bracket { color: var(--cyan); font-weight: 400; animation: bracket-blink 1s infinite; }
+    .neon-pulse-logo .text-pink { color: var(--pink); text-shadow: 0 0 10px var(--pink), 0 0 20px var(--pink); }
+    @keyframes text-breath {
+      0% { text-shadow: 0 0 5px #fff, 0 0 10px var(--cyan); }
+      100% { text-shadow: 0 0 10px #fff, 0 0 25px var(--cyan), 0 0 40px var(--cyan); color: var(--cyan); }
+    }
+    @keyframes bracket-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
 
-    .status-badges { display: flex; gap: 8px; align-items: center; }
-    .badge-ws { background: rgba(0, 255, 255, 0.1); border: 1px solid var(--cyan); color: var(--cyan); font-size: 10px; padding: 4px 8px; border-radius: 4px; font-family: var(--font-mono); display: flex; align-items: center; gap: 6px; }
+    .status-badges { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
+    .badge-ws { background: rgba(0, 255, 255, 0.1); border: 1px solid var(--cyan); color: var(--cyan); font-size: 9px; padding: 3px 6px; border-radius: 4px; font-family: var(--font-mono); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
     .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
-    .sticker {
-      background: transparent; border: none; cursor: pointer; transition: transform 0.2s, filter 0.2s; display: flex; align-items: center; justify-content: center;
-      font-size: 20px; filter: drop-shadow(0 0 5px currentColor);
-    }
+    .sticker { background: transparent; border: none; cursor: pointer; transition: transform 0.2s, filter 0.2s; display: flex; align-items: center; justify-content: center; font-size: 16px; filter: drop-shadow(0 0 5px currentColor); padding: 0 2px; }
     .sticker:hover { transform: scale(1.15) rotate(10deg); filter: drop-shadow(0 0 10px currentColor) drop-shadow(0 0 20px currentColor); }
 
     .action-row { display: flex; gap: 8px; padding: 12px 15px; align-items: stretch; }
-    
-    .btn { 
-      font-family: var(--font-heading); font-weight: 700; font-size: 11px; letter-spacing: 1px; padding: 10px; border-radius: 8px; border: 1px solid transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; background: rgba(0, 0, 0, 0.4); color: var(--text); 
-      animation: btn-pulse-all 1.5s infinite alternate;
-    }
+    .btn { font-family: var(--font-heading); font-weight: 700; font-size: 11px; letter-spacing: 1px; padding: 10px; border-radius: 8px; border: 1px solid transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; background: rgba(0, 0, 0, 0.4); color: var(--text); animation: btn-pulse-all 1.5s infinite alternate; }
     .btn:active { transform: scale(0.97); }
-    
-    /* 🔴 DISABLED BUTTON STATE 🔴 */
     .btn:disabled { opacity: 0.3; cursor: not-allowed; animation: none !important; pointer-events: none; }
-    
     .btn-start { flex: 2; background: rgba(0, 255, 255, 0.1); border-color: var(--cyan); color: var(--cyan); }
     .btn-stop { flex: 1; background: rgba(255, 49, 49, 0.1); border-color: var(--red); color: var(--red); }
-    
     .btn-small { padding: 6px 10px; font-size: 10px; }
-
     @keyframes btn-pulse-all { 0% { box-shadow: 0 0 5px rgba(255,255,255,0.05); } 100% { box-shadow: 0 0 15px currentColor, 0 0 25px currentColor; } }
     
     .center-bots { flex: 1.2; display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-size: 11px; font-weight: 700; color: var(--purple); border: 1px solid var(--purple); border-radius: 8px; background: rgba(188, 19, 254, 0.1); box-shadow: 0 0 10px rgba(188, 19, 254, 0.3); text-shadow: 0 0 8px rgba(188, 19, 254, 0.7); white-space: nowrap; cursor: default; }
@@ -118,10 +121,7 @@
     .map-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-family: var(--font-mono); font-size: 11px; gap: 10px; }
     .map-actions { display: flex; gap: 4px; flex-shrink: 0; }
     
-    .map-btn { 
-      background: transparent; border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-size: 10px; cursor: pointer; color: var(--text); transition: 0.2s; display: flex; align-items: center; justify-content: center; 
-      animation: btn-pulse-all 1.5s infinite alternate;
-    }
+    .map-btn { background: transparent; border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-size: 10px; cursor: pointer; color: var(--text); transition: 0.2s; display: flex; align-items: center; justify-content: center; animation: btn-pulse-all 1.5s infinite alternate; }
 
     .input-box { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; font-family: var(--font-mono); font-size: 11px; margin-bottom: 8px; }
     textarea.input-box { resize: vertical; min-height: 80px; }
@@ -153,23 +153,7 @@
     .form-group label { display: block; font-family: var(--font-mono); font-size: 10px; color: var(--dim); margin-bottom: 4px; }
 
     #toasts { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 99999; display: flex; flex-direction: column; align-items: center; gap: 10px; pointer-events: none; }
-    /* 🔴 NAYA PATLA TOAST 🔴 */
-    .toast { 
-      background: rgba(16, 20, 35, 0.9); 
-      border: 1px solid rgba(255,255,255,0.1); 
-      color: var(--cyan); 
-      padding: 8px 18px; 
-      border-radius: 30px; 
-      font-family: var(--font-mono); 
-      font-size: 11px; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 15px currentColor; 
-      pointer-events: auto; 
-      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
-      text-align: center; 
-      white-space: nowrap; 
-      letter-spacing: 0.5px;
-      backdrop-filter: blur(5px);
-    }
+    .toast { background: rgba(16, 20, 35, 0.9); border: 1px solid rgba(255,255,255,0.1); color: var(--cyan); padding: 8px 18px; border-radius: 30px; font-family: var(--font-mono); font-size: 11px; box-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 15px currentColor; pointer-events: auto; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; text-align: center; white-space: nowrap; letter-spacing: 0.5px; backdrop-filter: blur(5px); }
     @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
     @keyframes fadeOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.8); } }
   </style>
@@ -186,7 +170,8 @@
         <img id="profile-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300FFFF'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>" alt="P" />
       </div>
       <input type="file" id="avatar-upload" accept="image/*" style="display:none" onchange="updateAvatar(event)">
-      <div class="logo">RAJA SOCIAL ACTION</div>
+      
+      <div class="neon-pulse-logo"><span class="bracket">[</span> RAJA <span class="text-pink">SOCIAL</span> ACTION <span class="bracket">]</span></div>
     </div>
     <div class="status-badges">
       <button class="sticker" onclick="refreshMain()" title="Refresh All Data" style="color:var(--green);">🔄</button>
@@ -199,7 +184,6 @@
 
   <div id="view-dashboard" class="page-view active">
     <div class="action-row">
-      <!-- 🔴 ID ADD KIYA START BUTTON ME 🔴 -->
       <button class="btn btn-start" id="btn-start-main" onclick="openModal('modal-start')">▶ START</button>
       <div class="center-bots" id="center-total-bots">BOTS: 0</div>
       <button class="btn btn-stop" onclick="stopEngine()">■ STOP</button>
@@ -415,7 +399,6 @@
     <div id="group-hold" class="form-group" style="display: none;"><label>HOLD SECS</label><input type="number" id="st-hold" class="input-box" value="60" min="1"></div>
     <div id="group-sync" class="form-group" style="display: none;"><label>SYNC SECS</label><input type="number" id="st-sync" class="input-box" value="10" min="0.1" step="0.1"></div>
     <div class="form-group"><label>RECONNECT DELAY</label><input type="number" id="st-rejoin" class="input-box" value="2" min="0.1" step="0.1"></div>
-    <!-- 🔴 ID ADD KIYA IGNITION BUTTON ME 🔴 -->
     <button class="btn btn-start" id="btn-ignition" style="margin-top:10px;" onclick="confirmStart()">IGNITION</button>
     <button class="btn" style="margin-top:8px; border-color:var(--dim); color:var(--dim);" onclick="closeModal('modal-start')">CANCEL</button>
   </div>
@@ -500,8 +483,9 @@
     setTimeout(() => { el.style.animation = 'fadeOut 0.3s forwards'; setTimeout(() => el.remove(), 300); }, 2500);
   }
 
+  // 🔴 FIX: CACHE BAND 🔴
   async function api(path, opts={}) {
-    try { const r = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts }); return await r.json(); } catch (e) { return { ok: false, error: e.message }; }
+    try { const r = await fetch(path, { headers: { 'Content-Type': 'application/json' }, cache: 'no-store', ...opts }); return await r.json(); } catch (e) { return { ok: false, error: e.message }; }
   }
 
   function openModal(id) { playSound('click'); $(id).classList.add('show'); }
@@ -735,8 +719,30 @@
       return `<tr><td>${i + 1}</td><td>${b.uid}</td><td class="neon-account">${displayId}</td><td>${b.region}</td><td><button class="btn btn-small" style="border-color:var(--red); color:var(--red); background:rgba(255,49,49,0.1); font-size:14px;" onclick="removeBot('${b.uid}')">🗑️</button></td></tr>`;
     }).join('');
   }
-  async function removeBot(uid) { playSound('click'); if (!confirm('Remove ' + uid + '?')) return; const r = await api(`/api/bots/${uid}`, { method: 'DELETE' }); if (r.ok) { toast('Removed', 'ok'); loadBotList(); } }
-  async function deleteAllBots() { playSound('error'); if(!confirm('DANGER: Are you sure you want to delete ALL bots from accounts.json?')) return; const r = await api('/api/bots/all', { method: 'DELETE' }); if(r.ok) { toast('ALL BOTS DELETED', 'err'); loadBotList(); } }
+  
+  // 🔴 FIX: Live stats will refresh automatically
+  async function removeBot(uid) { 
+    playSound('click'); 
+    if (!confirm('Remove ' + uid + '?')) return; 
+    const r = await api(`/api/bots/${uid}`, { method: 'DELETE' }); 
+    if (r.ok) { 
+      toast('Removed', 'ok'); 
+      loadBotList(); 
+      poll(); 
+    } 
+  }
+  
+  // 🔴 FIX: Live stats will refresh automatically
+  async function deleteAllBots() { 
+    playSound('error'); 
+    if(!confirm('DANGER: Are you sure you want to delete ALL bots from accounts.json?')) return; 
+    const r = await api('/api/bots/all', { method: 'DELETE' }); 
+    if(r.ok) { 
+      toast('ALL BOTS DELETED', 'err'); 
+      loadBotList(); 
+      poll(); 
+    } 
+  }
 
   let editingMapIdx = null;
   
@@ -780,6 +786,7 @@
   async function manualFollow() { playSound('click'); const target = $('input-follow-target').value.trim(); if (!target) return toast('Target UID required', 'err'); const r = await api('/api/social/bulk-follow', { method: 'POST', body: JSON.stringify({ target }) }); if (r.ok) toast(r.message, 'ok'); }
   async function bulkSubscribe() { playSound('click'); const target = $('input-sub-target').value.trim(); if (!target) return toast('Map Code required', 'err'); const r = await api('/api/social/bulk-subscribe', { method: 'POST', body: JSON.stringify({ target }) }); if (r.ok) toast(r.message, 'ok'); }
 
+  // 🔴 FIX: JWT CLEAR TABLE ISSUE
   async function loadConfig() {
     const jwt = await api('/api/jwt');
     if (jwt.rows && jwt.rows.length > 0) {
@@ -787,10 +794,24 @@
         let cls = r.status === 'Fresh' ? 'var(--green)' : (r.status === 'Expired' ? 'var(--red)' : 'var(--yellow)');
         return `<tr><td>${i + 1}</td><td class="neon-account">${r.acc_id}</td><td style="color:var(--dim)">${r.jwt_preview}</td><td style="color:${cls}; font-weight:bold;">${r.status}</td><td style="color:${cls}; font-weight:bold;">${formatTimeLeft(r.expires_in)}</td></tr>`;
       }).join('');
+    } else {
+      $('jwt-table-body').innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--dim); padding:20px;">No JWT Data Available.</td></tr>`;
     }
   }
+  
   async function refreshJwt() { playSound('click'); const r = await api('/api/jwt/refresh', { method: 'POST', body: '{}' }); if (r.ok) { toast('Refreshing JWTs...', 'info'); setTimeout(loadConfig, 3000); } }
-  async function clearAllJwt() { playSound('error'); if(!confirm('Are you sure you want to delete ALL JWT tokens?')) return; const r = await api('/api/jwt/clear', { method: 'POST', body: '{}' }); if(r.ok) { toast('ALL JWT CLEARED', 'err'); loadConfig(); } }
+  
+  async function clearAllJwt() { 
+    playSound('error'); 
+    if(!confirm('Are you sure you want to delete ALL JWT tokens?')) return; 
+    const r = await api('/api/jwt/clear', { method: 'POST', body: '{}' }); 
+    if(r.ok) { 
+        toast('ALL JWT CLEARED', 'err'); 
+        $('jwt-table-body').innerHTML = ''; 
+        loadConfig(); 
+    } 
+  }
+  
   async function clearLogs() { playSound('click'); await api('/api/logs/clear', { method: 'POST' }); $('console-logs').innerHTML = ''; toast('Logs cleared', 'ok'); }
 </script>
 </body>
