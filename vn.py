@@ -42,46 +42,35 @@ from protocol import (
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ═══════════════════════════════════════════════════════════════════════
-#  HARDCODED MAP CODES (24 maps for 20-lock unlock)
+#  🛑 CUSTOM EXCEPTION FOR BAN
+# ═══════════════════════════════════════════════════════════════════════
+class PermanentBanError(Exception):
+    pass
+
+# ═══════════════════════════════════════════════════════════════════════
+#  HARDCODED MAP CODES (24 maps)
 # ═══════════════════════════════════════════════════════════════════════
 MAP_CODES = [
-    "FREEFIREB8F45D361E2734E681D1399BFFE521BEQ540", 
-    "FREEFIREEBC3E906B050092F6792FE2A2994D260Q540",
-    "FREEFIRE574AA13E8E1F7E6DEDFFD02F6D49E309Q540", 
-    "FREEFIRE2FB96754038F3AE595F2B00331586B44Q540",
-    "FREEFIREEAAD9F1F165160BFBD64DAFEBC458A2AQ540", 
-    "FREEFIREE95C203C8B24478F962A9B2C7CA7EF88Q132",
-    "FREEFIRE7CA6FC15EEBC878E7A037A79F54196E5Q132", 
-    "FREEFIREEFFFE5674B037E409968E08B1C0C93AAQ132",
-    "FREEFIRE3A662FF87EAEDB7380D4C215E4E2D797Q132", 
-    "FREEFIREB4EE478E27F2CD689B7EBFE764165EA7Q132",
-    "FREEFIREDBEE58254D509335FA3EA195AF239E28Q132", 
-    "FREEFIREE97775F56DFFDB7F7A4341EA23B73C0CQ132",
-    "FREEFIRE3B2F7F43A89982406399C6B17431EF2BQ132", 
-    "FREEFIRE3C7A2846988FBFC9FD92C5474C2E2B9FQ132",
-    "FREEFIRE447390A73B8E015A1FB7993DC3BAB896Q132", 
-    "FREEFIRE938B26DEDE92BC1BF1427A46501CCD28Q132",
-    "FREEFIREE48B0B4F28C032BF2D3BAC3BE09D363CQ132", 
-    "FREEFIRE753CB453A176741ECB6B5E85B494CA60Q132",
-    "FREEFIRE1625A163CD529BCBE5D6D5893915BFC9Q132", 
-    "FREEFIREC52A36AC1D15E751BBA5DEEE0A8B9805Q540",
-    "FREEFIRE276B461B84D646ADC78843A191D63BC7Q500",
-    "FREEFIRE7A5E709682C79D94C466DF8ABD846C23Q500",
-    "FREEFIRE4A16139F7C50D409B0B32CCB7D361B50Q500",
-    "FREEFIRE0B5A31AD22E5A0AE2302F6CF90F814C9Q500",
+    "FREEFIREB8F45D361E2734E681D1399BFFE521BEQ540", "FREEFIREEBC3E906B050092F6792FE2A2994D260Q540",
+    "FREEFIRE574AA13E8E1F7E6DEDFFD02F6D49E309Q540", "FREEFIRE2FB96754038F3AE595F2B00331586B44Q540",
+    "FREEFIREEAAD9F1F165160BFBD64DAFEBC458A2AQ540", "FREEFIREE95C203C8B24478F962A9B2C7CA7EF88Q132",
+    "FREEFIRE7CA6FC15EEBC878E7A037A79F54196E5Q132", "FREEFIREEFFFE5674B037E409968E08B1C0C93AAQ132",
+    "FREEFIRE3A662FF87EAEDB7380D4C215E4E2D797Q132", "FREEFIREB4EE478E27F2CD689B7EBFE764165EA7Q132",
+    "FREEFIREDBEE58254D509335FA3EA195AF239E28Q132", "FREEFIREE97775F56DFFDB7F7A4341EA23B73C0CQ132",
+    "FREEFIRE3B2F7F43A89982406399C6B17431EF2BQ132", "FREEFIRE3C7A2846988FBFC9FD92C5474C2E2B9FQ132",
+    "FREEFIRE447390A73B8E015A1FB7993DC3BAB896Q132", "FREEFIRE938B26DEDE92BC1BF1427A46501CCD28Q132",
+    "FREEFIREE48B0B4F28C032BF2D3BAC3BE09D363CQ132", "FREEFIRE753CB453A176741ECB6B5E85B494CA60Q132",
+    "FREEFIRE1625A163CD529BCBE5D6D5893915BFC9Q132", "FREEFIREC52A36AC1D15E751BBA5DEEE0A8B9805Q540",
+    "FREEFIRE276B461B84D646ADC78843A191D63BC7Q500", "FREEFIRE7A5E709682C79D94C466DF8ABD846C23Q500",
+    "FREEFIRE4A16139F7C50D409B0B32CCB7D361B50Q500", "FREEFIRE0B5A31AD22E5A0AE2302F6CF90F814C9Q500",
 ]
 
 # ═══════════════════════════════════════════════════════════════════════
 #  🎨 NEON COLORS
 # ═══════════════════════════════════════════════════════════════════════
-NEON_CYAN = "#00FFFF"
-NEON_PINK = "#FF007F"
-NEON_GREEN = "#39FF14"
-NEON_PURPLE = "#BC13FE"
-NEON_YELLOW = "#FFE600"
-NEON_ORANGE = "#FF5F1F"
-NEON_RED = "#FF3131"
-DIM_GRAY = "#555555"
+NEON_CYAN = "#00FFFF"; NEON_PINK = "#FF007F"; NEON_GREEN = "#39FF14"
+NEON_PURPLE = "#BC13FE"; NEON_YELLOW = "#FFE600"; NEON_ORANGE = "#FF5F1F"
+NEON_RED = "#FF3131"; DIM_GRAY = "#555555"
 
 # ═══════════════════════════════════════════════════════════════════════
 #  📁 FILE PATHS & CONFIG
@@ -100,15 +89,16 @@ SEQ_MODE      = True
 START_MAP_IDX = 1
 END_MAP_IDX   = 24
 RESUME_MODE   = True
-
-AUTO_FOLLOW_TARGET = ""
-AUTO_FOLLOW_ENABLED = False
+AUTO_SUBSCRIBE_ENABLED = False
 
 STATE = {
     "bots": {},
     "logs": deque(maxlen=12),
     "error_logs": deque(maxlen=12),
     "social": {},
+    "current_target": None,       # Manual Follow Target
+    "subscribed_maps": set(),     # Track 24 Maps to prevent spam
+    "batch": {"running": False, "action": "", "target": "", "total": 0, "success": 0, "fail": 0},
     "total_matches": 0,
     "total_errors": 0,
     "total_follows": 0,
@@ -116,8 +106,7 @@ STATE = {
     "start_time": time.time()
 }
 
-ROTATION = {"maps": [], "hold_secs": 60.0, "sync_secs": 10.0, "start_time": 0.0,
-            "range_start": 0, "range_end": 0}
+ROTATION = {"maps": [], "hold_secs": 60.0, "sync_secs": 10.0, "start_time": 0.0, "range_start": 0, "range_end": 0}
 
 # ═══════════════════════════════════════════════════════════════════════
 #  💾 HELPER FUNCTIONS
@@ -155,12 +144,9 @@ def update_map_stats(map_code, duration):
     if duration is None or duration <= 0: return
     stats = load_map_stats()
     s = stats.get(map_code)
-    if not s:
-        s = {"sessions": 0, "total_secs": 0.0, "avg_secs": 0.0, "min_secs": duration, "max_secs": duration, "last_duration": duration}
-        stats[map_code] = s
+    if not s: s = {"sessions": 0, "total_secs": 0.0, "avg_secs": 0.0, "min_secs": duration, "max_secs": duration, "last_duration": duration}; stats[map_code] = s
     s["sessions"] += 1; s["total_secs"] += duration; s["avg_secs"] = s["total_secs"] / s["sessions"]
-    s["min_secs"] = min(s["min_secs"], duration); s["max_secs"] = max(s["max_secs"], duration)
-    s["last_duration"] = duration
+    s["min_secs"] = min(s["min_secs"], duration); s["max_secs"] = max(s["max_secs"], duration); s["last_duration"] = duration
     save_map_stats(stats)
 
 def save_history():
@@ -180,13 +166,12 @@ def save_history():
     except Exception: pass
 
 def load_config():
-    global AUTO_FOLLOW_TARGET, AUTO_FOLLOW_ENABLED
+    global AUTO_SUBSCRIBE_ENABLED
     if os.path.exists(CONFIG_FILE):
         try:
             with open(CONFIG_FILE, "r") as f:
                 cfg = json.load(f)
-                AUTO_FOLLOW_TARGET = cfg.get("target_uid", "")
-                AUTO_FOLLOW_ENABLED = cfg.get("auto_follow", False)
+                AUTO_SUBSCRIBE_ENABLED = cfg.get("auto_subscribe", False)
         except: pass
 
 # LOG HELPERS
@@ -212,7 +197,7 @@ def warn(m): add_log(m, NEON_YELLOW, "⚠️"); add_error(m); STATE["total_error
 def err(m): add_log(m, NEON_RED, "❌"); add_error(m); STATE["total_errors"] += 1
 
 # ═══════════════════════════════════════════════════════════════════════
-#  🌐 SOCIAL ACTIONS ENGINE (Auto Follow / Subscribe)
+#  🌐 SOCIAL ACTIONS ENGINE (Auto & Manual)
 # ═══════════════════════════════════════════════════════════════════════
 def _enc_varint_sync(n):
     if n < 0: return b''
@@ -234,7 +219,6 @@ def _build_proto_sync(fields):
         elif isinstance(v, int): buf.extend(_varint_field_sync(f, v))
         elif isinstance(v, (str, bytes)): buf.extend(_length_field_sync(f, v))
     return bytes(buf)
-
 def _first_varint(data, want):
     off = 0
     while off < len(data):
@@ -270,14 +254,11 @@ def _first_varint(data, want):
         except Exception: break
     return None
 
-async def execute_social_action(idx, uid, acc_id, action_type, target, pwd, is_auto=False, map_name=""):
-    if idx not in STATE["social"]:
+async def execute_social_action(idx, uid, acc_id, action_type, target, pwd, is_auto=False, map_name="", is_batch=False):
+    if not is_auto:
         STATE["social"][idx] = {"uid": acc_id or uid, "action": action_type, "target": target, "status": "Wait", "map": map_name}
-    else:
-        STATE["social"][idx]["action"] = action_type
-        STATE["social"][idx]["target"] = target
-        STATE["social"][idx]["status"] = "Wait"
-        STATE["social"][idx]["map"] = map_name
+    elif is_auto and idx not in STATE["social"]:
+         STATE["social"][idx] = {"uid": acc_id or uid, "action": action_type, "target": target, "status": "Wait", "map": map_name}
         
     cache = load_jwt_cache()
     s = cache.get(str(uid))
@@ -292,8 +273,15 @@ async def execute_social_action(idx, uid, acc_id, action_type, target, pwd, is_a
         try:
             s = await asyncio.to_thread(login, uid, pwd)
             save_jwt_cache(uid, s)
-        except Exception:
-            STATE["social"][idx]["status"] = "Login Fail"
+        except Exception as e:
+            # 🔴 BAN DETECTION FOR SOCIAL ACTIONS 🔴
+            err_msg = str(e)
+            if "Ban" in err_msg or "banned" in err_msg.lower():
+                STATE["social"][idx]["status"] = "BANNED ❌"
+                add_error(f"Account {idx} PERMANENTLY BANNED: {err_msg}")
+            else:
+                STATE["social"][idx]["status"] = "Login Fail"
+            if is_batch: STATE["batch"]["fail"] += 1
             return
             
     jwt = s["jwt"]
@@ -305,7 +293,6 @@ async def execute_social_action(idx, uid, acc_id, action_type, target, pwd, is_a
             proto = _build_proto_sync({1: int(target), 2: 4})
             endpoint = "/Follow"
         elif action_type == "Subscribe":
-            # FIX: Ultimate cleaning logic for Subscribe (removes #, FREEFIRE, /...)
             clean_target = str(target).strip()
             if clean_target.startswith("#"): clean_target = clean_target[1:]
             clean_target = clean_target.replace("FREEFIRE", "")
@@ -316,6 +303,7 @@ async def execute_social_action(idx, uid, acc_id, action_type, target, pwd, is_a
             endpoint = "/SubscribeWorkshopCode"
     except ValueError:
         STATE["social"][idx]["status"] = "Invalid Target"
+        if is_batch: STATE["batch"]["fail"] += 1
         return
 
     STATE["social"][idx]["status"] = "Sending"
@@ -336,17 +324,21 @@ async def execute_social_action(idx, uid, acc_id, action_type, target, pwd, is_a
         raw = resp.content
         if resp.status_code != 200:
             STATE["social"][idx]["status"] = f"HTTP {resp.status_code}"
+            if is_batch: STATE["batch"]["fail"] += 1
         elif b"BR_WORKSHOP_INSUFFICIENT_MAPS" in raw:
             maps_needed = _first_varint(raw, 2)
             maps_needed = maps_needed if maps_needed is not None else "?"
             STATE["social"][idx]["status"] = f"Lock: {maps_needed} left"
+            if is_batch: STATE["batch"]["fail"] += 1
         elif b"BR_WORKSHOP_ALREADY_FOLLOWED" in raw:
             STATE["social"][idx]["status"] = "Followed"
             if action_type == "Follow": 
                 STATE["bots"][idx]["follow_done"] = True
                 STATE["total_follows"] += 1
+            if is_batch: STATE["batch"]["success"] += 1
         elif b"BR_WORKSHOP" in raw and b"SUCCESS" not in raw: 
             STATE["social"][idx]["status"] = "Failed"
+            if is_batch: STATE["batch"]["fail"] += 1
         else:
             STATE["social"][idx]["status"] = "Success"
             if action_type == "Follow": 
@@ -354,14 +346,18 @@ async def execute_social_action(idx, uid, acc_id, action_type, target, pwd, is_a
                 STATE["total_follows"] += 1
             elif action_type == "Subscribe":
                 STATE["total_subscribes"] += 1
+            if is_batch: STATE["batch"]["success"] += 1
     except Exception as e:
         STATE["social"][idx]["status"] = "Net Err"
+        if is_batch: STATE["batch"]["fail"] += 1
 
-async def run_social_actions(accounts, action_type, target):
+async def run_batch_social_actions(accounts, action_type, target):
+    STATE["batch"] = {"running": True, "action": action_type, "target": target, "total": len(accounts), "success": 0, "fail": 0}
     tasks = []
     for i, acc in enumerate(accounts, 1):
-        tasks.append(asyncio.create_task(execute_social_action(i, acc["uid"], acc.get("aid", ""), action_type, target, acc["password"])))
+        tasks.append(asyncio.create_task(execute_social_action(i, acc["uid"], acc.get("aid", ""), action_type, target, acc["password"], is_batch=True)))
     if tasks: await asyncio.gather(*tasks, return_exceptions=True)
+    STATE["batch"]["running"] = False
 
 # ═══════════════════════════════════════════════════════════════════════
 #  🎨 TUI (Advanced Layout)
@@ -394,37 +390,33 @@ def make_layout():
 def update_ui():
     layout = make_layout()
     
-    # Header
     header_text = Text()
-    header_text.append("🔥 ZHD ADVANCED ENGINE ", style=f"bold {NEON_ORANGE}")
+    header_text.append("🔥 RAJA ULTIMATE ENGINE ", style=f"bold {NEON_ORANGE}")
     header_text.append(f"| 🎯 TARGET: ", style=f"bold {NEON_CYAN}")
-    header_text.append(f"{AUTO_FOLLOW_TARGET if AUTO_FOLLOW_TARGET else 'NOT SET'} ", style=f"bold {NEON_GREEN if AUTO_FOLLOW_TARGET else NEON_RED}")
-    header_text.append(f"| 🤖 AUTO-FOLLOW: ", style=f"bold {NEON_CYAN}")
-    header_text.append(f"{'ON' if AUTO_FOLLOW_ENABLED else 'OFF'} ", style=f"bold {NEON_PURPLE if AUTO_FOLLOW_ENABLED else DIM_GRAY}")
+    header_text.append(f"{STATE['current_target'] if STATE['current_target'] else 'None'} ", style=f"bold {NEON_GREEN if STATE['current_target'] else DIM_GRAY}")
+    header_text.append(f"| ⭐ AUTO-SUB: ", style=f"bold {NEON_CYAN}")
+    header_text.append(f"{'ON' if AUTO_SUBSCRIBE_ENABLED else 'OFF'} ", style=f"bold {NEON_PURPLE if AUTO_SUBSCRIBE_ENABLED else DIM_GRAY}")
     header_text.append(f"| 🏁 {'SEQ MODE' if SEQ_MODE else 'TIMER MODE'} ", style=f"bold {NEON_YELLOW}")
     
     bar = ProgressBar(total=100, completed=100, width=25, complete_style=NEON_PURPLE, finished_style=NEON_PURPLE)
     layout["header"].update(Panel(Group(Align.center(header_text), Align.center(bar)), style="black", border_style=NEON_CYAN, box=box.ROUNDED))
 
-    # Bots Table
     bot_table = Table(expand=True, border_style=NEON_PINK, show_header=True, header_style=f"bold {NEON_PINK}", box=box.SIMPLE, padding=(0, 0))
     bot_table.add_column("ID", width=3, justify="center")
     bot_table.add_column("UID", width=7, overflow="ellipsis", no_wrap=True)
     bot_table.add_column("Status", width=9, overflow="ellipsis", no_wrap=True)
     for idx, b in STATE["bots"].items():
         status = b["status"]
-        color, icon = (NEON_GREEN, "🎮") if "Playing" in status else (NEON_YELLOW, "⏳") if "Wait" in status else (NEON_RED, "❌") if "Error" in status else (NEON_CYAN, "⚙️")
+        color, icon = (NEON_GREEN, "🎮") if "Playing" in status else (NEON_YELLOW, "⏳") if "Wait" in status or "Retry" in status else (NEON_RED, "❌") if "Error" in status or "BANNED" in status else (NEON_CYAN, "⚙️")
         uid_short = f"{b['uid'][:4]}..{b['uid'][-2:]}" if len(b['uid']) > 6 else b['uid']
         bot_table.add_row(f"[{NEON_PURPLE}]{idx}[/]", uid_short, f"[{color}]{icon} {status[:6]}[/]")
     layout["left"].update(Panel(bot_table, title=f"[bold {NEON_PINK}]🤖 BOTS[/]", border_style=NEON_PINK, box=box.ROUNDED, style="black"))
 
-    # Logs & Errors
     log_text = Text.from_markup("\n".join(STATE["logs"]))
     layout["logs"].update(Panel(log_text, title=f"[bold {NEON_GREEN}]📡 MAIN LOGS[/]", border_style=NEON_GREEN, box=box.ROUNDED, style="black"))
     err_text = Text.from_markup("\n".join(STATE["error_logs"]))
     layout["errors"].update(Panel(err_text, title=f"[bold {NEON_RED}]🚨 ERRORS & EVENTS[/]", border_style=NEON_RED, box=box.ROUNDED, style="black"))
 
-    # Stats Table with Follow Lock
     stats_table = Table(expand=True, border_style=NEON_PURPLE, show_header=True, header_style=f"bold {NEON_PURPLE}", box=box.SIMPLE, padding=(0, 0))
     stats_table.add_column("#", justify="center", width=2)
     stats_table.add_column("Account ID", style=NEON_CYAN, width=12)
@@ -438,7 +430,7 @@ def update_ui():
         eid = str(b.get("entity", "-"))
         t = f"{b.get('time_in_match', 0):.0f}s"
         m = b.get("matches_played", 0)
-        lock_str = "SUCCESS ✅" if b.get("follow_done") else f"{min(m, 20)}/20"
+        lock_str = "🔓 Unlocked" if b.get("follow_done") or m >= 20 else f"{m}/20"
         lock_color = NEON_GREEN if b.get("follow_done") else (NEON_YELLOW if m >= 20 else NEON_RED)
         stats_table.add_row(f"{idx}", b.get("aid", b["uid"]), b.get("map", "-")[:7] + "..", eid, t, f"[bold]{m}[/]", f"[{lock_color}]{lock_str}[/]")
 
@@ -447,27 +439,39 @@ def update_ui():
                    f"[{NEON_RED}]❌ Errors: {STATE['total_errors']}[/]")
     layout["stats"].update(Panel(stats_table, title=stats_title, border_style=NEON_PURPLE, box=box.ROUNDED, style="black"))
 
-    # Social Actions Table
     soc_table = Table(expand=True, border_style=NEON_CYAN, show_header=True, header_style=f"bold {NEON_CYAN}", box=box.SIMPLE, padding=(0, 0))
     soc_table.add_column("#", justify="center", width=2)
     soc_table.add_column("Account ID", style=NEON_PURPLE, width=12)
     soc_table.add_column("Action", style=NEON_PINK, width=9)
     soc_table.add_column("Target", style=NEON_YELLOW, width=15, overflow="ellipsis")
-    soc_table.add_column("Status", justify="left", width=14)
+    soc_table.add_column("Status", justify="left", width=18)
     
-    for idx, s in list(STATE.get("social", {}).items())[-4:]:
+    b = STATE["batch"]
+    if b["running"]:
+        batch_status = f"Running ({b['success']}/{b['total']} OK)" if b['total'] > 0 else "Running"
+        soc_table.add_row("[bold]ALL[/]", "BATCH", b["action"], str(b["target"])[:12], f"[{NEON_CYAN}]{batch_status}[/]")
+    elif b["total"] > 0 and not b["running"]:
+        batch_status = f"Success ({b['success']}/{b['total']})" if b['fail'] == 0 else f"Done ({b['success']}/{b['total']} OK)"
+        color = NEON_GREEN if b['fail'] == 0 else NEON_YELLOW
+        soc_table.add_row("[bold]ALL[/]", "BATCH", b["action"], str(b["target"])[:12], f"[{color}]{batch_status}[/]")
+
+    for idx, s in list(STATE.get("social", {}).items())[-3:]:
         st = s["status"]
         color = NEON_GREEN if st == "Success" else (NEON_YELLOW if "Lock" in st or "Need" in st else (NEON_CYAN if st in ("Wait", "Sending", "Logging in") else NEON_RED))
-        soc_table.add_row(str(idx), str(s["uid"]), s["action"], str(s.get("map", s["target"])), f"[{color}]{st}[/]")
+        soc_table.add_row(str(idx), str(s["uid"]), s["action"], str(s.get("map", s["target"]))[:12], f"[{color}]{st}[/]")
 
     layout["social"].update(Panel(soc_table, title=f"[bold {NEON_CYAN}]🌐 SOCIAL ACTIONS (AUTO & MANUAL)[/]", border_style=NEON_CYAN, box=box.ROUNDED, style="black"))
 
-    # TOTAL STATS SUMMARY TABLE
+    unlocked_bots = sum(1 for b in STATE["bots"].values() if b.get("follow_done"))
+    total_bots = len(STATE["bots"])
+    
     summary_text = Text()
-    summary_text.append("🎯 TOTAL FOLLOWS SUCCESS: ", style=f"bold {NEON_CYAN}")
-    summary_text.append(f"{STATE.get('total_follows', 0)}", style=f"bold {NEON_GREEN}")
-    summary_text.append("   |   ⭐ TOTAL MAPS SUBSCRIBED: ", style=f"bold {NEON_CYAN}")
-    summary_text.append(f"{STATE.get('total_subscribes', 0)}", style=f"bold {NEON_YELLOW}")
+    summary_text.append("🎯 Follows: ", style=f"bold {NEON_CYAN}")
+    summary_text.append(f"{STATE.get('total_follows', 0)} ", style=f"bold {NEON_GREEN}")
+    summary_text.append("| ⭐ Subscribed: ", style=f"bold {NEON_CYAN}")
+    summary_text.append(f"{STATE.get('total_subscribes', 0)} ", style=f"bold {NEON_YELLOW}")
+    summary_text.append("| 🔓 Bots Unlocked: ", style=f"bold {NEON_CYAN}")
+    summary_text.append(f"{unlocked_bots} / {total_bots}", style=f"bold {NEON_PURPLE}")
     
     layout["total_stats"].update(Panel(Align.center(summary_text), title=f"[bold {NEON_GREEN}]📈 TOTAL SUCCESS STATS[/]", border_style=NEON_GREEN, box=box.ROUNDED, style="black"))
 
@@ -482,16 +486,29 @@ async def input_task(live, accounts):
             await asyncio.to_thread(console.input, "")
             live.stop()
             console.print("\n[bold #FF007F]⌨  MANUAL SOCIAL ACTIONS MENU[/]")
-            console.print("[1] Follow  [2] Subscribe  [0] Cancel")
+            console.print("[1] Follow Target UID")
+            console.print("[2] Subscribe Map ID")
+            console.print("[0] Cancel")
             choice = await asyncio.to_thread(console.input, "Choice > ")
             choice = choice.strip()
             
-            if choice in ("1", "2"):
-                target = await asyncio.to_thread(console.input, "Target (UID or Map Code) > ")
+            if choice == "1":
+                target = await asyncio.to_thread(console.input, "Target UID > ")
                 target = target.strip()
                 if target:
-                    action_map = {"1": "Follow", "2": "Subscribe"}
-                    asyncio.create_task(run_social_actions(accounts, action_map[choice], target))
+                    STATE["current_target"] = target
+                    add_log(f"Target set to {target}", NEON_GREEN, "🎯")
+                    for idx, b in STATE["bots"].items():
+                        if b.get("follow_done") is False:
+                            acc = next((a for a in accounts if a["uid"] == b["uid"]), None)
+                            if acc:
+                                asyncio.create_task(execute_social_action(idx, acc["uid"], acc.get("aid", ""), "Follow", target, acc["password"], is_auto=True))
+                                
+            elif choice == "2":
+                target = await asyncio.to_thread(console.input, "Map Code > ")
+                target = target.strip()
+                if target:
+                    asyncio.create_task(run_batch_social_actions(accounts, "Subscribe", target))
             live.start()
         except (KeyboardInterrupt, EOFError): break
         except Exception:
@@ -618,7 +635,16 @@ async def phase2_send_and_wait(uid: str, pwd: str, raw_match_start: bytes, bot_i
         info(f"Bot {bot_idx} JWT expired/missing. Re-logging in...")
         try: 
             s = await asyncio.to_thread(login, uid, pwd); save_jwt_cache(uid, s); ok(f"Bot {bot_idx} JWT regenerated!")
-        except Exception as e: err(f"Bot {bot_idx} login fail: {e}"); return None
+        except Exception as e: 
+            # 🔴 BAN DETECTION 🔴
+            err_msg = str(e)
+            if "Ban" in err_msg or "banned" in err_msg.lower():
+                STATE["bots"][bot_idx]["status"] = "BANNED ❌"
+                add_error(f"Bot {bot_idx} PERMANENTLY BANNED: {err_msg}")
+                raise PermanentBanError("Account Banned")
+            else:
+                err(f"Bot {bot_idx} login fail: {err_msg}")
+            return None
             
     try: reader, writer = await asyncio.wait_for(asyncio.open_connection(s["host"], int(s["port"])), timeout=CONNECT_TIMEOUT)
     except Exception as e: err(f"Bot {bot_idx} TCP fail: {str(e)}"); return None
@@ -805,7 +831,7 @@ async def run(uid: str, pwd: str, map_code: str, duration: float, bot_idx: int):
         except Exception: pass
 
 # ═══════════════════════════════════════════════════════════════════════
-#  PER-BOT LOOP (With Auto-Follow & Auto-Subscribe Trigger)
+#  PER-BOT LOOP (Smart Auto-Sub & Manual Target Follow)
 # ═══════════════════════════════════════════════════════════════════════
 async def loop_matches(idx: int, total: int, uid: str, pwd: str, aid: str, rejoin_delay: float):
     STATE["bots"][idx] = {"uid": uid, "aid": aid, "status": "Booting", "map": "-", "entity": "-", "matches_played": 0, "time_in_match": 0, "total_time_played": 0, "follow_done": False}
@@ -823,18 +849,22 @@ async def loop_matches(idx: int, total: int, uid: str, pwd: str, aid: str, rejoi
             add_log(f"Bot {idx} -> SEQ Map #{bot_map_idx+1}", NEON_PURPLE, "🏁")
             save_progress(True, uid, bot_map_idx)
             
-            if not STATE["bots"][idx].get("sub_done_" + str(bot_map_idx), False):
-                add_log(f"Bot {idx} Auto-Subscribing map #{bot_map_idx+1}...", NEON_CYAN, "⭐")
-                asyncio.create_task(execute_social_action(idx, uid, aid, "Subscribe", map_code, pwd, is_auto=True, map_name=f"Map #{bot_map_idx+1}"))
-                STATE["bots"][idx]["sub_done_" + str(bot_map_idx)] = True
-
-            try: await run(uid, pwd, map_code, 0, idx)
+            try: 
+                await run(uid, pwd, map_code, 0, idx)
+            except PermanentBanError:
+                STATE["bots"][idx]["status"] = "BANNED ❌"
+                return
             except Exception as e:
                 STATE["bots"][idx]["status"] = "Error ❌"; add_error(f"Bot {idx} crash: {str(e)}")
             
-            if AUTO_FOLLOW_ENABLED and AUTO_FOLLOW_TARGET and not STATE["bots"][idx].get("follow_done", False):
-                add_log(f"Bot {idx} checking auto-follow lock...", NEON_CYAN, "🎯")
-                await execute_social_action(idx, uid, aid, "Follow", AUTO_FOLLOW_TARGET, pwd, is_auto=True)
+            if AUTO_SUBSCRIBE_ENABLED and map_code not in STATE["subscribed_maps"]:
+                add_log(f"Bot {idx} Auto-Subscribing Map #{bot_map_idx+1}...", NEON_CYAN, "⭐")
+                await execute_social_action(idx, uid, aid, "Subscribe", map_code, pwd, is_auto=True, map_name=f"Map #{bot_map_idx+1}")
+                STATE["subscribed_maps"].add(map_code)
+            
+            if STATE["current_target"] and not STATE["bots"][idx].get("follow_done", False):
+                add_log(f"Bot {idx} Auto-Following Target...", NEON_CYAN, "🎯")
+                await execute_social_action(idx, uid, aid, "Follow", STATE["current_target"], pwd, is_auto=True)
             
             await asyncio.sleep(rejoin_delay)
             bot_map_idx += 1
@@ -846,17 +876,21 @@ async def loop_matches(idx: int, total: int, uid: str, pwd: str, aid: str, rejoi
             add_log(f"Bot {idx} -> TIMER Map #{bot_map_idx+1}", NEON_PURPLE, "🔄")
             save_progress(False, uid, bot_map_idx)
             
-            if not STATE["bots"][idx].get("sub_done_" + str(bot_map_idx), False):
-                add_log(f"Bot {idx} Auto-Subscribing map #{bot_map_idx+1}...", NEON_CYAN, "⭐")
-                asyncio.create_task(execute_social_action(idx, uid, aid, "Subscribe", map_code, pwd, is_auto=True, map_name=f"Map #{bot_map_idx+1}"))
-                STATE["bots"][idx]["sub_done_" + str(bot_map_idx)] = True
-
-            try: await run(uid, pwd, map_code, ROTATION["hold_secs"], idx)
+            try: 
+                await run(uid, pwd, map_code, ROTATION["hold_secs"], idx)
+            except PermanentBanError:
+                STATE["bots"][idx]["status"] = "BANNED ❌"
+                return
             except Exception as e:
                 STATE["bots"][idx]["status"] = "Error ❌"; add_error(f"Bot {idx} crash: {str(e)}")
                 
-            if AUTO_FOLLOW_ENABLED and AUTO_FOLLOW_TARGET and not STATE["bots"][idx].get("follow_done", False):
-                await execute_social_action(idx, uid, aid, "Follow", AUTO_FOLLOW_TARGET, pwd, is_auto=True)
+            if AUTO_SUBSCRIBE_ENABLED and map_code not in STATE["subscribed_maps"]:
+                add_log(f"Bot {idx} Auto-Subscribing Map #{bot_map_idx+1}...", NEON_CYAN, "⭐")
+                await execute_social_action(idx, uid, aid, "Subscribe", map_code, pwd, is_auto=True, map_name=f"Map #{bot_map_idx+1}")
+                STATE["subscribed_maps"].add(map_code)
+                
+            if STATE["current_target"] and not STATE["bots"][idx].get("follow_done", False):
+                await execute_social_action(idx, uid, aid, "Follow", STATE["current_target"], pwd, is_auto=True)
                 
             await asyncio.sleep(rejoin_delay)
             bot_map_idx += 1
@@ -869,17 +903,21 @@ async def loop_matches(idx: int, total: int, uid: str, pwd: str, aid: str, rejoi
         if secs_left < 15.0:
             STATE["bots"][idx]["status"] = "Next Map"; await asyncio.sleep(secs_left + 0.5); continue
         
-        if not STATE["bots"][idx].get("sub_done_" + str(map_idx), False):
-            add_log(f"Bot {idx} Auto-Subscribing map #{map_idx+1}...", NEON_CYAN, "⭐")
-            asyncio.create_task(execute_social_action(idx, uid, aid, "Subscribe", map_code, pwd, is_auto=True, map_name=f"Map #{map_idx+1}"))
-            STATE["bots"][idx]["sub_done_" + str(map_idx)] = True
-
-        try: await run(uid, pwd, map_code, secs_left, idx)
+        try: 
+            await run(uid, pwd, map_code, secs_left, idx)
+        except PermanentBanError:
+            STATE["bots"][idx]["status"] = "BANNED ❌"
+            return
         except Exception as e:
             STATE["bots"][idx]["status"] = "Error ❌"; add_error(f"Bot {idx} crash: {str(e)}")
         
-        if AUTO_FOLLOW_ENABLED and AUTO_FOLLOW_TARGET and not STATE["bots"][idx].get("follow_done", False):
-            await execute_social_action(idx, uid, aid, "Follow", AUTO_FOLLOW_TARGET, pwd, is_auto=True)
+        if AUTO_SUBSCRIBE_ENABLED and map_code not in STATE["subscribed_maps"]:
+            add_log(f"Bot {idx} Auto-Subscribing Map #{map_idx+1}...", NEON_CYAN, "⭐")
+            await execute_social_action(idx, uid, aid, "Subscribe", map_code, pwd, is_auto=True, map_name=f"Map #{map_idx+1}")
+            STATE["subscribed_maps"].add(map_code)
+        
+        if STATE["current_target"] and not STATE["bots"][idx].get("follow_done", False):
+            await execute_social_action(idx, uid, aid, "Follow", STATE["current_target"], pwd, is_auto=True)
 
         await asyncio.sleep(rejoin_delay)
 
@@ -904,21 +942,13 @@ def _ask_yes(prompt_markup, default_yes=True):
     return raw in ("y", "yes", "1", "true")
 
 async def main_async():
-    global SEQ_MODE, START_MAP_IDX, END_MAP_IDX, RESUME_MODE, AUTO_FOLLOW_TARGET, AUTO_FOLLOW_ENABLED
+    global SEQ_MODE, START_MAP_IDX, END_MAP_IDX, RESUME_MODE, AUTO_SUBSCRIBE_ENABLED
     console = Console(file=original_stdout)
 
     load_config()
 
     console.print()
-    console.print(Panel.fit("[bold #00FFFF]⚡ ZHD ADVANCED ENGINE INITIALIZING... ⚡[/]\n[bold #BC13FE]💀 AUTO-FOLLOW & SUBSCRIBE ENGINE 💀[/]", border_style=NEON_CYAN, box=box.DOUBLE))
-    console.print()
-
-    console.print(f"[bold #FFE600]🎯 AUTO-FOLLOW TARGET (config.json)[/] [#888888][{AUTO_FOLLOW_TARGET if AUTO_FOLLOW_TARGET else 'None'}][/] : ", end="")
-    target_input = input().strip()
-    if target_input: AUTO_FOLLOW_TARGET = target_input
-
-    console.print(f"[bold #FFE600]🤖 ENABLE AUTO-FOLLOW? (Y/N)[/] [#888888][{'Y' if AUTO_FOLLOW_ENABLED else 'N'}][/] : ", end="")
-    AUTO_FOLLOW_ENABLED = _ask_yes("", default_yes=AUTO_FOLLOW_ENABLED)
+    console.print(Panel.fit("[bold #00FFFF]⚡ RAJA ULTIMATE ENGINE INITIALIZING... ⚡[/]\n[bold #BC13FE]💀 AUTO-FOLLOW & SUBSCRIBE ENGINE 💀[/]", border_style=NEON_CYAN, box=box.DOUBLE))
     console.print()
 
     console.print("[bold #FFE600]🔥 ACCOUNTS JSON FILE[/] [#888888][accounts.json][/]: ", end="")
@@ -931,7 +961,10 @@ async def main_async():
             if not isinstance(e, dict): continue
             uid = str(e.get("uid") or e.get("user") or "").strip()
             pwd = str(e.get("password") or e.get("pass") or "").strip()
-            aid = str(e.get("account_id") or e.get("acc_id") or "").strip()
+            
+            # 🔴 ID FIXED HERE 🔴
+            aid = str(e.get("aid") or e.get("account_id") or e.get("acc_id") or "").strip() 
+            
             if uid and pwd: accounts.append({"uid": uid, "password": pwd, "aid": aid})
     except Exception as e:
         console.print(f"[bold #FF3131]❌ ERROR LOADING ACCOUNTS: {e}[/]"); return
