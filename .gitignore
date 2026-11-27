@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+accounts.json
+jwt.json
+config.json
+bot_history.json
+social_history.json
+maps.json
+progress_seq.json
+progress_timer.json
+map.json
